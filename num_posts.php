@@ -70,7 +70,7 @@ function grab_post_volume($content) {
 	return $content;
 }
 
-// Now we set that function up to execute when the admin_notices action is called
+// Now we set that function up to execute when the "the_content" is called
 add_action( 'the_content', 'grab_post_volume' );
 
 
