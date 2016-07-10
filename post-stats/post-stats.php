@@ -102,7 +102,7 @@ function draw_cat_pie_svg() {
 	$css_bit = ".pie{ width: 200px; height: 200px; } a .land:hover{ stroke:white; fill: green; }";
 	$total_volume = count_number_of_posts_category();
 	$cat_pie_svg = "<h2>Category Pie chart</h2>";
-	$cat_pie_svg .= "<p>Pie chart, total = $total_volume</p>";
+	$cat_pie_svg .= "<p>Total volume of posts (posts with multiple categories are counted multiple times) = $total_volume</p>";
 
 	$cat_pie_svg .= "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" class=\"pie\"><circle cx=\"$radius\" cy=\"$radius\" r=\"$radius\" stroke=\"black\" stroke-width=\"1\" />\n";
 	$cat_pie_svg .= "<style type=\"text/css\">" . $css_bit . "</style>";
@@ -256,7 +256,7 @@ add_action('admin_menu', 'wpdocs_register_my_custom_menu_page');
 /*
  * 1) Make a posts per year graph
  * 2) Present the data better
- * 3) Split the methods up into different files
+ * 3) Split the methods up into different files for clarity, maybe
  *
  */
 ?>
