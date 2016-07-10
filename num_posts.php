@@ -1,22 +1,22 @@
 <?php
 /**
  * @package num-of-posts
- * @version 1.0
+ * @version 2.01
  */
 /*
  Plugin Name: Number of Posts
  Plugin URI: http://www.shortdark.net/
- Description: Displays the number of posts per year and the posts per category in a comment after the main post content.
+ Description: Displays the number of posts per year and the volume of posts per category in a custom page in the admin area.
  Author: Neil Ludlow
- Version: 1.01
+ Version: 2.01
  Author URI: http://www.shortdark.net/
  */
 
 defined('ABSPATH') or die('No script kiddies please!');
 
 function number_of_posts_per_year() {
-	// Start comment...
-	$posts_per_year = "\n\n<!-- START OF NUMBER OF POSTS PLUGIN\n\nYears...\n";
+
+	$posts_per_year = "<h2>Post Volume per Year</h2>";
 
 	// get the currrent year
 	$currentyear = date('Y');
@@ -29,17 +29,15 @@ function number_of_posts_per_year() {
 
 		// if there are any posts return the volume for that year...
 		if (0 < $the_query -> found_posts) {
-			$posts_per_year .= "Number of posts in $searchyear: $the_query->found_posts\n";
+			$posts_per_year .= "Number of posts in $searchyear: $the_query->found_posts<br>\n";
 		}
 	}
-	// End comment...
-	$posts_per_year .= "\n\n//-->\n\n";
 	return $posts_per_year;
 }
 
 function post_category_volumes() {
-	// Start comment...
-	$posts_per_category = "\n\n<!-- Categories...\n";
+
+	$posts_per_category = "<h2>Post Volume per Category</h2>";
 
 	// get all categories, ordered by name ascending
 	$website_url = get_site_url();
@@ -48,44 +46,45 @@ function post_category_volumes() {
 
 	// return each one with the category URL (unless it's a child of a parent category)
 	foreach ($catlist as $category) {
+
 		if (0 == $category -> category_parent) {
 			$cat_link = "$website_url/category/$category->slug/";
 		} else {
 			$cat_link = "";
 		}
-		$posts_per_category .= "$category->cat_name: $category->category_count posts, $cat_link\n";
+
+		$posts_per_category .= "<a href='" . $cat_link . "'>$category->cat_name</a>: $category->category_count posts<br>\n";
 	}
-	// End Comment...
-	$posts_per_category .= "\n\nEND OF NUMBER OF POSTS PLUGIN //-->\n\n";
 	return $posts_per_category;
 }
 
 // This appends comments to the content of each "single post".
-function grab_post_volume($content) {
-	// Only put on "single posts"...
-	if (is_single()) {
-		// Locate plugins location on the page - for testing
-		// $content .= "\n\nPLUGIN IS HERE!!";
+function grab_post_volume() {
 
-		// first comment = posts per year
-		$content .= number_of_posts_per_year();
+	$content = "<h1>Post Volume</h1>";
+	// first comment = posts per year
+	$content .= number_of_posts_per_year();
 
-		// second comment is posts per category
-		$content .= post_category_volumes();
+	// second comment is posts per category
+	$content .= post_category_volumes();
 
-	}
-	return $content;
+	echo $content;
 }
 
-// Now we set that function up to execute when the "the_content" is called
-add_action('the_content', 'grab_post_volume');
+// Register a custom menu page in the admin.
+function wpdocs_register_my_custom_menu_page() {
+	add_menu_page(__('Post Volumes', 'textdomain'), 'Post Volumes', 'manage_options', 'num_posts_display', 'grab_post_volume', '', '');
+}
+
+add_action('admin_menu', 'wpdocs_register_my_custom_menu_page');
 
 /****************
  ** TODO
  ****************/
 
 /*
- * 1) Display something on the page
+ * 1) Change category links from blog links to the admin category links
+ * 2) Make some graphs
  *
  */
 ?>
