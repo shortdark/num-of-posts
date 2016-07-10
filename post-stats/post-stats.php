@@ -256,6 +256,7 @@ add_action('admin_menu', 'wpdocs_register_my_custom_menu_page');
 /*
  * 1) Make a posts per year graph
  * 2) Present the data better
+ * 3) Split the methods up into different files
  *
  */
 ?>
