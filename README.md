@@ -1,2 +1,2 @@
 # num-of-posts
-My first Wordpress plugin. Based on the one file plugin, Hello Dolly. Counts the number of posts per year, and gets the number of posts per category. Initially the plugin just puts all this info in a comment beneath the post content on a single Wordpress post.
+My first Wordpress plugin. I originally based it on the one file plugin, Hello Dolly, modifying it to counts the number of posts per year, and gets the number of posts per category. Initially the plugin just put all this info in a comment beneath the post content on a single Wordpress post. Then, was adapted to be an admin plugin (back to Dolly), but now it's not a notice, it has it's own page.
