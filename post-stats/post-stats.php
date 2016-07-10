@@ -6,7 +6,7 @@
 /*
  Plugin Name: Post Stats
  Plugin URI: http://www.shortdark.net/
- Description: Displays the number of posts per year and the volume of posts per category in a custom page in the admin area.
+ Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
  Version: 2.04
  Author URI: http://www.shortdark.net/
@@ -233,11 +233,11 @@ function post_stats_assembled() {
 	// posts per year
 	$content .= number_of_posts_per_year();
 
-	// posts per category
-	$content .= post_category_volumes();
-	
 	// posts per category pie chart
 	$content .= draw_cat_pie_svg();
+
+	// posts per category
+	$content .= post_category_volumes();
 
 	echo $content;
 }
