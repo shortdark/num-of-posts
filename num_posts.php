@@ -1,14 +1,14 @@
 <?php
 /**
  * @package num-of-posts
- * @version 2.01
+ * @version 2.02
  */
 /*
  Plugin Name: Number of Posts
  Plugin URI: http://www.shortdark.net/
  Description: Displays the number of posts per year and the volume of posts per category in a custom page in the admin area.
  Author: Neil Ludlow
- Version: 2.01
+ Version: 2.02
  Author URI: http://www.shortdark.net/
  */
 
@@ -53,7 +53,7 @@ function post_category_volumes() {
 			$cat_link = "";
 		}
 
-		$posts_per_category .= "<a href='" . $cat_link . "'>$category->cat_name</a>: $category->category_count posts<br>\n";
+		$posts_per_category .= "<a href='" . admin_url('edit.php?category_name='.$category->slug) . "'>$category->cat_name</a>: $category->category_count posts<br>\n";
 	}
 	return $posts_per_category;
 }
@@ -83,7 +83,7 @@ add_action('admin_menu', 'wpdocs_register_my_custom_menu_page');
  ****************/
 
 /*
- * 1) Change category links from blog links to the admin category links
+ * 1) Package plugin as a directory and include a menu image
  * 2) Make some graphs
  *
  */
