@@ -1,14 +1,14 @@
 <?php
 /**
  * @package post-stats
- * @version 2.04
+ * @version 2.05
  */
 /*
  Plugin Name: Post Stats
  Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
- Version: 2.04
+ Version: 2.05
  Author URI: http://www.shortdark.net/
  */
 
@@ -100,13 +100,11 @@ function draw_cat_pie_svg() {
 	$newx = 0;
 	$newy = 0;
 
-	// $css_bit = ".pie{ width: 200px; height: 200px; } a .segment:hover{ stroke:white; fill: green; }";
 	$total_volume = count_number_of_posts_category();
 	$cat_pie_svg = "<h2>Category Pie chart</h2>";
 	$cat_pie_svg .= "<p>Total volume of posts (posts with multiple categories are counted multiple times) = $total_volume</p>";
 
 	$cat_pie_svg .= "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" class=\"pie\"><circle cx=\"$radius\" cy=\"$radius\" r=\"$radius\" stroke=\"black\" stroke-width=\"1\" />\n";
-	// $cat_pie_svg .= "<style type=\"text/css\">" . $css_bit . "</style>";
 
 	$category_array = assemble_category_data_in_array();
 
