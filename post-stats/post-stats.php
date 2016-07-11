@@ -5,7 +5,7 @@
  */
 /*
  Plugin Name: Post Stats
- Plugin URI: http://www.shortdark.net/
+ Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
  Version: 2.04
@@ -20,6 +20,7 @@ defined('ABSPATH') or die('No script kiddies please!');
 function number_of_posts_per_year() {
 
 	$posts_per_year = "<h2>Post Volumes per Year</h2>";
+	$posts_per_year .= "<p>Goes back up to 15 years.</p>";
 
 	// get the currrent year
 	$currentyear = date('Y');
@@ -99,13 +100,13 @@ function draw_cat_pie_svg() {
 	$newx = 0;
 	$newy = 0;
 
-	$css_bit = ".pie{ width: 200px; height: 200px; } a .land:hover{ stroke:white; fill: green; }";
+	// $css_bit = ".pie{ width: 200px; height: 200px; } a .segment:hover{ stroke:white; fill: green; }";
 	$total_volume = count_number_of_posts_category();
 	$cat_pie_svg = "<h2>Category Pie chart</h2>";
 	$cat_pie_svg .= "<p>Total volume of posts (posts with multiple categories are counted multiple times) = $total_volume</p>";
 
 	$cat_pie_svg .= "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" class=\"pie\"><circle cx=\"$radius\" cy=\"$radius\" r=\"$radius\" stroke=\"black\" stroke-width=\"1\" />\n";
-	$cat_pie_svg .= "<style type=\"text/css\">" . $css_bit . "</style>";
+	// $cat_pie_svg .= "<style type=\"text/css\">" . $css_bit . "</style>";
 
 	$category_array = assemble_category_data_in_array();
 
@@ -113,7 +114,6 @@ function draw_cat_pie_svg() {
 	while ($category_array[$c]['catname']) {
 		if (0 < $category_array[$c]['volume']) {
 			if (0 < $category_array[$c]['angle']) {
-				// $testangle = $category_array[$c]['angle'];
 				$prev_angle = $testangle_orig;
 				$testangle_orig += $category_array[$c]['angle'];
 				$quadrant = specify_starting_quadrant($testangle_orig);
@@ -129,7 +129,7 @@ function draw_cat_pie_svg() {
 
 				$display_angle_as = sprintf("%.1f", $category_array[$c]['angle']);
 
-				$cat_pie_svg .= "  <a $link xlink:title=\"{$category_array[$c]['catname']}, {$category_array[$c]['volume']} posts, $display_angle_as degrees\"><path id=\"{$category_array[$c]['catname']}\" class=\"land\" d=\"M$radius,$radius $startingline A$radius,$radius 0 $large,1 $newx,$newy z\" fill=\"$color\" stroke=\"black\" stroke-width=\"1\"  /></a>\n";
+				$cat_pie_svg .= "  <a $link xlink:title=\"{$category_array[$c]['catname']}, {$category_array[$c]['volume']} posts\"><path id=\"{$category_array[$c]['catname']}\" class=\"segment\" d=\"M$radius,$radius $startingline A$radius,$radius 0 $large,1 $newx,$newy z\" fill=\"$color\" stroke=\"black\" stroke-width=\"1\"  /></a>\n";
 			}
 		}
 		$c++;
@@ -226,25 +226,80 @@ function get_absolute_y_coordinates_from_angle($quadrant, $radius, $testangle) {
 	return $newy;
 }
 
+// We need some CSS to position the paragraph
+function post_stats_css() {
+	echo "
+	<style type='text/css'>
+	
+h1, p {
+	text-align: center;
+}
+
+#leftcol {
+	width: 250px; 
+	display: inline-block; 
+	vertical-align: top;
+}
+#rightcol {
+	width: 50%; 
+	display: inline-block; 
+	vertical-align: top;
+}
+
+#leftcol p , #rightcol p {
+	text-align: left;
+}
+
+@media (max-width: 520px) {
+  #leftcol , #rightcol {
+    width: 100%;
+    width: 100vw;
+    display: block;
+  }
+}
+.pie{ 
+	width: 200px; 
+	height: 200px; 
+} 
+a .segment:hover{ 
+	stroke:white; 
+	fill: green; 
+}
+
+	</style>
+	";
+}
+
+add_action( 'admin_head', 'post_stats_css' );
+
 // This appends comments to the content of each "single post".
 function post_stats_assembled() {
 
-	$content = "<h1>Post Stats</h1>";
+	$content = "<h1>Post Stats</h1>\n";
+	$content .= "<p>These are your post stats.</p>\n";
+	
+	$content .= "<div id='leftcol'>";
 	// posts per year
 	$content .= number_of_posts_per_year();
+	
+	$content .= "</div>";
 
+	
+	$content .= "<div id='rightcol'>";
 	// posts per category pie chart
 	$content .= draw_cat_pie_svg();
 
 	// posts per category
 	$content .= post_category_volumes();
+	
+	$content .= "</div>";
 
 	echo $content;
 }
 
 // Register a custom menu page in the admin.
 function wpdocs_register_my_custom_menu_page() {
-	add_menu_page(__('Post Stats', 'textdomain'), 'Post Stats', 'manage_options', 'post_stats', 'post_stats_assembled', plugins_url('post-stats/images/post-stats-16x16.png'), '');
+	add_menu_page(__('Post Stats', 'textdomain'), 'Post Stats', 'manage_options', 'post_stats', 'post_stats_assembled', plugins_url('post-stats/images/post-stats-16x16.png'), 1000);
 }
 
 add_action('admin_menu', 'wpdocs_register_my_custom_menu_page');
@@ -256,7 +311,8 @@ add_action('admin_menu', 'wpdocs_register_my_custom_menu_page');
 /*
  * 1) Make a posts per year graph
  * 2) Present the data better
- * 3) Split the methods up into different files for clarity, maybe
+ * 3) Separate CSS into a CSS file, if needed
+ * 4) Split the methods up into different files for clarity, maybe
  *
  */
 ?>
