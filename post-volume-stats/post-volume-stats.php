@@ -14,12 +14,12 @@
 
 defined('ABSPATH') or die('No script kiddies please!');
 
-define( 'WP_DEBUG', true );
+// define( 'WP_DEBUG', true );
 
 /*
  * NUMBER OF POSTS PER CATEGORY ARRAY
  */
-function pvs_assemble_year_data_in_array() {
+function sdpvs_assemble_year_data_in_array() {
 	// get the currrent year
 	$currentyear = date('Y');
 	$y = 0;
@@ -39,7 +39,7 @@ function pvs_assemble_year_data_in_array() {
 /**
  * DISPLAY YEAR DATA IN A GRAPH
  */
-function pvs_draw_year_svg() {
+function sdpvs_draw_year_svg() {
 	$years_total = 0;
 	$number_of_years = 0;
 	$highest_val = 0;
@@ -49,7 +49,7 @@ function pvs_draw_year_svg() {
 
 	$year_svg = "<h2>Year Graph</h2>";
 
-	$year_array = pvs_assemble_year_data_in_array();
+	$year_array = sdpvs_assemble_year_data_in_array();
 
 	$y = 14;
 	while ($year_array[$y]['year']) {
@@ -95,7 +95,7 @@ function pvs_draw_year_svg() {
 /*
  * NUMBER OF POSTS PER YEAR TEXT
  */
-function pvs_number_of_posts_per_year() {
+function sdpvs_number_of_posts_per_year() {
 
 	$posts_per_year = "<h2>Post Volumes per Year</h2>";
 	$posts_per_year .= "<p>Goes back up to 15 years.</p>";
@@ -120,7 +120,7 @@ function pvs_number_of_posts_per_year() {
 /*
  * NUMBER OF POSTS PER CATEGORY TEXT
  */
-function pvs_post_category_volumes() {
+function sdpvs_post_category_volumes() {
 	$posts_per_category = "<h2>Post Volumes per Category!</h2>";
 	// get all categories, ordered by name ascending
 	$catargs = array('orderby' => 'name', 'order' => 'ASC');
@@ -135,7 +135,7 @@ function pvs_post_category_volumes() {
 /*
  * COUNT NUMBER OF POSTS PER CATEGORY IN TOTAL, some posts might have multiple cats
  */
-function pvs_count_number_of_posts_category() {
+function sdpvs_count_number_of_posts_category() {
 	$catlist = get_categories();
 
 	// return each one with the category URL
@@ -148,12 +148,12 @@ function pvs_count_number_of_posts_category() {
 /*
  * NUMBER OF POSTS PER CATEGORY ARRAY
  */
-function pvs_assemble_category_data_in_array() {
+function sdpvs_assemble_category_data_in_array() {
 	// get all categories, ordered by name ascending
 	$catargs = array('orderby' => 'name', 'order' => 'ASC');
 	$catlist = get_categories($catargs);
 
-	$total_volume = pvs_count_number_of_posts_category();
+	$total_volume = sdpvs_count_number_of_posts_category();
 
 	$c = 0;
 	// return each one with the category URL
@@ -170,7 +170,7 @@ function pvs_assemble_category_data_in_array() {
 /**
  * DISPLAY CATEGORY DATA IN A PIE CHART
  */
-function pvs_draw_cat_pie_svg() {
+function sdpvs_draw_cat_pie_svg() {
 	$testangle_orig = 0;
 	$radius = 100;
 	$prev_angle = 0;
@@ -178,13 +178,13 @@ function pvs_draw_cat_pie_svg() {
 	$newx = 0;
 	$newy = 0;
 
-	$total_volume = pvs_count_number_of_posts_category();
+	$total_volume = sdpvs_count_number_of_posts_category();
 	$cat_pie_svg = "<h2>Category Pie Chart</h2>";
 	$cat_pie_svg .= "<p>Total volume of posts (posts with multiple categories are counted multiple times) = $total_volume</p>";
 
 	$cat_pie_svg .= "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" class=\"pie\"><circle cx=\"$radius\" cy=\"$radius\" r=\"$radius\" stroke=\"black\" stroke-width=\"1\" />\n";
 
-	$category_array = pvs_assemble_category_data_in_array();
+	$category_array = sdpvs_assemble_category_data_in_array();
 
 	$c = 0;
 	while ($category_array[$c]['catname']) {
@@ -192,12 +192,12 @@ function pvs_draw_cat_pie_svg() {
 			if (0 < $category_array[$c]['angle']) {
 				$prev_angle = $testangle_orig;
 				$testangle_orig += $category_array[$c]['angle'];
-				$quadrant = pvs_specify_starting_quadrant($testangle_orig);
-				$testangle = pvs_specify_testangle($testangle_orig);
-				$large = pvs_is_it_a_large_angle($testangle_orig, $prev_angle);
-				$startingline = pvs_draw_starting_line($prev_angle, $newx, $newy);
-				$newx = pvs_get_absolute_x_coordinates_from_angle($quadrant, $radius, $testangle);
-				$newy = pvs_get_absolute_y_coordinates_from_angle($quadrant, $radius, $testangle);
+				$quadrant = sdpvs_specify_starting_quadrant($testangle_orig);
+				$testangle = sdpvs_specify_testangle($testangle_orig);
+				$large = sdpvs_is_it_a_large_angle($testangle_orig, $prev_angle);
+				$startingline = sdpvs_draw_starting_line($prev_angle, $newx, $newy);
+				$newx = sdpvs_get_absolute_x_coordinates_from_angle($quadrant, $radius, $testangle);
+				$newy = sdpvs_get_absolute_y_coordinates_from_angle($quadrant, $radius, $testangle);
 
 				$opacity = $category_array[$c]['angle'] / 180;
 				if (1 < $opacity) {
@@ -210,7 +210,7 @@ function pvs_draw_cat_pie_svg() {
 				
 				if (360 == $category_array[$c]['angle']) {
 					// If only one category exists make sure there is a green solid circle
-					$cat_pie_svg .= "<circle cx='100' cy='100' r='100' fill='green'/>\n";
+					$cat_pie_svg .= "<a $link xlink:title=\"{$category_array[$c]['catname']}, {$category_array[$c]['volume']} posts\"><circle class=\"segment\" cx='100' cy='100' r='100' fill='red'/></a>\n";
 				} else {
 					$cat_pie_svg .= "  <a $link xlink:title=\"{$category_array[$c]['catname']}, {$category_array[$c]['volume']} posts\"><path id=\"{$category_array[$c]['catname']}\" class=\"segment\" d=\"M$radius,$radius $startingline A$radius,$radius 0 $large,1 $newx,$newy z\" fill=\"$color\" stroke=\"black\" stroke-width=\"1\"  /></a>\n";
 				}
@@ -225,7 +225,7 @@ function pvs_draw_cat_pie_svg() {
 /**
  * WHICH QUADRANT OF THE CIRCLE ARE WE IN ?
  */
-function pvs_specify_starting_quadrant($testangle_orig) {
+function sdpvs_specify_starting_quadrant($testangle_orig) {
 	if (270 < $testangle_orig) {
 		$quadrant = 4;
 	} elseif (180 < $testangle_orig) {
@@ -241,7 +241,7 @@ function pvs_specify_starting_quadrant($testangle_orig) {
 /**
  * MAKE AN ACUTE ANGLE
  */
-function pvs_specify_testangle($testangle_orig) {
+function sdpvs_specify_testangle($testangle_orig) {
 	if (270 < $testangle_orig) {
 		$testangle = $testangle_orig - 270;
 	} elseif (180 < $testangle_orig) {
@@ -257,7 +257,7 @@ function pvs_specify_testangle($testangle_orig) {
 /**
  * IS THE ANGLE MORE THAN 180 DEGREES ?
  */
-function pvs_is_it_a_large_angle($testangle_orig, $prev_angle) {
+function sdpvs_is_it_a_large_angle($testangle_orig, $prev_angle) {
 	if (180 < $testangle_orig - $prev_angle) {
 		$large = 1;
 	} else {
@@ -269,7 +269,7 @@ function pvs_is_it_a_large_angle($testangle_orig, $prev_angle) {
 /**
  * THIS GRABS THE INFO FROM THE PREVIOUS POINT AND STARTS OFF THE PIE SEGMENT
  */
-function pvs_draw_starting_line($prev_angle, $newx, $newy) {
+function sdpvs_draw_starting_line($prev_angle, $newx, $newy) {
 	if (0 < $prev_angle) {
 		$startingline = "L$newx,$newy";
 	} else {
@@ -281,7 +281,7 @@ function pvs_draw_starting_line($prev_angle, $newx, $newy) {
 /**
  * GET NEW X CO-ORDINATES
  */
-function pvs_get_absolute_x_coordinates_from_angle($quadrant, $radius, $testangle) {
+function sdpvs_get_absolute_x_coordinates_from_angle($quadrant, $radius, $testangle) {
 	if (1 == $quadrant) {
 		$newx = $radius + ($radius * sin(deg2rad($testangle)));
 	} elseif (2 == $quadrant) {
@@ -297,7 +297,7 @@ function pvs_get_absolute_x_coordinates_from_angle($quadrant, $radius, $testangl
 /**
  * GET NEW Y CO-ORDINATES
  */
-function pvs_get_absolute_y_coordinates_from_angle($quadrant, $radius, $testangle) {
+function sdpvs_get_absolute_y_coordinates_from_angle($quadrant, $radius, $testangle) {
 	if (1 == $quadrant) {
 		$newy = $radius - ($radius * cos(deg2rad($testangle)));
 	} elseif (2 == $quadrant) {
@@ -311,16 +311,10 @@ function pvs_get_absolute_y_coordinates_from_angle($quadrant, $radius, $testangl
 }
 
 // Some CSS to format the plugin page
-function pvs_post_volume_stats_css() {
+function sdpvs_post_volume_stats_css() {
 	echo "
 	<style type='text/css'>
 	
-h1, p {
-	/*
-		text-align: center;
-	*/
-}
-
 #leftcol {
 	width: 250px; 
 	display: inline-block; 
@@ -356,28 +350,28 @@ a .segment:hover{
 	";
 }
 
-add_action('admin_head', 'pvs_post_volume_stats_css');
+add_action('admin_head', 'sdpvs_post_volume_stats_css');
 
 // This appends comments to the content of each "single post".
-function pvs_post_volume_stats_assembled() {
+function sdpvs_post_volume_stats_assembled() {
 
 	$content = "<h1>Post Volume Stats</h1>\n";
 	$content .= "<p>These are your post stats.</p>\n";
 
 	$content .= "<div id='leftcol'>";
 	// graph
-	$content .= pvs_draw_year_svg();
+	$content .= sdpvs_draw_year_svg();
 	// posts per year
-	$content .= pvs_number_of_posts_per_year();
+	$content .= sdpvs_number_of_posts_per_year();
 
 	$content .= "</div>";
 
 	$content .= "<div id='rightcol'>";
 	// posts per category pie chart
-	$content .= pvs_draw_cat_pie_svg();
+	$content .= sdpvs_draw_cat_pie_svg();
 
 	// posts per category
-	$content .= pvs_post_category_volumes();
+	$content .= sdpvs_post_category_volumes();
 
 	$content .= "</div>";
 
@@ -385,11 +379,11 @@ function pvs_post_volume_stats_assembled() {
 }
 
 // Register a custom menu page in the admin.
-function pvs_register_custom_page_in_menu() {
-	add_menu_page(__('Post Volume Stats', 'textdomain'), 'Post Volume Stats', 'manage_options', 'pvs_post_volume_stats', 'pvs_post_volume_stats_assembled', plugins_url('images/post-volume-stats-16x16.png', __FILE__ ), 1000);
+function sdpvs_register_custom_page_in_menu() {
+	add_menu_page(__('Post Volume Stats', 'textdomain'), 'Post Volume Stats', 'manage_options', __DIR__ , 'sdpvs_post_volume_stats_assembled', plugins_url('images/post-volume-stats-16x16.png', __FILE__ ), 1000);
 }
 
-add_action('admin_menu', 'pvs_register_custom_page_in_menu');
+add_action('admin_menu', 'sdpvs_register_custom_page_in_menu');
 
 /****************
  ** TODO
