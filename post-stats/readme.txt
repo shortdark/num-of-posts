@@ -13,8 +13,7 @@ category.
 == Description ==
 
 This is a simple plugin to look at the volume of posts per year and the volume of posts in each
-category. It obviously works better the more posts you have over the longer period, and if you
-use categories.
+category. It obviously works best if you have posts over multiple years, and if you use categories.
 
 == Installation ==
 

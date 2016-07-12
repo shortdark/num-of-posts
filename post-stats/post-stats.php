@@ -15,6 +15,83 @@
 defined('ABSPATH') or die('No script kiddies please!');
 
 /*
+ * NUMBER OF POSTS PER CATEGORY ARRAY
+ */
+function assemble_year_data_in_array() {
+	// get the currrent year
+	$currentyear = date('Y');
+	$y = 0;
+	// get the number of posts over the past 15 years
+	for ($i = 0; $i <= 14; $i++) {
+		$searchyear = $currentyear - $i;
+		$args = array('post_status ' => 'publish', 'post_type' => 'post', 'date_query' => array('year' => $searchyear, ), );
+		$the_query = new WP_Query($args);
+		$year_array[$y]['year'] = $searchyear;
+		$year_array[$y]['volume'] = $the_query -> found_posts;
+		$y++;
+	}
+
+	return $year_array;
+}
+
+/**
+ * DISPLAY YEAR DATA IN A GRAPH
+ */
+function draw_year_svg() {
+	$years_total = 0;
+	$number_of_years = 0;
+	$highest_val = 0;
+	$graphwidth = 200;
+	$graphheight = 200;
+	$graph_color = "green";
+
+	$year_svg = "<h2>Year Graph</h2>";
+
+	$year_array = assemble_year_data_in_array();
+
+	$y = 14;
+	while ($year_array[$y]['year']) {
+		if ((0 < $year_array[$y]['volume'] or 0 == $y) and !$first_year) {
+			$first_year = $y;
+		}
+		if (0 < $year_array[$y]['volume'] and $highest_val < $year_array[$y]['volume']) {
+			$highest_val = $year_array[$y]['volume'];
+		}
+		$y--;
+	}
+	$years_total = $first_year + 1;
+
+	$bar_width = intval($graphwidth / $years_total);
+	if (17 > $bar_width) {
+		$text_indent = 0;
+	} elseif (26 > $bar_width) {
+		$text_indent = 2;
+	} else {
+		$text_indent = ($bar_width / 2) - 2;
+	}
+
+	$year_svg .= "<p>First Year with posts is {$year_array[$first_year]['year']}</p>";
+	$year_svg .= "<svg width=\"" . $graphwidth . "px\" height=\"" . $graphheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" class=\"bar\">\n";
+
+	for ($i = 0; $i <= $first_year; $i++) {
+		if (0 < $year_array[$i]['volume']) {
+			$x_start = $graphwidth - ($i * $bar_width);
+			$text_x = $x_start - $bar_width + $text_indent;
+			$text_y = $graphheight - 2;
+			$year_text = substr($year_array[$i]['year'], 2, 2);
+			$bar_height = intval($graphheight * ($year_array[$i]['volume'] / $highest_val));
+			$year_svg .= "\t<path fill-opacity=\"0.5\" d=\"M$x_start $graphheight v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"$graph_color\"></path>";
+			$year_svg .= "\t<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">$year_text</text>\n";
+		}
+
+	}
+
+	// $year_svg .= "\t<path stroke=\"black\" stroke-dasharray=\"5, 5\"  d=\"M$dividerxvalue 0 v $axisheight\"/>\n";
+	$year_svg .= "</svg>\n";
+	return $year_svg;
+}
+
+/*
  * NUMBER OF POSTS PER YEAR TEXT
  */
 function number_of_posts_per_year() {
@@ -83,7 +160,7 @@ function assemble_category_data_in_array() {
 		$category_array[$c]['catid'] = $category -> term_id;
 		$category_array[$c]['catname'] = $category -> name;
 		$category_array[$c]['volume'] = $category -> category_count;
-		$category_array[$c]['angle'] = $category -> category_count / $total_volume * 360;
+		$category_array[$c]['angle'] = ($category -> category_count / $total_volume) * 360;
 		$c++;
 	}
 	return $category_array;
@@ -101,7 +178,7 @@ function draw_cat_pie_svg() {
 	$newy = 0;
 
 	$total_volume = count_number_of_posts_category();
-	$cat_pie_svg = "<h2>Category Pie chart</h2>";
+	$cat_pie_svg = "<h2>Category Pie Chart</h2>";
 	$cat_pie_svg .= "<p>Total volume of posts (posts with multiple categories are counted multiple times) = $total_volume</p>";
 
 	$cat_pie_svg .= "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" class=\"pie\"><circle cx=\"$radius\" cy=\"$radius\" r=\"$radius\" stroke=\"black\" stroke-width=\"1\" />\n";
@@ -122,12 +199,19 @@ function draw_cat_pie_svg() {
 				$newy = get_absolute_y_coordinates_from_angle($quadrant, $radius, $testangle);
 
 				$opacity = $category_array[$c]['angle'] / 180;
+				if (1 < $opacity) {
+					$opacity = 1;
+				}
 				$opacity = sprintf("%.1f", $opacity);
 				$color = "rgba(255,0,0,$opacity)";
 
 				$display_angle_as = sprintf("%.1f", $category_array[$c]['angle']);
 
-				$cat_pie_svg .= "  <a $link xlink:title=\"{$category_array[$c]['catname']}, {$category_array[$c]['volume']} posts\"><path id=\"{$category_array[$c]['catname']}\" class=\"segment\" d=\"M$radius,$radius $startingline A$radius,$radius 0 $large,1 $newx,$newy z\" fill=\"$color\" stroke=\"black\" stroke-width=\"1\"  /></a>\n";
+				if (360 == $category_array[$c]['angle']) {
+					$cat_pie_svg .= "<circle cx='100' cy='100' r='100' fill='green'/>\n";
+				} else {
+					$cat_pie_svg .= "  <a $link xlink:title=\"{$category_array[$c]['catname']}, {$category_array[$c]['volume']} posts\"><path id=\"{$category_array[$c]['catname']}\" class=\"segment\" d=\"M$radius,$radius $startingline A$radius,$radius 0 $large,1 $newx,$newy z\" fill=\"$color\" stroke=\"black\" stroke-width=\"1\"  /></a>\n";
+				}
 			}
 		}
 		$c++;
@@ -268,28 +352,29 @@ a .segment:hover{
 	";
 }
 
-add_action( 'admin_head', 'post_stats_css' );
+add_action('admin_head', 'post_stats_css');
 
 // This appends comments to the content of each "single post".
 function post_stats_assembled() {
 
 	$content = "<h1>Post Stats</h1>\n";
 	$content .= "<p>These are your post stats.</p>\n";
-	
+
 	$content .= "<div id='leftcol'>";
+	// graph
+	$content .= draw_year_svg();
 	// posts per year
 	$content .= number_of_posts_per_year();
-	
+
 	$content .= "</div>";
 
-	
 	$content .= "<div id='rightcol'>";
 	// posts per category pie chart
 	$content .= draw_cat_pie_svg();
 
 	// posts per category
 	$content .= post_category_volumes();
-	
+
 	$content .= "</div>";
 
 	echo $content;
