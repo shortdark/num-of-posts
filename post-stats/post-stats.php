@@ -70,7 +70,7 @@ function draw_year_svg() {
 		$text_indent = ($bar_width / 2) - 2;
 	}
 
-	$year_svg .= "<p>First Year with posts is {$year_array[$first_year]['year']}</p>";
+	$year_svg .= "<p>This includes posts that are not public.</p>";
 	$year_svg .= "<svg width=\"" . $graphwidth . "px\" height=\"" . $graphheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" class=\"bar\">\n";
 
 	for ($i = 0; $i <= $first_year; $i++) {
@@ -391,7 +391,7 @@ add_action('admin_menu', 'wpdocs_register_my_custom_menu_page');
  ****************/
 
 /*
- * 1) Make a posts per year graph
+ * 1) Add tag stats
  * 2) Present the data better
  * 3) Separate CSS into a CSS file, if needed
  * 4) Split the methods up into different files for clarity, maybe
