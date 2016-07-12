@@ -4,6 +4,7 @@ Contributors: shortdark
 Donate link: http://www.shortdark.net/
 Tags: posts, stats, categories
 Tested up to: 4.5.3
+Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
