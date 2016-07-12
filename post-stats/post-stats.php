@@ -86,7 +86,6 @@ function draw_year_svg() {
 
 	}
 
-	// $year_svg .= "\t<path stroke=\"black\" stroke-dasharray=\"5, 5\"  d=\"M$dividerxvalue 0 v $axisheight\"/>\n";
 	$year_svg .= "</svg>\n";
 	return $year_svg;
 }
