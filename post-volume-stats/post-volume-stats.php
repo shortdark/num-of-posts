@@ -1,14 +1,14 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 2.07
+ * @version 2.08
  */
 /*
  Plugin Name: Post Volume Stats
  Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
- Version: 2.07
+ Version: 2.08
  Author URI: http://www.shortdark.net/
  */
 
@@ -45,7 +45,7 @@ function sdpvs_draw_year_svg() {
 	$highest_val = 0;
 	$graphwidth = 200;
 	$graphheight = 200;
-	$graph_color = "green";
+	$graph_color = "blue";
 
 	$year_svg = "<h2>Year Graph</h2>";
 
@@ -72,8 +72,8 @@ function sdpvs_draw_year_svg() {
 		$text_indent = ($bar_width / 2) - 2;
 	}
 
-	$year_svg .= "<p>This includes posts that are not public.</p>";
-	$year_svg .= "<svg width=\"" . $graphwidth . "px\" height=\"" . $graphheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" class=\"bar\">\n";
+	$year_svg .= "<p>Posts over the past $years_total years, including posts that are not public.</p>";
+	$year_svg .= "<svg width=\"" . $graphwidth . "px\" height=\"" . $graphheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n";
 
 	for ($i = 0; $i <= $first_year; $i++) {
 		if (0 < $year_array[$i]['volume']) {
@@ -82,8 +82,8 @@ function sdpvs_draw_year_svg() {
 			$text_y = $graphheight - 2;
 			$year_text = substr($year_array[$i]['year'], 2, 2);
 			$bar_height = intval($graphheight * ($year_array[$i]['volume'] / $highest_val));
-			$year_svg .= "\t<path fill-opacity=\"0.5\" d=\"M$x_start $graphheight v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"$graph_color\"></path>";
-			$year_svg .= "\t<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">$year_text</text>\n";
+			$year_svg .= "\t<a xlink:title=\"{$year_array[$i]['year']}, {$year_array[$i]['volume']} posts\"><path fill-opacity=\"0.5\" d=\"M$x_start $graphheight v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"$graph_color\" class=\"sdpvs_bar\"></path></a>";
+			// $year_svg .= "\t<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">$year_text</text>\n";
 		}
 
 	}
@@ -160,6 +160,7 @@ function sdpvs_assemble_category_data_in_array() {
 	foreach ($catlist as $category) {
 		$category_array[$c]['catid'] = $category -> term_id;
 		$category_array[$c]['catname'] = $category -> name;
+		$category_array[$c]['slug'] = $category -> slug;
 		$category_array[$c]['volume'] = $category -> category_count;
 		$category_array[$c]['angle'] = ($category -> category_count / $total_volume) * 360;
 		$c++;
@@ -180,9 +181,9 @@ function sdpvs_draw_cat_pie_svg() {
 
 	$total_volume = sdpvs_count_number_of_posts_category();
 	$cat_pie_svg = "<h2>Category Pie Chart</h2>";
-	$cat_pie_svg .= "<p>Total volume of posts (posts with multiple categories are counted multiple times) = $total_volume</p>";
+	$cat_pie_svg .= "<p>Total volume of active posts (posts with multiple categories are counted multiple times) = $total_volume</p>";
 
-	$cat_pie_svg .= "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" class=\"pie\"><circle cx=\"$radius\" cy=\"$radius\" r=\"$radius\" stroke=\"black\" stroke-width=\"1\" />\n";
+	$cat_pie_svg .= "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" class=\"sdpvs_pie\"><circle cx=\"$radius\" cy=\"$radius\" r=\"$radius\" stroke=\"black\" stroke-width=\"1\" />\n";
 
 	$category_array = sdpvs_assemble_category_data_in_array();
 
@@ -208,11 +209,13 @@ function sdpvs_draw_cat_pie_svg() {
 
 				$display_angle_as = sprintf("%.1f", $category_array[$c]['angle']);
 				
+				$link = admin_url('edit.php?category_name=' . $category_array[$c]['slug']);
+				
 				if (360 == $category_array[$c]['angle']) {
 					// If only one category exists make sure there is a green solid circle
-					$cat_pie_svg .= "<a $link xlink:title=\"{$category_array[$c]['catname']}, {$category_array[$c]['volume']} posts\"><circle class=\"segment\" cx='100' cy='100' r='100' fill='red'/></a>\n";
+					$cat_pie_svg .= "<a href='$link' xlink:title=\"{$category_array[$c]['catname']}, {$category_array[$c]['volume']} posts\"><circle class=\"sdpvs_segment\" cx='100' cy='100' r='100' fill='red'/></a>\n";
 				} else {
-					$cat_pie_svg .= "  <a $link xlink:title=\"{$category_array[$c]['catname']}, {$category_array[$c]['volume']} posts\"><path id=\"{$category_array[$c]['catname']}\" class=\"segment\" d=\"M$radius,$radius $startingline A$radius,$radius 0 $large,1 $newx,$newy z\" fill=\"$color\" stroke=\"black\" stroke-width=\"1\"  /></a>\n";
+					$cat_pie_svg .= "  <a href='$link' xlink:title=\"{$category_array[$c]['catname']}, {$category_array[$c]['volume']} posts\"><path id=\"{$category_array[$c]['catname']}\" class=\"sdpvs_segment\" d=\"M$radius,$radius $startingline A$radius,$radius 0 $large,1 $newx,$newy z\" fill=\"$color\" stroke=\"black\" stroke-width=\"1\"  /></a>\n";
 				}
 			}
 		}
@@ -315,33 +318,33 @@ function sdpvs_post_volume_stats_css() {
 	echo "
 	<style type='text/css'>
 	
-#leftcol {
+#sdpvs_leftcol {
 	width: 250px; 
 	display: inline-block; 
 	vertical-align: top;
 }
-#rightcol {
+#sdpvs_rightcol {
 	width: 50%; 
 	display: inline-block; 
 	vertical-align: top;
 }
 
-#leftcol p , #rightcol p {
+#sdpvs_leftcol p , #sdpvs_rightcol p {
 	text-align: left;
 }
 
 @media (max-width: 520px) {
-  #leftcol , #rightcol {
+  #sdpvs_leftcol , #sdpvs_rightcol {
     width: 100%;
     width: 100vw;
     display: block;
   }
 }
-.pie{ 
+.sdpvs_pie{ 
 	width: 200px; 
 	height: 200px; 
 } 
-a .segment:hover{ 
+a .sdpvs_segment:hover, a .sdpvs_bar:hover{ 
 	stroke:white; 
 	fill: green; 
 }
@@ -355,10 +358,10 @@ add_action('admin_head', 'sdpvs_post_volume_stats_css');
 // This appends comments to the content of each "single post".
 function sdpvs_post_volume_stats_assembled() {
 
-	$content = "<h1>Post Volume Stats</h1>\n";
-	$content .= "<p>These are your post stats.</p>\n";
+	$content = "<h1 class='sdpvs'>Post Volume Stats</h1>\n";
+	$content .= "<p class='sdpvs'>These are your post stats.</p>\n";
 
-	$content .= "<div id='leftcol'>";
+	$content .= "<div id='sdpvs_leftcol'>";
 	// graph
 	$content .= sdpvs_draw_year_svg();
 	// posts per year
@@ -366,7 +369,7 @@ function sdpvs_post_volume_stats_assembled() {
 
 	$content .= "</div>";
 
-	$content .= "<div id='rightcol'>";
+	$content .= "<div id='sdpvs_rightcol'>";
 	// posts per category pie chart
 	$content .= sdpvs_draw_cat_pie_svg();
 
@@ -395,6 +398,7 @@ add_action('admin_menu', 'sdpvs_register_custom_page_in_menu');
  * 2) Present the data better
  * 3) Separate CSS into a CSS file, if needed
  * 4) Split the methods up into different files for clarity, maybe
+ * 5) Make pie segments clickable
  *
  */
 ?>
