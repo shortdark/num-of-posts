@@ -1,14 +1,14 @@
 <?php
 /**
  * @package post-stats
- * @version 2.05
+ * @version 2.06
  */
 /*
  Plugin Name: Post Stats
  Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
- Version: 2.05
+ Version: 2.06
  Author URI: http://www.shortdark.net/
  */
 
