@@ -26,11 +26,14 @@ This section describes how to install the plugin and get it working.
 2. Activate the plugin through the 'Plugins' screen in WordPress
 3. The menu item "Post Volume Stats" should now be in your admin menu.
 
-== Screenshots ==
-
-1. screenshot-20160714.jpg
 
 == Changelog ==
+
+= 2.1.0 =
+
+* More security.
+* More OOP classes and split up into different files.
+* Changed admin page type to "read" as it does not have any need for user input and does not do anything.
 
 = 2.09 =
 
