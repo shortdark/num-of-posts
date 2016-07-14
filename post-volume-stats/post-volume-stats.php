@@ -48,7 +48,7 @@ define('WP_DEBUG_DISPLAY', false);
 // Add the CSS
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_css.php');
 
-// This appends comments to the content of each "single post".
+// This assembles the plugin page.
 function sdpvs_post_volume_stats_assembled() {
 
 	if (is_admin()) {
