@@ -16,6 +16,8 @@ category and tag.
 This is a simple plugin to look at the volume of posts per year and the volume of posts in each
 category and tag. It obviously works best if you have posts over multiple years, and if you use categories and tags.
 
+Go to [Shortdark](http://www.shortdark.net) for more information.
+
 == Installation ==
 
 This section describes how to install the plugin and get it working.
@@ -24,9 +26,15 @@ This section describes how to install the plugin and get it working.
 2. Activate the plugin through the 'Plugins' screen in WordPress
 3. The menu item "Post Volume Stats" should now be in your admin menu.
 
+== Screenshots ==
+
+1. screenshot-20160714.jpg
+
 == Changelog ==
 
 = 2.09 =
 
-1) Started changing to OOP.
-2) Tags added.
+* Started changing to OOP.
+* Tags added.
+
+
