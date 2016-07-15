@@ -1,14 +1,14 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 2.1.0
+ * @version 2.1.1
  */
 /*
  Plugin Name: Post Volume Stats
  Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
- Version: 2.1.0
+ Version: 2.1.1
  Author URI: http://www.shortdark.net/
  */
 
@@ -31,19 +31,18 @@ define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
  ** DEBUG
  ****************/
 
-// Turns WordPress debugging on
-define('WP_DEBUG', true);
+/*
+ // Turns WordPress debugging on
+ define('WP_DEBUG', true);
 
-// Tells WordPress to log everything to the /wp-content/debug.log file
-define('WP_DEBUG_LOG', true);
+ // Tells WordPress to log everything to the /wp-content/debug.log file
+ define('WP_DEBUG_LOG', true);
 
-// Doesn't force the PHP 'display_errors' variable to be on
-define('WP_DEBUG_DISPLAY', false);
+ // Doesn't force the PHP 'display_errors' variable to be on
+ define('WP_DEBUG_DISPLAY', false);
 
-// Hides errors from being displayed on-screen
-@ini_set('display_errors', 0);
-
-
+ // Hides errors from being displayed on-screen
+ @ini_set('display_errors', 0);*/
 
 // Add the CSS
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_css.php');
@@ -58,7 +57,7 @@ function sdpvs_post_volume_stats_assembled() {
 
 		require_once (SDPVS__PLUGIN_DIR . 'sdpvs_pie.php');
 		$sdpvs_pie = new sdpvs_post_volume_stats_pie();
-		
+
 		require_once (SDPVS__PLUGIN_DIR . 'sdpvs_lists.php');
 		$sdpvs_lists = new sdpvs_text_lists();
 
@@ -69,7 +68,7 @@ function sdpvs_post_volume_stats_assembled() {
 		// graph
 		$content .= $sdpvs_bar -> sdpvs_draw_year_svg();
 		// posts per year
-		$content .= $sdpvs_lists->sdpvs_number_of_posts_per_year();
+		$content .= $sdpvs_lists -> sdpvs_number_of_posts_per_year();
 
 		$content .= "</div>";
 
@@ -78,7 +77,7 @@ function sdpvs_post_volume_stats_assembled() {
 		$content .= $sdpvs_pie -> sdpvs_draw_pie_svg("category");
 
 		// posts per category
-		$content .= $sdpvs_lists->sdpvs_post_category_volumes();
+		$content .= $sdpvs_lists -> sdpvs_post_category_volumes();
 
 		$content .= "</div>";
 
@@ -87,7 +86,7 @@ function sdpvs_post_volume_stats_assembled() {
 		$content .= $sdpvs_pie -> sdpvs_draw_pie_svg("tag");
 
 		// posts per tag
-		$content .= $sdpvs_lists->sdpvs_post_tag_volumes();
+		$content .= $sdpvs_lists -> sdpvs_post_tag_volumes();
 
 		$content .= "</div>";
 	}
@@ -111,6 +110,10 @@ add_action('admin_menu', 'sdpvs_register_custom_page_in_menu');
  * 2) Present the data better
  * 3) I18n, write to the page using "translatable strings" in a __() function
  * 4) Plugin info, figure out how to improve the look and add images
+ * 5) Add settings.
+ * 6) More graphs.
  *
  */
+
+
 ?>

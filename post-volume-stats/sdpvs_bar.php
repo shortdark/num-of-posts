@@ -1,6 +1,8 @@
 <?php
 
 class sdpvs_bar_chart {
+
+	private $total_volume_of_posts = 0;
 	/*
 	 * NUMBER OF POSTS PER CATEGORY ARRAY
 	 */
@@ -15,6 +17,7 @@ class sdpvs_bar_chart {
 			$the_query = new WP_Query($args);
 			$year_array[$y]['year'] = $searchyear;
 			$year_array[$y]['volume'] = $the_query -> found_posts;
+			$this -> total_volume_of_posts += $the_query -> found_posts;
 			$y++;
 		}
 
@@ -32,9 +35,9 @@ class sdpvs_bar_chart {
 		$graphheight = 200;
 		$graph_color = "blue";
 
-		$year_svg = "<h2>Year Graph</h2>";
+		$year_svg = "<h2>Year Bar Chart</h2>";
 
-		$year_array = $this->sdpvs_assemble_year_data_in_array();
+		$year_array = $this -> sdpvs_assemble_year_data_in_array();
 
 		$y = 14;
 		while ($year_array[$y]['year']) {
@@ -57,7 +60,7 @@ class sdpvs_bar_chart {
 			$text_indent = ($bar_width / 2) - 2;
 		}
 
-		$year_svg .= "<p>Posts over the past $years_total years, including posts that are not public.</p>";
+		$year_svg .= "<p>$this->total_volume_of_posts posts over the past $years_total years, including posts that are not public.</p>";
 		$year_svg .= "<svg width=\"" . $graphwidth . "px\" height=\"" . $graphheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n";
 
 		for ($i = 0; $i <= $first_year; $i++) {
@@ -78,5 +81,4 @@ class sdpvs_bar_chart {
 	}
 
 }
-
 ?>

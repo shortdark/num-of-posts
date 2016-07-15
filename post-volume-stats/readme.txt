@@ -2,7 +2,7 @@
 === Post Volume Stats ===
 Contributors: shortdark
 Donate link: http://www.shortdark.net/
-Tags: posts, stats, categories
+Tags: posts, stats, categories, tags, simple, admin
 Tested up to: 4.5.3
 Stable tag: trunk
 License: GPLv2
@@ -28,6 +28,10 @@ This section describes how to install the plugin and get it working.
 
 
 == Changelog ==
+
+= 2.1.1 =
+
+* Added the total number of posts in yearly column.
 
 = 2.1.0 =
 
