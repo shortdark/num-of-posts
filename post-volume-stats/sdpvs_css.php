@@ -5,18 +5,18 @@ function sdpvs_post_volume_stats_css() {
 	echo "
 	<style type='text/css'>
 	
-#sdpvs_leftcol, #sdpvs_rightcol1, #sdpvs_rightcol2 {
+.sdpvs_col{
 	width: 250px; 
 	display: inline-block; 
 	vertical-align: top;
 }
 
-#sdpvs_leftcol p , #sdpvs_rightcol1 p, #sdpvs_rightcol2 p  {
+.sdpvs_col p {
 	text-align: left;
 }
 
 @media (max-width: 520px) {
-  #sdpvs_leftcol , #sdpvs_rightcol1 {
+  .sdpvs_col {
     width: 100%;
     width: 100vw;
     display: block;

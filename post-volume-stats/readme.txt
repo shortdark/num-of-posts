@@ -2,19 +2,20 @@
 === Post Volume Stats ===
 Contributors: shortdark
 Donate link: http://www.shortdark.net/
-Tags: posts, stats, categories, tags, simple, admin
+Tags: posts, stats, categories, tags, simple, admin, day, hour
+Requires at least: 3.7
 Tested up to: 4.5.3
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This is a simple plugin to look at the volume of posts per year and the volume of posts in each
-category and tag.
+Shows stats for the volume of posts per year, category, tag, day-of-the-week and hour-of-the-day.
 
 == Description ==
 
 This is a simple plugin to look at the volume of posts per year and the volume of posts in each
-category and tag. It obviously works best if you have posts over multiple years, and if you use categories and tags.
+category and tag. It works best if you have posts over multiple years, and if you use categories and tags.
+It also shows the hours of the day and day of the week posts are made on.
 
 Go to [Shortdark](http://www.shortdark.net) for more information.
 
@@ -28,6 +29,12 @@ This section describes how to install the plugin and get it working.
 
 
 == Changelog ==
+
+= 2.1.2 =
+
+* Added bar charts for day-of-the-week and hour-of-the-day.
+* Simplified the CSS to allow for easy additional columns.
+* Calculated the "requires at least" from the Wordpress functions used.
 
 = 2.1.1 =
 

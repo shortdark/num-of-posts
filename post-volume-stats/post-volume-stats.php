@@ -1,16 +1,20 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 2.1.1
+ * @version 2.1.2
  */
 /*
  Plugin Name: Post Volume Stats
  Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
- Version: 2.1.1
+ Version: 2.1.2
  Author URI: http://www.shortdark.net/
  */
+
+/**************************
+ ** PREVENT DIRECT ACCESS
+ **************************/
 
 defined('ABSPATH') or die('No script kiddies please!');
 
@@ -25,6 +29,10 @@ if (!function_exists('add_action')) {
 	exit();
 }
 
+/****************
+ ** DEFINE
+ ****************/
+
 define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 /****************
@@ -32,17 +40,22 @@ define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
  ****************/
 
 /*
- // Turns WordPress debugging on
- define('WP_DEBUG', true);
+// Turns WordPress debugging on
+define('WP_DEBUG', true);
 
- // Tells WordPress to log everything to the /wp-content/debug.log file
- define('WP_DEBUG_LOG', true);
+// Tells WordPress to log everything to the /wp-content/debug.log file
+define('WP_DEBUG_LOG', true);
 
- // Doesn't force the PHP 'display_errors' variable to be on
- define('WP_DEBUG_DISPLAY', false);
+// Doesn't force the PHP 'display_errors' variable to be on
+define('WP_DEBUG_DISPLAY', false);
 
- // Hides errors from being displayed on-screen
- @ini_set('display_errors', 0);*/
+// Hides errors from being displayed on-screen
+@ini_set('display_errors', 0);
+*/
+
+/******************
+ ** SETUP THE PAGE
+ ******************/
 
 // Add the CSS
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_css.php');
@@ -64,15 +77,15 @@ function sdpvs_post_volume_stats_assembled() {
 		$content = "<h1 class='sdpvs'>Post Volume Stats</h1>\n";
 		$content .= "<p class='sdpvs'>These are your post stats.</p>\n";
 
-		$content .= "<div id='sdpvs_leftcol'>";
+		$content .= "<div class='sdpvs_col'>";
 		// graph
-		$content .= $sdpvs_bar -> sdpvs_draw_year_svg();
+		$content .= $sdpvs_bar -> sdpvs_draw_bar_chart_svg("year");
 		// posts per year
 		$content .= $sdpvs_lists -> sdpvs_number_of_posts_per_year();
 
 		$content .= "</div>";
 
-		$content .= "<div id='sdpvs_rightcol1'>";
+		$content .= "<div class='sdpvs_col'>";
 		// posts per category pie chart
 		$content .= $sdpvs_pie -> sdpvs_draw_pie_svg("category");
 
@@ -81,7 +94,7 @@ function sdpvs_post_volume_stats_assembled() {
 
 		$content .= "</div>";
 
-		$content .= "<div id='sdpvs_rightcol2'>";
+		$content .= "<div class='sdpvs_col'>";
 		// posts per tag pie chart
 		$content .= $sdpvs_pie -> sdpvs_draw_pie_svg("tag");
 
@@ -89,6 +102,24 @@ function sdpvs_post_volume_stats_assembled() {
 		$content .= $sdpvs_lists -> sdpvs_post_tag_volumes();
 
 		$content .= "</div>";
+		$content .= "<div class='sdpvs_col'>";
+		// posts per tag pie chart
+		$content .= $sdpvs_bar -> sdpvs_draw_bar_chart_svg("dayofweek");
+
+		// posts per tag
+		$content .= $sdpvs_lists -> sdpvs_number_of_posts_per_dayofweek();
+
+		$content .= "</div>";
+
+		$content .= "<div class='sdpvs_col'>";
+		// posts per tag pie chart
+		$content .= $sdpvs_bar -> sdpvs_draw_bar_chart_svg("hour");
+
+		// posts per tag
+		$content .= $sdpvs_lists -> sdpvs_number_of_posts_per_hour();
+
+		$content .= "</div>";
+
 	}
 
 	echo $content;
@@ -100,20 +131,4 @@ function sdpvs_register_custom_page_in_menu() {
 }
 
 add_action('admin_menu', 'sdpvs_register_custom_page_in_menu');
-
-/****************
- ** TODO
- ****************/
-
-/*
- * 1) Better use of classes to neaten up and minimize duplication of code
- * 2) Present the data better
- * 3) I18n, write to the page using "translatable strings" in a __() function
- * 4) Plugin info, figure out how to improve the look and add images
- * 5) Add settings.
- * 6) More graphs.
- *
- */
-
-
 ?>
