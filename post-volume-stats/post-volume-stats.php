@@ -1,14 +1,14 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 2.1.2
+ * @version 2.1.4
  */
 /*
  Plugin Name: Post Volume Stats
  Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
- Version: 2.1.2
+ Version: 2.1.4
  Author URI: http://www.shortdark.net/
  */
 
@@ -64,6 +64,8 @@ require_once (SDPVS__PLUGIN_DIR . 'sdpvs_css.php');
 function sdpvs_post_volume_stats_assembled() {
 
 	if (is_admin()) {
+		
+		require_once (SDPVS__PLUGIN_DIR . 'sdpvs_arrays.php');
 
 		require_once (SDPVS__PLUGIN_DIR . 'sdpvs_bar.php');
 		$sdpvs_bar = new sdpvs_bar_chart();
@@ -81,7 +83,7 @@ function sdpvs_post_volume_stats_assembled() {
 		// graph
 		$content .= $sdpvs_bar -> sdpvs_draw_bar_chart_svg("year");
 		// posts per year
-		$content .= $sdpvs_lists -> sdpvs_number_of_posts_per_year();
+		$content .= $sdpvs_lists -> sdpvs_posts_per_year_list();
 
 		$content .= "</div>";
 
@@ -90,7 +92,7 @@ function sdpvs_post_volume_stats_assembled() {
 		$content .= $sdpvs_pie -> sdpvs_draw_pie_svg("category");
 
 		// posts per category
-		$content .= $sdpvs_lists -> sdpvs_post_category_volumes();
+		$content .= $sdpvs_lists -> sdpvs_posts_per_category_list();
 
 		$content .= "</div>";
 
@@ -99,7 +101,7 @@ function sdpvs_post_volume_stats_assembled() {
 		$content .= $sdpvs_pie -> sdpvs_draw_pie_svg("tag");
 
 		// posts per tag
-		$content .= $sdpvs_lists -> sdpvs_post_tag_volumes();
+		$content .= $sdpvs_lists -> sdpvs_posts_per_tag_list();
 
 		$content .= "</div>";
 		$content .= "<div class='sdpvs_col'>";
@@ -107,7 +109,7 @@ function sdpvs_post_volume_stats_assembled() {
 		$content .= $sdpvs_bar -> sdpvs_draw_bar_chart_svg("dayofweek");
 
 		// posts per tag
-		$content .= $sdpvs_lists -> sdpvs_number_of_posts_per_dayofweek();
+		$content .= $sdpvs_lists -> sdpvs_posts_per_dayofweek_list();
 
 		$content .= "</div>";
 
@@ -116,7 +118,7 @@ function sdpvs_post_volume_stats_assembled() {
 		$content .= $sdpvs_bar -> sdpvs_draw_bar_chart_svg("hour");
 
 		// posts per tag
-		$content .= $sdpvs_lists -> sdpvs_number_of_posts_per_hour();
+		$content .= $sdpvs_lists -> sdpvs_posts_per_hour_list();
 
 		$content .= "</div>";
 

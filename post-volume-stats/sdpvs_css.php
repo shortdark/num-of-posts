@@ -9,6 +9,7 @@ function sdpvs_post_volume_stats_css() {
 	width: 250px; 
 	display: inline-block; 
 	vertical-align: top;
+	padding: 5px;
 }
 
 .sdpvs_col p {

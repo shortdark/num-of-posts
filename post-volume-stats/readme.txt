@@ -2,7 +2,7 @@
 === Post Volume Stats ===
 Contributors: shortdark
 Donate link: http://www.shortdark.net/
-Tags: posts, stats, categories, tags, simple, admin, day, hour
+Tags: posts, stats, categories, tags, simple, admin, day, hour, graph, graphs
 Requires at least: 3.7
 Tested up to: 4.5.3
 Stable tag: trunk
@@ -27,8 +27,22 @@ This section describes how to install the plugin and get it working.
 2. Activate the plugin through the 'Plugins' screen in WordPress
 3. The menu item "Post Volume Stats" should now be in your admin menu.
 
+== Screenshots ==
+
+Here are the latest screenshots...
+
+1. Shows the stats on a very simple blog with not many posts.
+
 
 == Changelog ==
+
+= 2.1.4 =
+
+* Changed the way the info is gathered, meaning that the year. Hour and day-of-week data should now be correct, whereas before it was incorrect.
+
+= 2.1.3 =
+
+* Re-ordered the data in the pie charts into size order.
 
 = 2.1.2 =
 
