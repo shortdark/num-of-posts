@@ -32,7 +32,7 @@ class sdpvs_arrays {
 	 */
 	protected function sdpvs_post_category_volumes() {
 		global $wpdb;
-		$cats = $wpdb -> get_results("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = 'category'");
+		$cats = $wpdb -> get_results("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = 'category' ORDER BY count DESC ");
 		$c = 0;
 		foreach ($cats as $category) {
 			$catinfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $category -> term_id));
@@ -51,7 +51,7 @@ class sdpvs_arrays {
 	 */
 	protected function sdpvs_post_tag_volumes() {
 		global $wpdb;
-		$taglist = $wpdb -> get_results("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = 'post_tag'");
+		$taglist = $wpdb -> get_results("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = 'post_tag' ORDER BY count DESC ");
 		$t = 0;
 		foreach ($taglist as $tag) {
 			$taginfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $tag -> term_id));
