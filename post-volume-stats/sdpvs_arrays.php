@@ -69,16 +69,18 @@ class sdpvs_arrays {
 	 * NUMBER OF POSTS PER DAY-OF-WEEK
 	 */
 	protected function sdpvs_number_of_posts_per_dayofweek() {
-		for($w=0;$w<=6;$w++){
-			$this -> dow_array[$w]['title'] = jddayofweek($w, 1);
+		$days_of_week = array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
+		for ($w = 0; $w <= 6; $w++) {
+			$this -> dow_array[$w]['title'] = $days_of_week[$w];
 		}
 		global $wpdb;
-		$posts = $wpdb -> get_results("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' ");
-		foreach ($posts as $post) {
-			$year = substr($post -> post_date, 0, 4);
-			$month = substr($post -> post_date, 5, 2);
-			$day = substr($post -> post_date, 8, 2);
-			$d = date("w", mktime(0, 0, 0, $month, $day, $year));
+		$myblogitems = $wpdb -> get_results("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' ");
+		foreach ($myblogitems as $dowpost) {
+			$year = substr($dowpost -> post_date, 0, 4);
+			$month = substr($dowpost -> post_date, 5, 2);
+			$day = substr($dowpost -> post_date, 8, 2);
+			$tempdate = mktime(0, 0, 0, $month, $day, $year);
+			$d = date("w", $tempdate);
 			$this -> dow_array[$d]['volume']++;
 		}
 		$wpdb -> flush();

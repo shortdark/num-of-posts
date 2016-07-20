@@ -3,7 +3,7 @@
 Contributors: shortdark
 Donate link: http://www.shortdark.net/
 Tags: posts, stats, categories, tags, simple, admin, day, hour, graph, graphs
-Requires at least: 3.7
+Requires at least: 3.5
 Tested up to: 4.5.3
 Stable tag: trunk
 License: GPLv2
@@ -35,6 +35,22 @@ Here are the latest screenshots...
 
 
 == Changelog ==
+
+= 2.1.8 =
+
+* Removed jddayofweek completely as it was not working properly.
+
+= 2.1.7 =
+
+* Removed PHP function jddayofweek for PHP versions below 5.3 as was not working on 5.2.17
+
+= 2.1.6 =
+
+* Removed the Day of the Week section for PHP vesions below 5.3 as that part was not working on a 5.2 version of PHP.
+
+= 2.1.5 =
+
+* Removed the magic variable __DIR__ that limited the plugin to PHP versions 5.3 and above.
 
 = 2.1.4 =
 

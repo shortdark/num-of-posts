@@ -1,14 +1,14 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 2.1.4
+ * @version 2.1.8
  */
 /*
  Plugin Name: Post Volume Stats
  Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
- Version: 2.1.4
+ Version: 2.1.8
  Author URI: http://www.shortdark.net/
  */
 
@@ -40,18 +40,18 @@ define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
  ****************/
 
 /*
-// Turns WordPress debugging on
-define('WP_DEBUG', true);
+ // Turns WordPress debugging on
+ define('WP_DEBUG', true);
 
-// Tells WordPress to log everything to the /wp-content/debug.log file
-define('WP_DEBUG_LOG', true);
+ // Tells WordPress to log everything to the /wp-content/debug.log file
+ define('WP_DEBUG_LOG', true);
 
-// Doesn't force the PHP 'display_errors' variable to be on
-define('WP_DEBUG_DISPLAY', false);
+ // Doesn't force the PHP 'display_errors' variable to be on
+ define('WP_DEBUG_DISPLAY', false);
 
-// Hides errors from being displayed on-screen
-@ini_set('display_errors', 0);
-*/
+ // Hides errors from being displayed on-screen
+ @ini_set('display_errors', 0);
+ */
 
 /******************
  ** SETUP THE PAGE
@@ -64,7 +64,7 @@ require_once (SDPVS__PLUGIN_DIR . 'sdpvs_css.php');
 function sdpvs_post_volume_stats_assembled() {
 
 	if (is_admin()) {
-		
+
 		require_once (SDPVS__PLUGIN_DIR . 'sdpvs_arrays.php');
 
 		require_once (SDPVS__PLUGIN_DIR . 'sdpvs_bar.php');
@@ -77,7 +77,7 @@ function sdpvs_post_volume_stats_assembled() {
 		$sdpvs_lists = new sdpvs_text_lists();
 
 		$content = "<h1 class='sdpvs'>Post Volume Stats</h1>\n";
-		$content .= "<p class='sdpvs'>These are your post stats.</p>\n";
+		$content .= "<p class='sdpvs'>These are the post volume stats for " . get_bloginfo('name') . ".</p>\n";
 
 		$content .= "<div class='sdpvs_col'>";
 		// graph
@@ -105,19 +105,19 @@ function sdpvs_post_volume_stats_assembled() {
 
 		$content .= "</div>";
 		$content .= "<div class='sdpvs_col'>";
-		// posts per tag pie chart
+
+		// posts per day of the week bar chart
 		$content .= $sdpvs_bar -> sdpvs_draw_bar_chart_svg("dayofweek");
 
-		// posts per tag
+		// posts per day of the week
 		$content .= $sdpvs_lists -> sdpvs_posts_per_dayofweek_list();
-
 		$content .= "</div>";
 
 		$content .= "<div class='sdpvs_col'>";
-		// posts per tag pie chart
+		// posts per hour of the day pie chart
 		$content .= $sdpvs_bar -> sdpvs_draw_bar_chart_svg("hour");
 
-		// posts per tag
+		// posts per hour of the day
 		$content .= $sdpvs_lists -> sdpvs_posts_per_hour_list();
 
 		$content .= "</div>";
@@ -129,7 +129,7 @@ function sdpvs_post_volume_stats_assembled() {
 
 // Register a custom menu page in the admin.
 function sdpvs_register_custom_page_in_menu() {
-	add_menu_page(__('Post Volume Stats', 'textdomain'), 'Post Volume Stats', 'read', __DIR__, 'sdpvs_post_volume_stats_assembled', plugins_url('images/post-volume-stats-16x16.png', __FILE__), 1000);
+	add_menu_page(__('Post Volume Stats', 'textdomain'), 'Post Volume Stats', 'read', dirname(__FILE__), 'sdpvs_post_volume_stats_assembled', plugins_url('images/post-volume-stats-16x16.png', __FILE__), 1000);
 }
 
 add_action('admin_menu', 'sdpvs_register_custom_page_in_menu');
