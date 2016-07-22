@@ -105,6 +105,73 @@ class sdpvs_arrays {
 		$wpdb -> flush();
 		return;
 	}
+	
+	
+	
+	
+	/*
+	 * NUMBER OF POSTS PER MONTH
+	 */
+	protected function sdpvs_number_of_posts_per_month() {
+		$months_of_year = array("January", "February", "March", "April", "May", "June", "July","August","September","October","November","December");
+		for ($w = 0; $w < 12; $w++) {
+			$this -> month_array[$w]['title'] = $months_of_year[$w];
+		}
+		global $wpdb;
+		for ($i = 0; $i < 12; $i++) {
+			$j = $i+1;
+			$searchmonth = sprintf("%02s", $j);
+			$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '%-$searchmonth-%' ");
+			if (0 > $found_posts or !$found_posts or "" == $found_posts) {
+				$found_posts = 0;
+			}
+			$this -> month_array[$i]['volume'] = $found_posts;
+		}
+		$wpdb -> flush();
+		return;
+	}
+	
+	
+	/*
+	 * NUMBER OF POSTS PER DAY-OF-THE-MONTH
+	 */
+	protected function sdpvs_number_of_posts_per_dayofmonth() {
+		global $wpdb;
+		for ($i = 0; $i < 31; $i++) {
+			$j = $i+1;
+			$searchday = sprintf("%02s", $j);
+			$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '%-$searchday %' ");
+			if (0 > $found_posts or !$found_posts or "" == $found_posts) {
+				$found_posts = 0;
+			}
+			$this -> dom_array[$i]['title'] = $searchday;
+			$this -> dom_array[$i]['volume'] = $found_posts;
+		}
+		$wpdb -> flush();
+		return;
+	}
+	
+	/*
+	 * FIND HIGHEST, FIRST AND TOTAL VOLUME VALUES
+	 */
+	function find_highest_first_and_total($testarray) {
+		$this -> highest_val = 0;
+		$this -> first_val = 0;
+		$this -> total_volume_of_posts = 0;
+		$i = 0;
+		while ($testarray[$i]['title']) {
+			$this -> total_volume_of_posts += $testarray[$i]['volume'];
+			if (0 < $testarray[$i]['volume'] and $this -> highest_val < $testarray[$i]['volume']) {
+				$this -> highest_val = $testarray[$i]['volume'];
+			}
+			if (0 < $testarray[$i]['volume']) {
+				$this -> first_val = $i;
+			}
+			$i++;
+		}
+
+		return;
+	}
 
 	function __construct() {
 

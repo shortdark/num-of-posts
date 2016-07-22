@@ -88,16 +88,16 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 			$pie_array = $this -> category_array;
 			$total_volume = $this -> total_category_posts;
 			$number_of_containers = $this -> number_of_categories;
-			$pie_svg = "<h2>Category Pie Chart</h2>";
-			$pie_svg .= "<p>$number_of_containers categories. Total volume of active posts (posts with multiple categories are counted multiple times) = $total_volume</p>";
+			$pie_svg = "<h2>Categories</h2>";
+			// $pie_svg .= "<p>$number_of_containers categories. Total volume of active posts (posts with multiple categories are counted multiple times) = $total_volume</p>";
 			$link_part = "category_name";
 		} elseif ("tag" == $type) {
 			$this -> sdpvs_add_to_tag_array();
 			$total_volume = $this -> total_tag_posts;
 			$pie_array = $this -> tag_array;
 			$number_of_containers = $this -> number_of_tags;
-			$pie_svg = "<h2>Tag Pie Chart</h2>";
-			$pie_svg .= "<p>$number_of_containers tags. Total volume of active posts (posts with multiple tags are counted multiple times) = $total_volume</p>";
+			$pie_svg = "<h2>Tags</h2>";
+			// $pie_svg .= "<p>$number_of_containers tags. Total volume of active posts (posts with multiple tags are counted multiple times) = $total_volume</p>";
 			$link_part = "tag";
 		}
 
@@ -144,6 +144,8 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 			$c++;
 		}
 		$pie_svg .= "</svg>\n";
+		$pie_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$type'><input type='submit' id='sdpvs_load_content' class='button-primary' value='Show Data'></form></p>";
+		
 		return $pie_svg;
 	}
 

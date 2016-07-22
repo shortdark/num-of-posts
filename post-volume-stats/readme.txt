@@ -36,6 +36,12 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 2.2.1 =
+
+* "lists" moved out of the page and into AJAX DIVs with loading animation
+* CSS loaded as a .css file, instead of in-line
+* Months and days-of-the-month added.
+
 = 2.1.8 =
 
 * Removed jddayofweek completely as it was not working properly.

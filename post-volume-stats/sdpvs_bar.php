@@ -2,33 +2,11 @@
 
 class sdpvs_bar_chart extends sdpvs_arrays {
 
-	private $total_volume_of_posts;
+	protected $total_volume_of_posts;
 
-	private $first_val;
+	protected $first_val;
 
-	private $highest_val;
-
-	/*
-	 * FIND HIGHEST, FIRST AND TOTAL VOLUME VALUES
-	 */
-	function find_highest_first_and_total($testarray) {
-		$this -> highest_val = 0;
-		$this -> first_val = 0;
-		$this -> total_volume_of_posts = 0;
-		$i = 0;
-		while ($testarray[$i]['title']) {
-			$this -> total_volume_of_posts += $testarray[$i]['volume'];
-			if (0 < $testarray[$i]['volume'] and $this -> highest_val < $testarray[$i]['volume']) {
-				$this -> highest_val = $testarray[$i]['volume'];
-			}
-			if (0 < $testarray[$i]['volume']) {
-				$this -> first_val = $i;
-			}
-			$i++;
-		}
-
-		return;
-	}
+	protected $highest_val;
 
 	/**
 	 * DISPLAY DATA IN A BAR CHART
@@ -44,27 +22,38 @@ class sdpvs_bar_chart extends sdpvs_arrays {
 		if ("year" == $which) {
 			parent::sdpvs_number_of_posts_per_year();
 			$chart_array = $this -> year_array;
-			$this -> find_highest_first_and_total($chart_array);
+			parent::find_highest_first_and_total($chart_array);
 			$bars_total = $this -> first_val + 1;
 			$order = "desc";
-			$bar_svg = "<h2>Year Bar Chart</h2>";
-			$bar_svg .= "<p>$this->total_volume_of_posts posts over the past $bars_total years.</p>";
+			$bar_svg = "<h2>Years</h2>";
 		} elseif ("dayofweek" == $which) {
 			parent::sdpvs_number_of_posts_per_dayofweek();
 			$chart_array = $this -> dow_array;
-			$this -> find_highest_first_and_total($chart_array);
+			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 7;
 			$order = "asc";
 			$bar_svg = "<h2>Days of the Week</h2>";
-			$bar_svg .= "<p>Which day of the week the $this->total_volume_of_posts posts were made on.</p>";
 		} elseif ("hour" == $which) {
 			parent::sdpvs_number_of_posts_per_hour();
 			$chart_array = $this -> hour_array;
-			$this -> find_highest_first_and_total($chart_array);
+			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 24;
 			$order = "asc";
 			$bar_svg = "<h2>Hours</h2>";
-			$bar_svg .= "<p>Which hour of the day the $this->total_volume_of_posts posts were made on.</p>";
+		} elseif ("month" == $which) {
+			parent::sdpvs_number_of_posts_per_month();
+			$chart_array = $this -> month_array;
+			parent::find_highest_first_and_total($chart_array);
+			$bars_total = 12;
+			$order = "asc";
+			$bar_svg = "<h2>Months</h2>";
+		} elseif ("dayofmonth" == $which) {
+			parent::sdpvs_number_of_posts_per_dayofmonth();
+			$chart_array = $this -> dom_array;
+			parent::find_highest_first_and_total($chart_array);
+			$bars_total = 31;
+			$order = "asc";
+			$bar_svg = "<h2>Days of the Month</h2>";
 		}
 
 		$bar_width = intval($graphwidth / $bars_total);
@@ -91,6 +80,8 @@ class sdpvs_bar_chart extends sdpvs_arrays {
 		}
 
 		$bar_svg .= "</svg>\n";
+		$bar_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$which'><input type='submit' id='sdpvs_load_content' class='button-primary' value='Show Data'></form></p>";
+
 		return $bar_svg;
 	}
 
