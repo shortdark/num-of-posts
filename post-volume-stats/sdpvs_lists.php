@@ -7,8 +7,9 @@ class sdpvs_text_lists extends sdpvs_arrays {
 	function sdpvs_posts_per_year_list() {
 		parent::sdpvs_number_of_posts_per_year();
 		parent::find_highest_first_and_total($this->year_array);
+		$number_of_years = $this -> first_val + 1;
 		$posts_per_year = "<h2>Post Volumes per Year</h2>";
-		$posts_per_year .= "<p>$this->total_volume_of_posts posts over the past $bars_total years.</p>";
+		$posts_per_year .= "<p>$this->total_volume_of_posts posts over the past $number_of_years years.</p>";
 		$i = 0;
 		while ($this -> year_array[$i]['title']) {
 			if (0 < $this -> year_array[$i]['volume']) {
@@ -93,7 +94,7 @@ class sdpvs_text_lists extends sdpvs_arrays {
 			if (!$this -> month_array[$i]['volume']) {
 				$this -> month_array[$i]['volume'] = 0;
 			}
-			$posts_per_month .= "{$this->month_array[$i]['title']}: {$this->month_array[$i]['volume']} posts<br>\n";
+			$posts_per_month .= __("<p>".$this->month_array[$i]['title'].": ".$this->month_array[$i]['volume']." posts</p>", 'post-volume-stats');
 		}
 		return $posts_per_month;
 	}

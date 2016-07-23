@@ -2,7 +2,7 @@ jQuery(document).ready(function($) {
 
 	$(".sdpvs_form").submit(function(e) {
 		$("#sdpvs_loading").show();
-		$("#sdpvs_load_content").attr('disabled', true);
+		$(".sdpvs_load_content").attr('disabled', true);
 		
 		// Serialize the form data
 		var sdpvs_buttondata = $(this).serialize();
@@ -17,7 +17,7 @@ jQuery(document).ready(function($) {
 			$('#sdpvs_listcontent').html(response);
 			$("#sdpvs_listcontent").show();
 			$("#sdpvs_loading").hide();
-			$("#sdpvs_load_content").attr('disabled', false);
+			$(".sdpvs_load_content").attr('disabled', false);
 		});
 		return false;
 	});

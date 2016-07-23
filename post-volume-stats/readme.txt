@@ -37,6 +37,12 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 2.2.3 =
+
+* Loaded external jQuery UI draggable the proper way using script-loader.php
+* Limited the height of the lists to smaller than the height of the window
+* Fixed the number of years bug on the years list
+
 = 2.2.2 =
 
 * Added JQuery UI.

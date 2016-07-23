@@ -80,7 +80,7 @@ class sdpvs_bar_chart extends sdpvs_arrays {
 		}
 
 		$bar_svg .= "</svg>\n";
-		$bar_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$which'><input type='submit' id='sdpvs_load_content' class='button-primary' value='Show Data'></form></p>";
+		$bar_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form></p>";
 
 		return $bar_svg;
 	}

@@ -144,7 +144,7 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 			$c++;
 		}
 		$pie_svg .= "</svg>\n";
-		$pie_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$type'><input type='submit' id='sdpvs_load_content' class='button-primary' value='Show Data'></form></p>";
+		$pie_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$type'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form></p>";
 		
 		return $pie_svg;
 	}

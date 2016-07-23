@@ -40,8 +40,10 @@ a .sdpvs_segment:hover, a .sdpvs_bar:hover{
 	left: 45%;
 	border: 1px solid black;
 	height: auto;
+	max-height: 90%;
 	width: 250px;
 	background: rgba( 255, 255, 255, .8 );
+	overflow-y: scroll;
 }
 
 @media (max-width: 1000px) {
@@ -61,7 +63,9 @@ a .sdpvs_segment:hover, a .sdpvs_bar:hover{
 }
 @media (max-width: 450px) {
 		#sdpvs_listcontent {
+			top: 0;
 			left: 10%;
+			background: rgba( 255, 255, 255, .9 );
 		}
 }
 
