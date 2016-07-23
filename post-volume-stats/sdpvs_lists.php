@@ -24,7 +24,7 @@ class sdpvs_text_lists extends sdpvs_arrays {
 	 */
 	function sdpvs_posts_per_category_list() {
 		parent::sdpvs_post_category_volumes();
-		$posts_per_category = "<h2>Post Volumes per Category!</h2>";
+		$posts_per_category = __("<h2>Post Volumes per Category!</h2>", 'post-volume-stats');
 		$c = 0;
 		while ($this -> category_array[$c]['id']) {
 			if (0 < $this -> category_array[$c]['volume']) {
@@ -40,7 +40,7 @@ class sdpvs_text_lists extends sdpvs_arrays {
 	 */
 	function sdpvs_posts_per_tag_list() {
 		parent::sdpvs_post_tag_volumes();
-		$posts_per_tag = "<h2>Post Volumes per Tag!</h2>";
+		$posts_per_tag = __("<h2>Post Volumes per Tag!</h2>", 'post-volume-stats');
 		$t = 0;
 		while ($this -> tag_array[$t]['id']) {
 			if (0 < $this -> tag_array[$t]['volume']) {
@@ -57,7 +57,7 @@ class sdpvs_text_lists extends sdpvs_arrays {
 	function sdpvs_posts_per_dayofweek_list() {
 		parent::sdpvs_number_of_posts_per_dayofweek();
 		parent::find_highest_first_and_total($this->dow_array);
-		$posts_per_dow = "<h2>Post Volumes per Day of the Week</h2>";
+		$posts_per_dow = __("<h2>Post Volumes per Day of the Week</h2>", 'post-volume-stats');
 		$posts_per_dow .= "<p>Which day of the week the $this->total_volume_of_posts posts were made on.</p>";
 		for ($i = 0; $i <= 6; $i++) {
 			if (!$this -> dow_array[$i]['volume']) {
@@ -75,7 +75,7 @@ class sdpvs_text_lists extends sdpvs_arrays {
 	function sdpvs_posts_per_hour_list() {
 		parent::sdpvs_number_of_posts_per_hour();
 		parent::find_highest_first_and_total($this->hour_array);
-		$posts_per_hour = "<h2>Post Volumes per Hour</h2>";
+		$posts_per_hour = __("<h2>Post Volumes per Hour</h2>", 'post-volume-stats');
 		$posts_per_hour .= "<p>Which hour of the day the $this->total_volume_of_posts posts were made on.</p>";
 		for ($i = 0; $i <= 23; $i++) {
 			$posts_per_hour .= "{$this->hour_array[$i]['title']}: {$this->hour_array[$i]['volume']} posts<br>\n";
@@ -88,7 +88,7 @@ class sdpvs_text_lists extends sdpvs_arrays {
 	 */
 	function sdpvs_posts_per_month_list() {
 		parent::sdpvs_number_of_posts_per_month();
-		$posts_per_month = "<h2>Post Volumes per Month</h2>";
+		$posts_per_month = __("<h2>Post Volumes per Month</h2>", 'post-volume-stats');
 		for ($i = 0; $i < 12; $i++) {
 			if (!$this -> month_array[$i]['volume']) {
 				$this -> month_array[$i]['volume'] = 0;
@@ -103,7 +103,7 @@ class sdpvs_text_lists extends sdpvs_arrays {
 	 */
 	function sdpvs_posts_per_day_of_month_list() {
 		parent::sdpvs_number_of_posts_per_dayofmonth();
-		$posts_per_dom .= "<h2>Post Volumes per Day of the Month</h2>";
+		$posts_per_dom .= __("<h2>Post Volumes per Day of the Month</h2>", 'post-volume-stats');
 		for ($i = 0; $i < 31; $i++) {
 			if (!$this -> dom_array[$i]['volume']) {
 				$this -> dom_array[$i]['volume'] = 0;

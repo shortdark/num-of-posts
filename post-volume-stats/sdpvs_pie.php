@@ -88,7 +88,7 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 			$pie_array = $this -> category_array;
 			$total_volume = $this -> total_category_posts;
 			$number_of_containers = $this -> number_of_categories;
-			$pie_svg = "<h2>Categories</h2>";
+			$pie_svg = __("<h2>Categories</h2>", 'post-volume-stats');
 			// $pie_svg .= "<p>$number_of_containers categories. Total volume of active posts (posts with multiple categories are counted multiple times) = $total_volume</p>";
 			$link_part = "category_name";
 		} elseif ("tag" == $type) {
@@ -96,7 +96,7 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 			$total_volume = $this -> total_tag_posts;
 			$pie_array = $this -> tag_array;
 			$number_of_containers = $this -> number_of_tags;
-			$pie_svg = "<h2>Tags</h2>";
+			$pie_svg = __("<h2>Tags</h2>", 'post-volume-stats');;
 			// $pie_svg .= "<p>$number_of_containers tags. Total volume of active posts (posts with multiple tags are counted multiple times) = $total_volume</p>";
 			$link_part = "tag";
 		}

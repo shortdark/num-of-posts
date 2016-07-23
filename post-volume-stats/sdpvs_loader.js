@@ -1,12 +1,11 @@
 jQuery(document).ready(function($) {
-	
+
 	$(".sdpvs_form").submit(function(e) {
 		$("#sdpvs_loading").show();
 		$("#sdpvs_load_content").attr('disabled', true);
-
+		
+		// Serialize the form data
 		var sdpvs_buttondata = $(this).serialize();
-		// var whichdata = $(this).val("whichdata");
-		// alert(whichdata);
 
 		var data = {
 			action : "sdpvs_get_results",
@@ -21,7 +20,6 @@ jQuery(document).ready(function($) {
 			$("#sdpvs_load_content").attr('disabled', false);
 		});
 		return false;
-
 	});
 
 	$(document).mouseup(function(e) {
@@ -32,5 +30,11 @@ jQuery(document).ready(function($) {
 			container.hide();
 		}
 	});
+	
+	// Simple way to make the box draggable using jQuery UI...
+	$(function() {
+		$("#sdpvs_listcontent").draggable();
+	});
+
 
 });

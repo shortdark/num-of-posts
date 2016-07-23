@@ -2,7 +2,7 @@
 === Post Volume Stats ===
 Contributors: shortdark
 Donate link: http://www.shortdark.net/
-Tags: posts, stats, categories, tags, simple, admin, day, hour, graph, graphs
+Tags: posts, stats, categories, tags, simple, admin, year, month, day, hour, graph, graphs, charts
 Requires at least: 3.5
 Tested up to: 4.5.3
 Stable tag: trunk
@@ -13,9 +13,9 @@ Shows stats for the volume of posts per year, category, tag, day-of-the-week and
 
 == Description ==
 
-This is a simple plugin to look at the volume of posts per year and the volume of posts in each
-category and tag. It works best if you have posts over multiple years, and if you use categories and tags.
-It also shows the hours of the day and day of the week posts are made on.
+This is a simple plugin to look at the volume of posts in each category and tag, and also the volume 
+of posts per year, month, day-of-the-month, day-of-the-week and hour. It works better the more posts 
+you have, and if you use categories and tags.
 
 Go to [Shortdark](http://www.shortdark.net) for more information.
 
@@ -33,8 +33,16 @@ Here are the latest screenshots...
 
 1. Shows the stats on a very simple blog with not many posts.
 
+2. Shows the draggable AJAX data lists, and highlighted bar of a bar chart.
 
 == Changelog ==
+
+= 2.2.2 =
+
+* Added JQuery UI.
+* AJAX DIVs are now draggable.
+* Updated readme.txt description.
+* More text changed to translatable strings.
 
 = 2.2.1 =
 

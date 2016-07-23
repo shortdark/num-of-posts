@@ -1,14 +1,14 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 2.2.1
+ * @version 2.2.2
  */
 /*
  Plugin Name: Post Volume Stats
  Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
- Version: 2.2.1
+ Version: 2.2.2
  Author URI: http://www.shortdark.net/
  */
 
@@ -49,6 +49,10 @@ require_once (SDPVS__PLUGIN_DIR . 'sdpvs_pie.php');
 
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_lists.php');
 
+/**********************
+ ** ASSEMBLE THE PAGE
+ **********************/
+
 // This assembles the plugin page.
 function sdpvs_post_volume_stats_assembled() {
 
@@ -58,7 +62,7 @@ function sdpvs_post_volume_stats_assembled() {
 
 		$sdpvs_pie = new sdpvs_post_volume_stats_pie();
 
-		$sdpvs_lists = new sdpvs_text_lists();
+		// $sdpvs_lists = new sdpvs_text_lists();
 
 		$content = __("<h1 class='sdpvs'>Post Volume Stats</h1>", 'post-volume-stats');
 		$content .= __("<p class='sdpvs'>These are the post volume stats for " . get_bloginfo('name') . ".</p>", 'post-volume-stats');
@@ -117,23 +121,31 @@ function sdpvs_register_custom_page_in_menu() {
 
 add_action('admin_menu', 'sdpvs_register_custom_page_in_menu');
 
+/*************
+ ** AJAX...
+ *************/
+
 function sdpvs_load_ajax_scripts() {
-	wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.0', 'screen');
+	wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.1', 'screen');
 	wp_enqueue_script('sdpvs_loader', plugins_url('sdpvs_loader.js', __FILE__), array('jquery'), '1.0.0', true);
+	wp_enqueue_script('sdpvs_jqueryui', '//code.jquery.com/ui/1.12.0/jquery-ui.js', array('jquery'), '1.12.0', false);
+
 	//Here we create a javascript object variable called "sdpvs_vars". We can access any variable in the array using sdpvs_vars.name_of_sub_variable
 	wp_localize_script('sdpvs_loader', 'sdpvs_vars', array(
 	//To use this variable in javascript use "sdpvs_vars.ajaxurl"
 	'ajaxurl' => admin_url('admin-ajax.php'),
 	//To use this variable in javascript use "sdpvs_vars.whichdata"
-	'whichdata' => $whichdata, 'ajax_nonce' => wp_create_nonce('any_value_here'), ));
+	'whichdata' => $whichdata,
+	// nonce...
+	'ajax_nonce' => wp_create_nonce('num-of-posts'), ));
 }
 
 add_action('admin_enqueue_scripts', 'sdpvs_load_ajax_scripts');
 
 function process_ajax() {
 	// Security check
-	check_ajax_referer('any_value_here', 'security');
-	
+	check_ajax_referer('num-of-posts', 'security');
+
 	// create an instance of the list class
 	$sdpvs_lists = new sdpvs_text_lists();
 
@@ -157,7 +169,7 @@ function process_ajax() {
 	} elseif ("dayofmonth" == $answer) {
 		echo $sdpvs_lists -> sdpvs_posts_per_day_of_month_list();
 	}
-	
+
 	// Always die() AJAX
 	die();
 }

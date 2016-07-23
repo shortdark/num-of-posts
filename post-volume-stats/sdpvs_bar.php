@@ -25,35 +25,35 @@ class sdpvs_bar_chart extends sdpvs_arrays {
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = $this -> first_val + 1;
 			$order = "desc";
-			$bar_svg = "<h2>Years</h2>";
+			$bar_svg = __("<h2>Years</h2>", 'post-volume-stats');
 		} elseif ("dayofweek" == $which) {
 			parent::sdpvs_number_of_posts_per_dayofweek();
 			$chart_array = $this -> dow_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 7;
 			$order = "asc";
-			$bar_svg = "<h2>Days of the Week</h2>";
+			$bar_svg = __("<h2>Days of the Week</h2>", 'post-volume-stats');
 		} elseif ("hour" == $which) {
 			parent::sdpvs_number_of_posts_per_hour();
 			$chart_array = $this -> hour_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 24;
 			$order = "asc";
-			$bar_svg = "<h2>Hours</h2>";
+			$bar_svg = __("<h2>Hours</h2>", 'post-volume-stats');
 		} elseif ("month" == $which) {
 			parent::sdpvs_number_of_posts_per_month();
 			$chart_array = $this -> month_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 12;
 			$order = "asc";
-			$bar_svg = "<h2>Months</h2>";
+			$bar_svg = __("<h2>Months</h2>", 'post-volume-stats');
 		} elseif ("dayofmonth" == $which) {
 			parent::sdpvs_number_of_posts_per_dayofmonth();
 			$chart_array = $this -> dom_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 31;
 			$order = "asc";
-			$bar_svg = "<h2>Days of the Month</h2>";
+			$bar_svg = __("<h2>Days of the Month</h2>", 'post-volume-stats');
 		}
 
 		$bar_width = intval($graphwidth / $bars_total);

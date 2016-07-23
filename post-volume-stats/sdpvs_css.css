@@ -75,7 +75,7 @@ a .sdpvs_segment:hover, a .sdpvs_bar:hover{
 	left: 0;
 	height: 100%;
 	width: 100%;
-	background: rgba( 255, 255, 255, .8 ) url('images/loading.gif') 50% 50% no-repeat;
+	background: rgba( 255, 255, 255, 0 ) url('images/loading.gif') 50% 50% no-repeat;
 }
 
 	#sdpvs_loading img{
