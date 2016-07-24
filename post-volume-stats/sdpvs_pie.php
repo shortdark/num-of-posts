@@ -1,6 +1,6 @@
 <?php
 
-class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
+class sdpvsPieChart extends sdpvsArrays {
 	private $number_of_categories = 0;
 	private $total_category_posts = 0;
 	private $number_of_tags = 0;
@@ -11,7 +11,7 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 	/*
 	 * COUNT NUMBER OF POSTS PER CATEGORY IN TOTAL, some posts might have multiple cats
 	 */
-	function sdpvs_count_post_categories() {
+	private function sdpvs_count_post_categories() {
 		$c = 0;
 		while ($this -> category_array[$c]['id']) {
 			if (0 < $this -> category_array[$c]['volume']) {
@@ -26,7 +26,7 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 	/*
 	 * ADD THE ANGLE TO THE EXISTING CATEGORY ARRAY
 	 */
-	function sdpvs_add_to_category_array() {
+	private function sdpvs_add_to_category_array() {
 		parent::sdpvs_post_category_volumes();
 		$this -> sdpvs_count_post_categories();
 		$c = 0;
@@ -42,7 +42,7 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 	/*
 	 * COUNT NUMBER OF POSTS PER TAG IN TOTAL, some posts might have multiple tags
 	 */
-	function sdpvs_count_post_tags() {
+	private function sdpvs_count_post_tags() {
 		$t = 0;
 		while ($this -> tag_array[$t]['id']) {
 			if (0 < $this -> tag_array[$t]['volume']) {
@@ -57,7 +57,7 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 	/*
 	 * ADD THE ANGLE TO THE EXISTING TAG ARRAY
 	 */
-	function sdpvs_add_to_tag_array() {
+	private function sdpvs_add_to_tag_array() {
 		parent::sdpvs_post_tag_volumes();
 
 		$this -> sdpvs_count_post_tags();
@@ -75,7 +75,7 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 	/**
 	 * DISPLAY CATEGORY DATA IN A PIE CHART
 	 */
-	function sdpvs_draw_pie_svg($type = "") {
+	public function sdpvs_draw_pie_svg($type = "") {
 		$testangle_orig = 0;
 		$radius = 100;
 		$prev_angle = 0;
@@ -152,7 +152,7 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 	/**
 	 * WHICH QUADRANT OF THE CIRCLE ARE WE IN ?
 	 */
-	function sdpvs_specify_starting_quadrant($testangle_orig) {
+	private function sdpvs_specify_starting_quadrant($testangle_orig) {
 		if (270 < $testangle_orig) {
 			$quadrant = 4;
 		} elseif (180 < $testangle_orig) {
@@ -168,7 +168,7 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 	/**
 	 * MAKE AN ACUTE ANGLE
 	 */
-	function sdpvs_specify_testangle($testangle_orig) {
+	private function sdpvs_specify_testangle($testangle_orig) {
 		if (270 < $testangle_orig) {
 			$testangle = $testangle_orig - 270;
 		} elseif (180 < $testangle_orig) {
@@ -184,7 +184,7 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 	/**
 	 * IS THE ANGLE MORE THAN 180 DEGREES ?
 	 */
-	function sdpvs_is_it_a_large_angle($testangle_orig, $prev_angle) {
+	private function sdpvs_is_it_a_large_angle($testangle_orig, $prev_angle) {
 		if (180 < $testangle_orig - $prev_angle) {
 			$large = 1;
 		} else {
@@ -196,7 +196,7 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 	/**
 	 * THIS GRABS THE INFO FROM THE PREVIOUS POINT AND STARTS OFF THE PIE SEGMENT
 	 */
-	function sdpvs_draw_starting_line($prev_angle, $newx, $newy) {
+	private function sdpvs_draw_starting_line($prev_angle, $newx, $newy) {
 		if (0 < $prev_angle) {
 			$startingline = "L$newx,$newy";
 		} else {
@@ -208,7 +208,7 @@ class sdpvs_post_volume_stats_pie extends sdpvs_arrays {
 	/**
 	 * GET NEW X CO-ORDINATES
 	 */
-	function sdpvs_get_absolute_coordinates_from_angle($quadrant, $radius, $testangle) {
+	private function sdpvs_get_absolute_coordinates_from_angle($quadrant, $radius, $testangle) {
 		if (1 == $quadrant) {
 			$this -> newx = $radius + ($radius * sin(deg2rad($testangle)));
 			$this -> newy = $radius - ($radius * cos(deg2rad($testangle)));

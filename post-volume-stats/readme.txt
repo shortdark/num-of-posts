@@ -37,6 +37,10 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 2.2.4 =
+
+* Timed the script.
+
 = 2.2.3 =
 
 * Loaded external jQuery UI draggable the proper way using script-loader.php

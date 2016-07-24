@@ -1,6 +1,6 @@
 <?php
 
-class sdpvs_arrays {
+abstract class sdpvsArrays {
 
 	protected $year_array;
 	protected $category_array;
@@ -154,7 +154,7 @@ class sdpvs_arrays {
 	/*
 	 * FIND HIGHEST, FIRST AND TOTAL VOLUME VALUES
 	 */
-	function find_highest_first_and_total($testarray) {
+	protected function find_highest_first_and_total($testarray) {
 		$this -> highest_val = 0;
 		$this -> first_val = 0;
 		$this -> total_volume_of_posts = 0;

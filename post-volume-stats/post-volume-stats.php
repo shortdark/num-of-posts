@@ -1,14 +1,14 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 2.2.3
+ * @version 2.2.4
  */
 /*
  Plugin Name: Post Volume Stats
  Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
- Version: 2.2.3
+ Version: 2.2.4
  Author URI: http://www.shortdark.net/
  */
 
@@ -57,10 +57,12 @@ require_once (SDPVS__PLUGIN_DIR . 'sdpvs_lists.php');
 function sdpvs_post_volume_stats_assembled() {
 
 	if (is_admin()) {
+		// Start the timer
+		$time_start = microtime(true);
 
-		$sdpvs_bar = new sdpvs_bar_chart();
+		$sdpvs_bar = new sdpvsBarChart();
 
-		$sdpvs_pie = new sdpvs_post_volume_stats_pie();
+		$sdpvs_pie = new sdpvsPieChart();
 
 		$content = __("<h1 class='sdpvs'>Post Volume Stats</h1>", 'post-volume-stats');
 		$content .= __("<p class='sdpvs'>These are the post volume stats for " . get_bloginfo('name') . ".</p>", 'post-volume-stats');
@@ -109,6 +111,11 @@ function sdpvs_post_volume_stats_assembled() {
 		$content .= "</div>";
 	}
 
+	// Stop the timer
+	$time_end = microtime(true);
+	$elapsed_time = sprintf("%.5f", $time_end - $time_start);
+	$content .= __("<p>Script time elapsed: " . $elapsed_time . " seconds</p>", 'post-volume-stats');
+
 	echo $content;
 }
 
@@ -126,7 +133,7 @@ add_action('admin_menu', 'sdpvs_register_custom_page_in_menu');
 function sdpvs_load_ajax_scripts() {
 	wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.2', 'screen');
 	wp_enqueue_script('sdpvs_loader', plugins_url('sdpvs_loader.js', __FILE__), array('jquery'), '1.0.0', true);
-	
+
 	// Importing external JQuery UI element using "wp-includes/script-loader.php"
 	wp_enqueue_script("jquery-ui-draggable");
 
@@ -147,7 +154,7 @@ function sdpvs_process_ajax() {
 	check_ajax_referer('num-of-posts', 'security');
 
 	// create an instance of the list class
-	$sdpvs_lists = new sdpvs_text_lists();
+	$sdpvs_lists = new sdpvsTextLists();
 
 	// Extract the variable from serialized string
 	$gotit = filter_var($_POST['whichdata'], FILTER_SANITIZE_STRING);

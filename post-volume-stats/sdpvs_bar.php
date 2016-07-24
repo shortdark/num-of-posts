@@ -1,6 +1,6 @@
 <?php
 
-class sdpvs_bar_chart extends sdpvs_arrays {
+class sdpvsBarChart extends sdpvsArrays {
 
 	protected $total_volume_of_posts;
 
@@ -11,7 +11,7 @@ class sdpvs_bar_chart extends sdpvs_arrays {
 	/**
 	 * DISPLAY DATA IN A BAR CHART
 	 */
-	function sdpvs_draw_bar_chart_svg($which = "") {
+	public function sdpvs_draw_bar_chart_svg($which = "") {
 		$years_total = 0;
 		$number_of_years = 0;
 		$highest_val = 0;
