@@ -1,14 +1,14 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 2.2.4
+ * @version 2.2.5
  */
 /*
  Plugin Name: Post Volume Stats
  Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
- Version: 2.2.4
+ Version: 2.2.5
  Author URI: http://www.shortdark.net/
  */
 
@@ -43,6 +43,8 @@ define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_arrays.php');
 
+require_once (SDPVS__PLUGIN_DIR . 'sdpvs_info.php');
+
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_bar.php');
 
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_pie.php');
@@ -59,6 +61,8 @@ function sdpvs_post_volume_stats_assembled() {
 	if (is_admin()) {
 		// Start the timer
 		$time_start = microtime(true);
+
+		$sdpvs_info = new sdpvsInfo();
 
 		$sdpvs_bar = new sdpvsBarChart();
 
@@ -110,6 +114,8 @@ function sdpvs_post_volume_stats_assembled() {
 		$content .= "<div id='sdpvs_listcontent'>";
 		$content .= "</div>";
 	}
+
+	$content .= $sdpvs_info -> sdpvs_info();
 
 	// Stop the timer
 	$time_end = microtime(true);

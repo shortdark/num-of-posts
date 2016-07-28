@@ -7,6 +7,9 @@ abstract class sdpvsArrays {
 	protected $tag_array;
 	protected $dow_array;
 	protected $hour_array;
+	protected $earliest_date;
+	protected $latest_date;
+	protected $published_volume;
 
 	/*
 	 * NUMBER OF POSTS PER YEAR
@@ -147,6 +150,36 @@ abstract class sdpvsArrays {
 			$this -> dom_array[$i]['title'] = $searchday;
 			$this -> dom_array[$i]['volume'] = $found_posts;
 		}
+		$wpdb -> flush();
+		return;
+	}
+	
+	/*
+	 * FIND THE POST WITH THE EARLIEST DATE
+	 */
+	protected function sdpvs_earliest_date_post() {
+		global $wpdb;
+		$this -> earliest_date = $wpdb -> get_var("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' ORDER BY post_date ASC LIMIT 1 ");
+		$wpdb -> flush();
+		return;
+	}
+	
+	/*
+	 * FIND THE POST WITH THE LATEST DATE
+	 */
+	protected function sdpvs_latest_date_post() {
+		global $wpdb;
+		$this -> latest_date = $wpdb -> get_var("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' ORDER BY post_date DESC LIMIT 1 ");
+		$wpdb -> flush();
+		return;
+	}
+	
+	/*
+	 * FIND THE TOTAL VOLUME OF POSTS
+	 */ protected function sdpvs_total_published_volume() {
+	global $wpdb;
+	$this -> published_volume = $wpdb -> get_var(
+"SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' ");
 		$wpdb -> flush();
 		return;
 	}

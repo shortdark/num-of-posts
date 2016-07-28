@@ -2,7 +2,7 @@
 === Post Volume Stats ===
 Contributors: shortdark
 Donate link: http://www.shortdark.net/
-Tags: posts, stats, categories, tags, simple, admin, year, month, day, hour, graph, graphs, charts
+Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour
 Requires at least: 3.5
 Tested up to: 4.5.3
 Stable tag: trunk
@@ -36,6 +36,10 @@ Here are the latest screenshots...
 2. Shows the draggable AJAX data lists, and highlighted bar of a bar chart.
 
 == Changelog ==
+
+= 2.2.5 =
+
+* Added posts per day info.
 
 = 2.2.4 =
 
