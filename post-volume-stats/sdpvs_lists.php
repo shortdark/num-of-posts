@@ -55,8 +55,9 @@ class sdpvsTextLists extends sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER DAY-OF-WEEK TEXT
 	 */
-	public function sdpvs_posts_per_dayofweek_list() {
-		parent::sdpvs_number_of_posts_per_dayofweek();
+	public function sdpvs_posts_per_dayofweek_list($searchyear = "") {
+		$searchyear = absint($searchyear);
+		parent::sdpvs_number_of_posts_per_dayofweek($searchyear);
 		parent::find_highest_first_and_total($this->dow_array);
 		$posts_per_dow = __("<h2>Post Volumes per Day of the Week</h2>", 'post-volume-stats');
 		$posts_per_dow .= "<p>Which day of the week the $this->total_volume_of_posts posts were made on.</p>";
@@ -73,8 +74,9 @@ class sdpvsTextLists extends sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER HOUR TEXT
 	 */
-	public function sdpvs_posts_per_hour_list() {
-		parent::sdpvs_number_of_posts_per_hour();
+	public function sdpvs_posts_per_hour_list($searchyear = "") {
+		$searchyear = absint($searchyear);
+		parent::sdpvs_number_of_posts_per_hour($searchyear);
 		parent::find_highest_first_and_total($this->hour_array);
 		$posts_per_hour = __("<h2>Post Volumes per Hour</h2>", 'post-volume-stats');
 		$posts_per_hour .= "<p>Which hour of the day the $this->total_volume_of_posts posts were made on.</p>";
@@ -87,8 +89,9 @@ class sdpvsTextLists extends sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER MONTH TEXT
 	 */
-	public function sdpvs_posts_per_month_list() {
-		parent::sdpvs_number_of_posts_per_month();
+	public function sdpvs_posts_per_month_list($searchyear = "") {
+		$searchyear = absint($searchyear);
+		parent::sdpvs_number_of_posts_per_month($searchyear);
 		$posts_per_month = __("<h2>Post Volumes per Month</h2>", 'post-volume-stats');
 		for ($i = 0; $i < 12; $i++) {
 			if (!$this -> month_array[$i]['volume']) {
@@ -102,8 +105,9 @@ class sdpvsTextLists extends sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER DAY OF MONTH TEXT
 	 */
-	public function sdpvs_posts_per_day_of_month_list() {
-		parent::sdpvs_number_of_posts_per_dayofmonth();
+	public function sdpvs_posts_per_day_of_month_list($searchyear = "") {
+		$searchyear = absint($searchyear);
+		parent::sdpvs_number_of_posts_per_dayofmonth($searchyear);
 		$posts_per_dom .= __("<h2>Post Volumes per Day of the Month</h2>", 'post-volume-stats');
 		for ($i = 0; $i < 31; $i++) {
 			if (!$this -> dom_array[$i]['volume']) {

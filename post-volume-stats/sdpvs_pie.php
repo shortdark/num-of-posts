@@ -115,7 +115,7 @@ class sdpvsPieChart extends sdpvsArrays {
 					$startingline = $this -> sdpvs_draw_starting_line($prev_angle, $this -> newx, $this -> newy);
 					$this -> sdpvs_get_absolute_coordinates_from_angle($quadrant, $radius, $testangle);
 
-					if (360 > $number_of_containers) {
+					if (180 > $number_of_containers) {
 						$opacity = $pie_array[$c]['angle'] / 180;
 					} elseif (1000 > $number_of_containers) {
 						$opacity = $pie_array[$c]['angle'] / 30;

@@ -1,7 +1,7 @@
 
 === Post Volume Stats ===
 Contributors: shortdark
-Donate link: http://www.shortdark.net/
+Donate link: http://www.shortdark.net/wordpress-plugin/
 Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour
 Requires at least: 3.5
 Tested up to: 4.5.3
@@ -17,6 +17,8 @@ This is a simple plugin to look at the volume of posts in each category and tag,
 of posts per year, month, day-of-the-month, day-of-the-week and hour. It works better the more posts 
 you have, and if you use categories and tags.
 
+Please let me know if you like this plugin by leaving a review or contacting me http://www.shortdark.net/wordpress-plugin/
+
 Go to [Shortdark](http://www.shortdark.net) for more information.
 
 == Installation ==
@@ -31,11 +33,23 @@ This section describes how to install the plugin and get it working.
 
 Here are the latest screenshots...
 
-1. Shows the stats on a very simple blog with not many posts.
+1. Shows the stats for a blog with 3 years of posts.
 
 2. Shows the draggable AJAX data lists, and highlighted bar of a bar chart.
 
+3. Shows the same blog with time-based stats for one year selected.
+
 == Changelog ==
+
+= 2.3.01 =
+
+* Settings page added for users to chose the year for all time-based stats.
+
+= 2.2.6 =
+
+* Modified the pie chart coloring
+* Preparation for UI
+* Modified layout
 
 = 2.2.5 =
 
