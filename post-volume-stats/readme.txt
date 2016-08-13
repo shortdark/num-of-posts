@@ -41,6 +41,10 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 2.3.02 =
+
+* The year option setting moved from it's own page to the main plugin page.
+
 = 2.3.01 =
 
 * Settings page added for users to chose the year for all time-based stats.
