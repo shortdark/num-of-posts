@@ -14,19 +14,59 @@ abstract class sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER CATEGORY
 	 */
-	protected function sdpvs_post_category_volumes() {
+	protected function sdpvs_post_category_volumes($searchyear = "") {
 		global $wpdb;
-		$cats = $wpdb -> get_results("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = 'category' ORDER BY count DESC ");
-
-		$c = 0;
-		foreach ($cats as $category) {
-			$catinfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $category -> term_id));
-			$this -> category_array[$c]['id'] = $category -> term_id;
-			$this -> category_array[$c]['name'] = $catinfo -> name;
-			$this -> category_array[$c]['slug'] = $catinfo -> slug;
-			$this -> category_array[$c]['volume'] = $category -> count;
-			$c++;
+		if ("" == $searchyear) {
+			$cats = $wpdb -> get_results("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = 'category' ORDER BY count DESC ");
+			$c = 0;
+			foreach ($cats as $category) {
+				$catinfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $category -> term_id));
+				$this -> category_array[$c]['id'] = $category -> term_id;
+				$this -> category_array[$c]['name'] = $catinfo -> name;
+				$this -> category_array[$c]['slug'] = $catinfo -> slug;
+				$this -> category_array[$c]['volume'] = $category -> count;
+				$c++;
+			}
+		} else {
+			$cats = $wpdb -> get_results("SELECT term_id FROM $wpdb->term_taxonomy WHERE taxonomy = 'category' ORDER BY term_id DESC ");
+			$c = 0;
+			$highestval = 0;
+			foreach ($cats as $category) {
+				$posts = $wpdb -> get_var("
+					SELECT COUNT(*)
+					FROM $wpdb->posts 
+					INNER JOIN $wpdb->term_relationships 
+					ON $wpdb->posts.post_status = 'publish' 
+					AND $wpdb->posts.post_type = 'post' 
+					AND $wpdb->posts.post_date LIKE '$searchyear%' 	
+					AND $wpdb->term_relationships.object_id = $wpdb->posts.ID 
+					AND $wpdb->term_relationships.term_taxonomy_id = $category->term_id
+				");
+				$cat_array[$c]['id'] = $category -> term_id;
+				$cat_array[$c]['volume'] = $posts;
+				if ($highestval < $posts) {
+					$highestval = $posts;
+				}
+				$c++;
+			}
+			$d = 0;
+			for ($i = $highestval; $i > 0; $i--) {
+				$c = 0;
+				while ($cat_array[$c]['id']) {
+					if ($i == $cat_array[$c]['volume']) {
+						$temp = $cat_array[$c]['id'];
+						$catinfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $temp));
+						$this -> category_array[$d]['id'] = $temp;
+						$this -> category_array[$d]['name'] = $catinfo -> name;
+						$this -> category_array[$d]['slug'] = $catinfo -> slug;
+						$this -> category_array[$d]['volume'] = $cat_array[$c]['volume'];
+						$d++;
+					}
+					$c++;
+				}
+			}
 		}
+
 		$wpdb -> flush();
 		return;
 	}
@@ -34,17 +74,57 @@ abstract class sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER TAG
 	 */
-	protected function sdpvs_post_tag_volumes() {
+	protected function sdpvs_post_tag_volumes($searchyear = "") {
 		global $wpdb;
-		$taglist = $wpdb -> get_results("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = 'post_tag' ORDER BY count DESC ");
-		$t = 0;
-		foreach ($taglist as $tag) {
-			$taginfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $tag -> term_id));
-			$this -> tag_array[$t]['id'] = $tag -> term_id;
-			$this -> tag_array[$t]['name'] = $taginfo -> name;
-			$this -> tag_array[$t]['slug'] = $taginfo -> slug;
-			$this -> tag_array[$t]['volume'] = $tag -> count;
-			$t++;
+		if ("" == $searchyear) {
+			$taglist = $wpdb -> get_results("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = 'post_tag' ORDER BY count DESC ");
+			$t = 0;
+			foreach ($taglist as $tag) {
+				$taginfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $tag -> term_id));
+				$this -> tag_array[$t]['id'] = $tag -> term_id;
+				$this -> tag_array[$t]['name'] = $taginfo -> name;
+				$this -> tag_array[$t]['slug'] = $taginfo -> slug;
+				$this -> tag_array[$t]['volume'] = $tag -> count;
+				$t++;
+			}
+		} else {
+			$tags = $wpdb -> get_results("SELECT term_id FROM $wpdb->term_taxonomy WHERE taxonomy = 'post_tag' ORDER BY term_id DESC ");
+			$t = 0;
+			$highestval = 0;
+			foreach ($tags as $tag) {
+				$posts = $wpdb -> get_var("
+					SELECT COUNT(*)
+					FROM $wpdb->posts 
+					INNER JOIN $wpdb->term_relationships 
+					ON $wpdb->posts.post_status = 'publish' 
+					AND $wpdb->posts.post_type = 'post' 
+					AND $wpdb->posts.post_date LIKE '$searchyear%' 	
+					AND $wpdb->term_relationships.object_id = $wpdb->posts.ID 
+					AND $wpdb->term_relationships.term_taxonomy_id = $tag->term_id
+				");
+				$tg_array[$t]['id'] = $tag -> term_id;
+				$tg_array[$t]['volume'] = $posts;
+				if ($highestval < $posts) {
+					$highestval = $posts;
+				}
+				$t++;
+			}
+			$d = 0;
+			for ($i = $highestval; $i > 0; $i--) {
+				$t = 0;
+				while ($tg_array[$t]['id']) {
+					if ($i == $tg_array[$t]['volume']) {
+						$temp = $tg_array[$t]['id'];
+						$taginfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $temp));
+						$this -> tag_array[$d]['id'] = $temp;
+						$this -> tag_array[$d]['name'] = $taginfo -> name;
+						$this -> tag_array[$d]['slug'] = $taginfo -> slug;
+						$this -> tag_array[$d]['volume'] = $tg_array[$t]['volume'];
+						$d++;
+					}
+					$t++;
+				}
+			}
 		}
 		$wpdb -> flush();
 		return;

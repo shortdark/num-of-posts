@@ -23,13 +23,14 @@ class sdpvsTextLists extends sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER CATEGORY TEXT
 	 */
-	public function sdpvs_posts_per_category_list() {
-		parent::sdpvs_post_category_volumes();
+	public function sdpvs_posts_per_category_list($searchyear = "") {
+		parent::sdpvs_post_category_volumes($searchyear);
 		$posts_per_category = __("<h2>Post Volumes per Category!</h2>", 'post-volume-stats');
 		$c = 0;
 		while ($this -> category_array[$c]['id']) {
 			if (0 < $this -> category_array[$c]['volume']) {
-				$posts_per_category .= "<a href='" . admin_url('edit.php?category_name=' . $this -> category_array[$c]['slug']) . "'>{$this->category_array[$c]['name']}</a>: {$this->category_array[$c]['volume']} posts<br>\n";
+				$n++;
+				$posts_per_category .= "$n <a href='" . admin_url('edit.php?category_name=' . $this -> category_array[$c]['slug']) . "'>{$this->category_array[$c]['name']}</a>: {$this->category_array[$c]['volume']} posts<br>\n";
 			}
 			$c++;
 		}
@@ -39,13 +40,14 @@ class sdpvsTextLists extends sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER TAG TEXT
 	 */
-	public function sdpvs_posts_per_tag_list() {
-		parent::sdpvs_post_tag_volumes();
+	public function sdpvs_posts_per_tag_list($searchyear = "") {
+		parent::sdpvs_post_tag_volumes($searchyear);
 		$posts_per_tag = __("<h2>Post Volumes per Tag!</h2>", 'post-volume-stats');
 		$t = 0;
 		while ($this -> tag_array[$t]['id']) {
 			if (0 < $this -> tag_array[$t]['volume']) {
-				$posts_per_tag .= "<a href='" . admin_url('edit.php?tag=' . $this -> tag_array[$t]['slug']) . "'>{$this->tag_array[$t]['name']}</a>: {$this->tag_array[$t]['volume']} posts<br>\n";
+				$n++;
+				$posts_per_tag .= "$n <a href='" . admin_url('edit.php?tag=' . $this -> tag_array[$t]['slug']) . "'>{$this->tag_array[$t]['name']}</a>: {$this->tag_array[$t]['volume']} posts<br>\n";
 			}
 			$t++;
 		}

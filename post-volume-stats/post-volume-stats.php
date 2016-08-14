@@ -1,14 +1,14 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 2.3.02
+ * @version 2.3.03
  */
 /*
  Plugin Name: Post Volume Stats
  Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
- Version: 2.3.02
+ Version: 2.3.03
  Author URI: http://www.shortdark.net/
  */
 
@@ -76,28 +76,11 @@ function sdpvs_post_volume_stats_assembled() {
 		$selected = absint($options['year_number']);
 
 		echo __("<h1 class='sdpvs'>Post Volume Stats</h1>", 'post-volume-stats');
-		echo __("<p class='sdpvs'>These are the post volume stats for " . get_bloginfo('name') . ".</p>", 'post-volume-stats');
 
-		echo __("<h1 class='sdpvs'>Post Types</h1>", 'post-volume-stats');
-		echo __("<p class='sdpvs'>These are the all-time stats, even if a specific year is selected. Hopefully, this will be able to be modified for per year stats soon.</p>", 'post-volume-stats');
-
-		// posts per category pie chart
-		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_pie -> sdpvs_draw_pie_svg("category");
-		echo "</div>";
-
-		// posts per tag pie chart
-		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_pie -> sdpvs_draw_pie_svg("tag");
-		echo "</div>";
-
-		echo "<hr>";
-
-		echo __("<h1 class='sdpvs'>Post Times</h1>", 'post-volume-stats');
 		if (0 < $selected) {
-			echo __("<p class='sdpvs'>These are the time-based stats for the selected year: $selected.</p>", 'post-volume-stats');
+			echo __("<p class='sdpvs'>These are the stats for " . get_bloginfo('name') . " for the selected year: $selected.</p>", 'post-volume-stats');
 		} else {
-			echo __("<p class='sdpvs'>These are the time-based stats for all time.</p>", 'post-volume-stats');
+			echo __("<p class='sdpvs'>These are the all time stats for " . get_bloginfo('name') . ".</p>", 'post-volume-stats');
 		}
 
 		echo "<form class='sdpvs_year_form' action='options.php' method='POST'>";
@@ -117,8 +100,21 @@ function sdpvs_post_volume_stats_assembled() {
 
 		echo "</select></div>";
 		echo "<div style=\"display: inline-block;\">";
-		submit_button();
+		submit_button("Go");
 		echo "</div></form>";
+		
+		// posts per category pie chart
+		echo "<div class='sdpvs_col'>";
+		echo $sdpvs_pie -> sdpvs_draw_pie_svg("category", $selected);
+		echo "</div>";
+
+		// posts per tag pie chart
+		echo "<div class='sdpvs_col'>";
+		echo $sdpvs_pie -> sdpvs_draw_pie_svg("tag", $selected);
+		echo "</div>";
+
+		echo "<hr>";
+		
 		// year bar chart
 		echo "<div class='sdpvs_col'>";
 		echo $sdpvs_bar -> sdpvs_draw_bar_chart_svg("year", $selected);
@@ -247,9 +243,9 @@ function sdpvs_process_ajax() {
 	} elseif ("dayofweek" == $answer) {
 		echo $sdpvs_lists -> sdpvs_posts_per_dayofweek_list($searchyear);
 	} elseif ("category" == $answer) {
-		echo $sdpvs_lists -> sdpvs_posts_per_category_list();
+		echo $sdpvs_lists -> sdpvs_posts_per_category_list($searchyear);
 	} elseif ("tag" == $answer) {
-		echo $sdpvs_lists -> sdpvs_posts_per_tag_list();
+		echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear);
 	} elseif ("month" == $answer) {
 		echo $sdpvs_lists -> sdpvs_posts_per_month_list($searchyear);
 	} elseif ("dayofmonth" == $answer) {

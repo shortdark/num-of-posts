@@ -37,9 +37,14 @@ Here are the latest screenshots...
 
 2. Shows the draggable AJAX data lists, and highlighted bar of a bar chart.
 
-3. Shows the same blog with time-based stats for one year selected.
+3. Shows the same blog with stats for one year selected.
 
 == Changelog ==
+
+= 2.3.03 =
+
+* When a year is selected it applies to all stats now, including tags and categories.
+* Changed pie chart opacity rules.
 
 = 2.3.02 =
 
