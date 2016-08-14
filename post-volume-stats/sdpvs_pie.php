@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die('No script kiddies please!');
+
 class sdpvsPieChart extends sdpvsArrays {
 	private $number_of_categories = 0;
 	private $total_category_posts = 0;

@@ -37,9 +37,18 @@ Here are the latest screenshots...
 
 2. Shows the draggable AJAX data lists, and highlighted bar of a bar chart.
 
-3. Shows the same blog with stats for one year selected.
+3. You can view the stats for each year individually. This shows the same blog with stats for one year selected.
 
 == Changelog ==
+
+= 2.3.05 =
+
+* Made sure categories should be working correctly.
+* Prevented direct access to class files.
+
+= 2.3.04 =
+
+* Fixed bug with yearly tags.
 
 = 2.3.03 =
 

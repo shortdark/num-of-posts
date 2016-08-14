@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die('No script kiddies please!');
+
 class sdpvsTextLists extends sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER YEAR TEXT

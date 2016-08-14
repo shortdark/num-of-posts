@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die('No script kiddies please!');
+
 abstract class sdpvsArrays {
 
 	protected $year_array;
@@ -28,10 +30,11 @@ abstract class sdpvsArrays {
 				$c++;
 			}
 		} else {
-			$cats = $wpdb -> get_results("SELECT term_id FROM $wpdb->term_taxonomy WHERE taxonomy = 'category' ORDER BY term_id DESC ");
+			$cats = $wpdb -> get_results("SELECT term_id, term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy = 'category' ORDER BY term_id DESC ");
 			$c = 0;
 			$highestval = 0;
 			foreach ($cats as $category) {
+				$posts = 0;
 				$posts = $wpdb -> get_var("
 					SELECT COUNT(*)
 					FROM $wpdb->posts 
@@ -40,14 +43,16 @@ abstract class sdpvsArrays {
 					AND $wpdb->posts.post_type = 'post' 
 					AND $wpdb->posts.post_date LIKE '$searchyear%' 	
 					AND $wpdb->term_relationships.object_id = $wpdb->posts.ID 
-					AND $wpdb->term_relationships.term_taxonomy_id = $category->term_id
+					AND $wpdb->term_relationships.term_taxonomy_id = $category->term_taxonomy_id
 				");
-				$cat_array[$c]['id'] = $category -> term_id;
-				$cat_array[$c]['volume'] = $posts;
-				if ($highestval < $posts) {
-					$highestval = $posts;
+				if (0 < $posts) {
+					$cat_array[$c]['id'] = $category -> term_id;
+					$cat_array[$c]['volume'] = $posts;
+					if ($highestval < $posts) {
+						$highestval = $posts;
+					}
+					$c++;
 				}
-				$c++;
 			}
 			$d = 0;
 			for ($i = $highestval; $i > 0; $i--) {
@@ -88,10 +93,11 @@ abstract class sdpvsArrays {
 				$t++;
 			}
 		} else {
-			$tags = $wpdb -> get_results("SELECT term_id FROM $wpdb->term_taxonomy WHERE taxonomy = 'post_tag' ORDER BY term_id DESC ");
+			$tags = $wpdb -> get_results("SELECT term_id, term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy = 'post_tag' ORDER BY term_id DESC ");
 			$t = 0;
 			$highestval = 0;
 			foreach ($tags as $tag) {
+				$posts = 0;
 				$posts = $wpdb -> get_var("
 					SELECT COUNT(*)
 					FROM $wpdb->posts 
@@ -100,14 +106,16 @@ abstract class sdpvsArrays {
 					AND $wpdb->posts.post_type = 'post' 
 					AND $wpdb->posts.post_date LIKE '$searchyear%' 	
 					AND $wpdb->term_relationships.object_id = $wpdb->posts.ID 
-					AND $wpdb->term_relationships.term_taxonomy_id = $tag->term_id
+					AND $wpdb->term_relationships.term_taxonomy_id = $tag->term_taxonomy_id
 				");
-				$tg_array[$t]['id'] = $tag -> term_id;
-				$tg_array[$t]['volume'] = $posts;
-				if ($highestval < $posts) {
-					$highestval = $posts;
+				if (0 < $posts) {
+					$tg_array[$t]['id'] = $tag -> term_id;
+					$tg_array[$t]['volume'] = $posts;
+					if ($highestval < $posts) {
+						$highestval = $posts;
+					}
+					$t++;
 				}
-				$t++;
 			}
 			$d = 0;
 			for ($i = $highestval; $i > 0; $i--) {

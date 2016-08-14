@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die('No script kiddies please!');
+
 class sdpvsBarChart extends sdpvsArrays {
 
 	protected $total_volume_of_posts;
