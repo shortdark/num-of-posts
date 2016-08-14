@@ -5,4 +5,6 @@ Currently there is a graphical representation of year, category, tag, day-of-the
 
 The lists have been moved to AJAX, to free up more space and so it works better on mobile devices. 
 
+Now, you are able to select a year and just see the stats for that one year. 
+
 https://wordpress.org/plugins/post-volume-stats/
