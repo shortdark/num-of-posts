@@ -22,10 +22,28 @@
 	width: 200px; 
 	height: 200px; 
 } 
+
+.sdpvs_year_bar {
+	border:0; 
+	margin:0;
+	padding:0;
+	background-color: blue; 
+	color: transparent; 
+	cursor: pointer;
+	opacity: 0.5;
+}
+
 a .sdpvs_segment:hover, a .sdpvs_bar:hover{ 
 	stroke:white; 
-	fill: green; 
+	fill: green;
 }
+
+.sdpvs_year_bar:hover {
+	background-color: green; 
+	border: 1px solid #fff;
+}
+
+
 
 
 /* LIST BOX */

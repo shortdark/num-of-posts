@@ -1,14 +1,14 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 2.3.05
+ * @version 3.0.02
  */
 /*
  Plugin Name: Post Volume Stats
  Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
- Version: 2.3.05
+ Version: 3.0.02
  Author URI: http://www.shortdark.net/
  */
 
@@ -85,7 +85,7 @@ function sdpvs_post_volume_stats_assembled() {
 
 		echo "<form class='sdpvs_year_form' action='options.php' method='POST'>";
 		settings_fields('sdpvs_year_option');
-		echo "<div style=\"display: inline-block;\"><select name=\"sdpvs_year_option[year_number]\" id=\"year-number\">";
+		echo "<div style=\"display: inline-block;\"><select name=\"sdpvs_year_option[year_number]\" id=\"year-number\" onchange=\"this.form.submit()\">";
 		echo "<option value=\"\">All Years</option>";
 
 		for ($i = 0; $i <= $years; $i++) {
@@ -100,7 +100,7 @@ function sdpvs_post_volume_stats_assembled() {
 
 		echo "</select></div>";
 		echo "<div style=\"display: inline-block;\">";
-		submit_button("Go");
+		// submit_button("Go");
 		echo "</div></form>";
 		
 		// posts per category pie chart
@@ -117,7 +117,7 @@ function sdpvs_post_volume_stats_assembled() {
 		
 		// year bar chart
 		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_bar -> sdpvs_draw_bar_chart_svg("year", $selected);
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg("year", $selected);
 
 		echo "</div>";
 
@@ -203,7 +203,7 @@ function sanitize($input) {
  *************/
 
 function sdpvs_load_ajax_scripts() {
-	wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.2', 'screen');
+	wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.3', 'screen');
 	wp_enqueue_script('sdpvs_loader', plugins_url('sdpvs_loader.js', __FILE__), array('jquery'), '1.0.0', true);
 
 	// Importing external JQuery UI element using "wp-includes/script-loader.php"

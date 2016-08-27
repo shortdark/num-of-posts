@@ -4,7 +4,7 @@ Contributors: shortdark
 Donate link: http://www.shortdark.net/wordpress-plugin/
 Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour
 Requires at least: 3.5
-Tested up to: 4.5.3
+Tested up to: 4.6
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,13 +13,14 @@ Shows stats for the volume of posts per year, category, tag, day-of-the-week and
 
 == Description ==
 
-This is a simple plugin to look at the volume of posts in each category and tag, and also the volume 
+This plugin to look at the volume of posts in each category and tag, and also the volume 
 of posts per year, month, day-of-the-month, day-of-the-week and hour. It works better the more posts 
-you have, and if you use categories and tags.
+you have, and if you use categories and tags. You can now specify a year to look at the post volume stats for
+that year.
 
-Please let me know if you like this plugin by leaving a review or contacting me http://www.shortdark.net/wordpress-plugin/
+Please let me know if you like this plugin by leaving a review or [contacting me](http://www.shortdark.net/contact-me/).
 
-Go to [Shortdark](http://www.shortdark.net) for more information.
+Go to the [Shortdark Wordpress plugin page](http://www.shortdark.net/wordpress-plugin/) for more information.
 
 == Installation ==
 
@@ -40,6 +41,15 @@ Here are the latest screenshots...
 3. You can view the stats for each year individually. This shows the same blog with stats for one year selected.
 
 == Changelog ==
+
+= 3.0.02 =
+
+* Removed submit button from year dropdown used 'onchange' to submit instead.
+* You can now also select a year by clicking a bar of the 'Years' graph.
+
+= 3.0.01 =
+
+* Updated the version number because some older versions were not updating.
 
 = 2.3.05 =
 
