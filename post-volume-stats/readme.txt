@@ -42,6 +42,12 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 3.0.03 =
+
+* Brought the lists back for the bar charts.
+* Tidied code.
+* Cosmetic changes.
+
 = 3.0.02 =
 
 * Removed submit button from year dropdown used 'onchange' to submit instead.

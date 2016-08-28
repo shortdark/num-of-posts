@@ -98,7 +98,7 @@ class sdpvsBarChart extends sdpvsArrays {
 					echo "<form action=\"options.php\" method=\"post\" class=\"sdpvs_year_form\" style=\"border:0; margin:0;padding:0;\">";
 					settings_fields('sdpvs_year_option');
 					echo " <input type=\"hidden\" name=\"sdpvs_year_option[year_number]\" id=\"year-number\" value=\"$year_form_value\">
-					<input type=\"submit\" style=\"height: " . $bar_height . "px; width: " . $bar_width . "px; $set_explicit_color\" class=\"sdpvs_year_bar\">
+					<input type=\"submit\" style=\"height: " . $bar_height . "px; width: " . $bar_width . "px; $set_explicit_color\" title=\"{$chart_array[$i]['title']}\" class=\"sdpvs_year_bar\">
           			</form>
   					</foreignObject>";
 				} else {
@@ -117,7 +117,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo __("<p>Click bar to change to that year.</p>", 'post-volume-stats');
 			}
 		}
-		// $bar_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form></p>";
+		echo "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form></p>";
 
 		return;
 	}

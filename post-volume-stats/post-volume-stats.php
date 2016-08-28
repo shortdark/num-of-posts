@@ -1,14 +1,14 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.02
+ * @version 3.0.03
  */
 /*
  Plugin Name: Post Volume Stats
  Plugin URI: https://github.com/shortdark/num-of-posts
  Description: Displays the post stats in a custom page in the admin area with graphical representations.
  Author: Neil Ludlow
- Version: 3.0.02
+ Version: 3.0.03
  Author URI: http://www.shortdark.net/
  */
 
@@ -76,16 +76,19 @@ function sdpvs_post_volume_stats_assembled() {
 		$selected = absint($options['year_number']);
 
 		echo __("<h1 class='sdpvs'>Post Volume Stats</h1>", 'post-volume-stats');
-
+		echo "<div style=\"width: 500px; display: inline-block;\">";
 		if (0 < $selected) {
 			echo __("<p class='sdpvs'>These are the stats for " . get_bloginfo('name') . " for the selected year: $selected.</p>", 'post-volume-stats');
 		} else {
 			echo __("<p class='sdpvs'>These are the all time stats for " . get_bloginfo('name') . ".</p>", 'post-volume-stats');
 		}
+		echo "</div>";
+		
+		echo "<div style=\"display: inline-block;\">";
 
 		echo "<form class='sdpvs_year_form' action='options.php' method='POST'>";
 		settings_fields('sdpvs_year_option');
-		echo "<div style=\"display: inline-block;\"><select name=\"sdpvs_year_option[year_number]\" id=\"year-number\" onchange=\"this.form.submit()\">";
+		echo "<select name=\"sdpvs_year_option[year_number]\" id=\"year-number\" onchange=\"this.form.submit()\">";
 		echo "<option value=\"\">All Years</option>";
 
 		for ($i = 0; $i <= $years; $i++) {
@@ -98,11 +101,12 @@ function sdpvs_post_volume_stats_assembled() {
 
 		}
 
-		echo "</select></div>";
-		echo "<div style=\"display: inline-block;\">";
-		// submit_button("Go");
-		echo "</div></form>";
+		echo "</select>";
+		echo "</form>";
+		echo "</div>";
 		
+		echo "<hr>";
+
 		// posts per category pie chart
 		echo "<div class='sdpvs_col'>";
 		echo $sdpvs_pie -> sdpvs_draw_pie_svg("category", $selected);
@@ -114,31 +118,30 @@ function sdpvs_post_volume_stats_assembled() {
 		echo "</div>";
 
 		echo "<hr>";
-		
+
 		// year bar chart
 		echo "<div class='sdpvs_col'>";
 		$sdpvs_bar -> sdpvs_draw_bar_chart_svg("year", $selected);
-
 		echo "</div>";
 
 		// posts per day of the week bar chart
 		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_bar -> sdpvs_draw_bar_chart_svg("dayofweek", $selected);
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg("dayofweek", $selected);
 		echo "</div>";
 
 		// posts per hour of the day bar chart
 		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_bar -> sdpvs_draw_bar_chart_svg("hour", $selected);
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg("hour", $selected);
 		echo "</div>";
 
 		// posts per month bar chart
 		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_bar -> sdpvs_draw_bar_chart_svg("month", $selected);
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg("month", $selected);
 		echo "</div>";
 
 		// posts per day of the month bar chart
 		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_bar -> sdpvs_draw_bar_chart_svg("dayofmonth", $selected);
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg("dayofmonth", $selected);
 		echo "</div>";
 
 		// DIV for loading
