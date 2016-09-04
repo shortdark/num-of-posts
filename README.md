@@ -5,7 +5,7 @@ Because I based the plugin on "Hello Dolly" the PHP wasn't OOP to begin with. Wh
 
 Currently there is a graphical representation of year, category, tag, day-of-the-week, hour-of-the-day, month and day-of-the-month stats, with more to come.
 
-The lists have been moved to AJAX, to free up more space and so it works better on mobile devices. 
+The lists have been moved to AJAX, to free up more space and so it works better on mobile devices. There are now separate subpages for a more detailed look at the stats and future exporting, etc.
 
 Now, you are able to select a year and just see the stats for that one year. 
 
