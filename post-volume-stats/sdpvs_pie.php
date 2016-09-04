@@ -13,7 +13,7 @@ class sdpvsPieChart extends sdpvsArrays {
 	/*
 	 * COUNT NUMBER OF POSTS PER CATEGORY IN TOTAL, some posts might have multiple cats
 	 */
-	private function sdpvs_count_post_categories($year="") {
+	private function sdpvs_count_post_categories($year = "") {
 		$c = 0;
 		while ($this -> category_array[$c]['id']) {
 			if (0 < $this -> category_array[$c]['volume']) {
@@ -28,7 +28,7 @@ class sdpvsPieChart extends sdpvsArrays {
 	/*
 	 * ADD THE ANGLE TO THE EXISTING CATEGORY ARRAY
 	 */
-	private function sdpvs_add_to_category_array($year="") {
+	private function sdpvs_add_to_category_array($year = "") {
 		parent::sdpvs_post_category_volumes($year);
 		$this -> sdpvs_count_post_categories($year);
 		$c = 0;
@@ -44,7 +44,7 @@ class sdpvsPieChart extends sdpvsArrays {
 	/*
 	 * COUNT NUMBER OF POSTS PER TAG IN TOTAL, some posts might have multiple tags
 	 */
-	private function sdpvs_count_post_tags($year="") {
+	private function sdpvs_count_post_tags($year = "") {
 		$t = 0;
 		while ($this -> tag_array[$t]['id']) {
 			if (0 < $this -> tag_array[$t]['volume']) {
@@ -59,7 +59,7 @@ class sdpvsPieChart extends sdpvsArrays {
 	/*
 	 * ADD THE ANGLE TO THE EXISTING TAG ARRAY
 	 */
-	private function sdpvs_add_to_tag_array($year="") {
+	private function sdpvs_add_to_tag_array($year = "") {
 		parent::sdpvs_post_tag_volumes($year);
 
 		$this -> sdpvs_count_post_tags($year);
@@ -77,7 +77,7 @@ class sdpvsPieChart extends sdpvsArrays {
 	/**
 	 * DISPLAY CATEGORY DATA IN A PIE CHART
 	 */
-	public function sdpvs_draw_pie_svg($type = "", $year="") {
+	public function sdpvs_draw_pie_svg($type = "", $year = "", $subpage = "") {
 		$testangle_orig = 0;
 		$radius = 100;
 		$prev_angle = 0;
@@ -90,16 +90,14 @@ class sdpvsPieChart extends sdpvsArrays {
 			$pie_array = $this -> category_array;
 			$total_volume = $this -> total_category_posts;
 			$number_of_containers = $this -> number_of_categories;
-			$pie_svg = __("<h2>Categories</h2>", 'post-volume-stats');
-			// $pie_svg .= "<p>$number_of_containers categories. Total volume of active posts (posts with multiple categories are counted multiple times) = $total_volume</p>";
+			$pie_svg = '<h2>' . esc_html__("Categories", 'post-volume-stats') . '</h2>';
 			$link_part = "category_name";
 		} elseif ("tag" == $type) {
 			$this -> sdpvs_add_to_tag_array($year);
 			$total_volume = $this -> total_tag_posts;
 			$pie_array = $this -> tag_array;
 			$number_of_containers = $this -> number_of_tags;
-			$pie_svg = __("<h2>Tags</h2>", 'post-volume-stats');;
-			// $pie_svg .= "<p>$number_of_containers tags. Total volume of active posts (posts with multiple tags are counted multiple times) = $total_volume</p>";
+			$pie_svg = '<h2>' . esc_html__("Tags", 'post-volume-stats') . '</h2>';
 			$link_part = "tag";
 		}
 
@@ -146,8 +144,11 @@ class sdpvsPieChart extends sdpvsArrays {
 			$c++;
 		}
 		$pie_svg .= "</svg>\n";
-		$pie_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$type'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form></p>";
-		
+
+		if ("n" == $subpage) {
+			$pie_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$type'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form></p>";
+		}
+
 		return $pie_svg;
 	}
 

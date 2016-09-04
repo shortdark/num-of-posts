@@ -8,10 +8,10 @@ class sdpvsTextLists extends sdpvsArrays {
 	 */
 	public function sdpvs_posts_per_year_list() {
 		parent::sdpvs_number_of_posts_per_year();
-		parent::find_highest_first_and_total($this->year_array);
+		parent::find_highest_first_and_total($this -> year_array);
 		$number_of_years = $this -> first_val + 1;
-		$posts_per_year = __("<h2>Post Volumes per Year</h2>", 'post-volume-stats');
-		$posts_per_year .= __("<p>".$this->total_volume_of_posts." posts over the past ".$number_of_years." years.</p>", 'post-volume-stats');
+		$posts_per_year = '<h2>' . esc_html__('Post Volumes per Year', 'post-volume-stats') . '</h2>';
+		$posts_per_year .= '<p>' . sprintf(esc_html__('%d posts over the past %d years.', 'post-volume-stats'), $this -> total_volume_of_posts, $number_of_years) . '</p>';
 		$i = 0;
 		while ($this -> year_array[$i]['title']) {
 			if (0 < $this -> year_array[$i]['volume']) {
@@ -27,14 +27,23 @@ class sdpvsTextLists extends sdpvsArrays {
 	 */
 	public function sdpvs_posts_per_category_list($searchyear = "") {
 		parent::sdpvs_post_category_volumes($searchyear);
-		$posts_per_category = __("<h2>Post Volumes per Category!</h2>", 'post-volume-stats');
+		if(0 < $searchyear){
+			$posts_per_category = '<h2>' . sprintf(esc_html__('Post Volumes per Category: %d!', 'post-volume-stats'),$searchyear) . '</h2>';
+		}else{
+			$posts_per_category = '<h2>' . esc_html__('Post Volumes per Category!', 'post-volume-stats') . '</h2>';
+		}
+		
 		$c = 0;
 		while ($this -> category_array[$c]['id']) {
 			if (0 < $this -> category_array[$c]['volume']) {
 				$n++;
-				$posts_per_category .= "$n <a href='" . admin_url('edit.php?category_name=' . $this -> category_array[$c]['slug']) . "'>{$this->category_array[$c]['name']}</a>: {$this->category_array[$c]['volume']} posts<br>\n";
+				$link = admin_url('edit.php?category_name=' . $this -> category_array[$c]['slug']);
+				$posts_per_category .= sprintf(wp_kses(__('%1$d <a href="%2$s">%3$s</a>: %4$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), $n, esc_url($link), $this -> category_array[$c]['name'], $this -> category_array[$c]['volume']) . '<br />';
 			}
 			$c++;
+		}
+		if(0===$c){
+			$posts_per_category .= esc_html__('No posts with categories!', 'post-volume-stats') . '<br />';
 		}
 		return $posts_per_category;
 	}
@@ -44,14 +53,23 @@ class sdpvsTextLists extends sdpvsArrays {
 	 */
 	public function sdpvs_posts_per_tag_list($searchyear = "") {
 		parent::sdpvs_post_tag_volumes($searchyear);
-		$posts_per_tag = __("<h2>Post Volumes per Tag!</h2>", 'post-volume-stats');
+		if(0 < $searchyear){
+			$posts_per_tag = '<h2>' . sprintf(esc_html__('Post Volumes per Tag: %d!', 'post-volume-stats'),$searchyear) . '</h2>';
+		}else{
+			$posts_per_tag = '<h2>' . esc_html__('Post Volumes per Tag!', 'post-volume-stats') . '</h2>';
+		}
+		
 		$t = 0;
 		while ($this -> tag_array[$t]['id']) {
 			if (0 < $this -> tag_array[$t]['volume']) {
 				$n++;
-				$posts_per_tag .= "$n <a href='" . admin_url('edit.php?tag=' . $this -> tag_array[$t]['slug']) . "'>{$this->tag_array[$t]['name']}</a>: {$this->tag_array[$t]['volume']} posts<br>\n";
+				$link = admin_url('edit.php?tag=' . $this -> tag_array[$t]['slug']);
+				$posts_per_tag .= sprintf(wp_kses(__('%1$d <a href="%2$s">%3$s</a>: %4$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), $n, esc_url($link), $this -> tag_array[$t]['name'], $this -> tag_array[$t]['volume']) . '<br />';
 			}
 			$t++;
+		}
+		if(0===$t){
+			$posts_per_tag .= esc_html__('No posts with tags!', 'post-volume-stats') . '<br />';
 		}
 		return $posts_per_tag;
 	}
@@ -62,16 +80,16 @@ class sdpvsTextLists extends sdpvsArrays {
 	public function sdpvs_posts_per_dayofweek_list($searchyear = "") {
 		$searchyear = absint($searchyear);
 		parent::sdpvs_number_of_posts_per_dayofweek($searchyear);
-		parent::find_highest_first_and_total($this->dow_array);
-		$posts_per_dow = __("<h2>Post Volumes per Day of the Week</h2>", 'post-volume-stats');
+		parent::find_highest_first_and_total($this -> dow_array);
+		$posts_per_dow = '<h2>' . esc_html__('Post Volumes per Day of the Week', 'post-volume-stats') . '</h2>';
 		$posts_per_dow .= "<p>Which day of the week the $this->total_volume_of_posts posts were made on.</p>";
 		for ($i = 0; $i <= 6; $i++) {
 			if (!$this -> dow_array[$i]['volume']) {
 				$this -> dow_array[$i]['volume'] = 0;
 			}
-			$posts_per_dow .= "{$this->dow_array[$i]['title']}: {$this->dow_array[$i]['volume']} posts<br>\n";
+			$posts_per_dow .= '<p>' . sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> dow_array[$i]['title'], $this -> dow_array[$i]['volume']) . '</p>';
 		}
-		
+
 		return $posts_per_dow;
 	}
 
@@ -81,43 +99,43 @@ class sdpvsTextLists extends sdpvsArrays {
 	public function sdpvs_posts_per_hour_list($searchyear = "") {
 		$searchyear = absint($searchyear);
 		parent::sdpvs_number_of_posts_per_hour($searchyear);
-		parent::find_highest_first_and_total($this->hour_array);
-		$posts_per_hour = __("<h2>Post Volumes per Hour</h2>", 'post-volume-stats');
+		parent::find_highest_first_and_total($this -> hour_array);
+		$posts_per_hour = '<h2>' . esc_html__('Post Volumes per Hour', 'post-volume-stats') . '</h2>';
 		$posts_per_hour .= "<p>Which hour of the day the $this->total_volume_of_posts posts were made on.</p>";
 		for ($i = 0; $i <= 23; $i++) {
-			$posts_per_hour .= "{$this->hour_array[$i]['title']}: {$this->hour_array[$i]['volume']} posts<br>\n";
+			$posts_per_hour .= '<p>' . sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> hour_array[$i]['title'], $this -> hour_array[$i]['volume']) . '</p>';
 		}
 		return $posts_per_hour;
 	}
-	
+
 	/*
 	 * NUMBER OF POSTS PER MONTH TEXT
 	 */
 	public function sdpvs_posts_per_month_list($searchyear = "") {
 		$searchyear = absint($searchyear);
 		parent::sdpvs_number_of_posts_per_month($searchyear);
-		$posts_per_month = __("<h2>Post Volumes per Month</h2>", 'post-volume-stats');
+		$posts_per_month = '<h2>' . esc_html__('Post Volumes per Month', 'post-volume-stats') . '</h2>';
 		for ($i = 0; $i < 12; $i++) {
 			if (!$this -> month_array[$i]['volume']) {
 				$this -> month_array[$i]['volume'] = 0;
 			}
-			$posts_per_month .= __("<p>".$this->month_array[$i]['title'].": ".$this->month_array[$i]['volume']." posts</p>", 'post-volume-stats');
+			$posts_per_month .= '<p>' . sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> month_array[$i]['title'], $this -> month_array[$i]['volume']) . '</p>';
 		}
 		return $posts_per_month;
 	}
-	
+
 	/*
 	 * NUMBER OF POSTS PER DAY OF MONTH TEXT
 	 */
 	public function sdpvs_posts_per_day_of_month_list($searchyear = "") {
 		$searchyear = absint($searchyear);
 		parent::sdpvs_number_of_posts_per_dayofmonth($searchyear);
-		$posts_per_dom .= __("<h2>Post Volumes per Day of the Month</h2>", 'post-volume-stats');
+		$posts_per_dom .= '<h2>' . esc_html__('Post Volumes per Day of the Month', 'post-volume-stats') . '</h2>';
 		for ($i = 0; $i < 31; $i++) {
 			if (!$this -> dom_array[$i]['volume']) {
 				$this -> dom_array[$i]['volume'] = 0;
 			}
-			$posts_per_dom .= "{$this->dom_array[$i]['title']}: {$this->dom_array[$i]['volume']} posts<br>\n";
+			$posts_per_dom .= sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> dom_array[$i]['title'], $this -> dom_array[$i]['volume']) . '<br />';
 		}
 		return $posts_per_dom;
 	}

@@ -1,15 +1,16 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.03
+ * @version 3.0.06
  */
 /*
- Plugin Name: Post Volume Stats
- Plugin URI: https://github.com/shortdark/num-of-posts
- Description: Displays the post stats in a custom page in the admin area with graphical representations.
- Author: Neil Ludlow
- Version: 3.0.03
- Author URI: http://www.shortdark.net/
+ * Plugin Name: Post Volume Stats
+ * Plugin URI: https://github.com/shortdark/num-of-posts
+ * Description: Displays the post stats in the admin area with graphical representations and detailed lists.
+ * Author: Neil Ludlow
+ * Text Domain: post-volume-stats
+ * Version: 3.0.06
+ * Author URI: http://www.shortdark.net/
  */
 
 /**************************
@@ -34,6 +35,7 @@ if (!function_exists('add_action')) {
  ****************/
 
 define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('SDPVS__PLUGIN_FOLDER', 'post-volume-stats');
 
 /******************
  ** SETUP THE PAGE
@@ -51,6 +53,10 @@ require_once (SDPVS__PLUGIN_DIR . 'sdpvs_pie.php');
 
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_lists.php');
 
+require_once (SDPVS__PLUGIN_DIR . 'sdpvs_main.php');
+
+require_once (SDPVS__PLUGIN_DIR . 'sdpvs-subs.php');
+
 /**********************
  ** ASSEMBLE THE PAGE
  **********************/
@@ -62,87 +68,17 @@ function sdpvs_post_volume_stats_assembled() {
 		// Start the timer
 		$time_start = microtime(true);
 
-		// $year = get_option('sdpvs_year_option');
-		// $searchyear = absint($year['year_number']);
-
+		// Create an instance of the required class
 		$sdpvs_info = new sdpvsInfo();
 
-		$sdpvs_bar = new sdpvsBarChart();
+		// Call the method
+		$sdpvs_content = new sdpvsMainContent();
 
-		$sdpvs_pie = new sdpvsPieChart();
+		// Title
+		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats', 'post-volume-stats') . '</h1>';
 
-		$years = $sdpvs_info -> sdpvs_how_many_years_of_posts();
-		$options = get_option('sdpvs_year_option');
-		$selected = absint($options['year_number']);
-
-		echo __("<h1 class='sdpvs'>Post Volume Stats</h1>", 'post-volume-stats');
-		echo "<div style=\"width: 500px; display: inline-block;\">";
-		if (0 < $selected) {
-			echo __("<p class='sdpvs'>These are the stats for " . get_bloginfo('name') . " for the selected year: $selected.</p>", 'post-volume-stats');
-		} else {
-			echo __("<p class='sdpvs'>These are the all time stats for " . get_bloginfo('name') . ".</p>", 'post-volume-stats');
-		}
-		echo "</div>";
-		
-		echo "<div style=\"display: inline-block;\">";
-
-		echo "<form class='sdpvs_year_form' action='options.php' method='POST'>";
-		settings_fields('sdpvs_year_option');
-		echo "<select name=\"sdpvs_year_option[year_number]\" id=\"year-number\" onchange=\"this.form.submit()\">";
-		echo "<option value=\"\">All Years</option>";
-
-		for ($i = 0; $i <= $years; $i++) {
-			$searchyear = date('Y') - $i;
-			if ($searchyear == $selected) {
-				echo "<option value=\"$searchyear\" SELECTED >$searchyear</option>";
-			} else {
-				echo "<option value=\"$searchyear\">$searchyear</option>";
-			}
-
-		}
-
-		echo "</select>";
-		echo "</form>";
-		echo "</div>";
-		
-		echo "<hr>";
-
-		// posts per category pie chart
-		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_pie -> sdpvs_draw_pie_svg("category", $selected);
-		echo "</div>";
-
-		// posts per tag pie chart
-		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_pie -> sdpvs_draw_pie_svg("tag", $selected);
-		echo "</div>";
-
-		echo "<hr>";
-
-		// year bar chart
-		echo "<div class='sdpvs_col'>";
-		$sdpvs_bar -> sdpvs_draw_bar_chart_svg("year", $selected);
-		echo "</div>";
-
-		// posts per day of the week bar chart
-		echo "<div class='sdpvs_col'>";
-		$sdpvs_bar -> sdpvs_draw_bar_chart_svg("dayofweek", $selected);
-		echo "</div>";
-
-		// posts per hour of the day bar chart
-		echo "<div class='sdpvs_col'>";
-		$sdpvs_bar -> sdpvs_draw_bar_chart_svg("hour", $selected);
-		echo "</div>";
-
-		// posts per month bar chart
-		echo "<div class='sdpvs_col'>";
-		$sdpvs_bar -> sdpvs_draw_bar_chart_svg("month", $selected);
-		echo "</div>";
-
-		// posts per day of the month bar chart
-		echo "<div class='sdpvs_col'>";
-		$sdpvs_bar -> sdpvs_draw_bar_chart_svg("dayofmonth", $selected);
-		echo "</div>";
+		// Load content for the main page
+		$sdpvs_content -> sdpvs_page_content();
 
 		// DIV for loading
 		echo "<div id='sdpvs_loading'>";
@@ -153,20 +89,64 @@ function sdpvs_post_volume_stats_assembled() {
 		echo "</div>";
 	}
 
-	echo $sdpvs_info -> sdpvs_info();
+	$sdpvs_info -> sdpvs_info();
 
-	// Stop the timer
+	// Stop the timer and show the results
 	$time_end = microtime(true);
 	$elapsed_time = sprintf("%.5f", $time_end - $time_start);
-	echo __("<p>	Script time elapsed: " . $elapsed_time . " seconds</p>", 'post-volume-stats');
+	echo '<p>' . sprintf(esc_html__('Script time elapsed: %f seconds', 'post-volume-stats'), $elapsed_time) . '</p>';
 
-	// echo $content;
+}
+
+// Category page
+function sdpvs_category_page() {
+	if (is_admin()) {
+
+		// Start the timer
+		$time_start = microtime(true);
+
+		// Create an instance of the required class
+		$sdpvs_sub = new sdpvsSubPages();
+
+		// Call the method
+		$sdpvs_sub -> sdpvs_category_page_content();
+
+		// Stop the timer
+		$time_end = microtime(true);
+		$elapsed_time = sprintf("%.5f", $time_end - $time_start);
+		echo "<p>" . __("Script time elapsed: " . $elapsed_time . " seconds", 'post-volume-stats') . "</p>";
+
+	}
+	return;
+}
+
+// Tag page
+function sdpvs_tag_page() {
+	if (is_admin()) {
+
+		// Start the timer
+		$time_start = microtime(true);
+
+		// Create an instance of the required class
+		$sdpvs_sub = new sdpvsSubPages();
+
+		// Call the method
+		$sdpvs_sub -> sdpvs_tag_page_content();
+
+		// Stop the timer
+		$time_end = microtime(true);
+		$elapsed_time = sprintf("%.5f", $time_end - $time_start);
+		echo "<p>" . __("Script time elapsed: " . $elapsed_time . " seconds", 'post-volume-stats') . "</p>";
+
+	}
+	return;
 }
 
 // Register a custom menu page in the admin.
 function sdpvs_register_custom_page_in_menu() {
-
 	add_menu_page(__('Post Volume Stats', 'post-volume-stats'), __('Post Volume Stats', 'post-volume-stats'), 'manage_options', dirname(__FILE__), 'sdpvs_post_volume_stats_assembled', plugins_url('images/post-volume-stats-16x16.png', __FILE__), 1000);
+	add_submenu_page(dirname(__FILE__), 'Post Volume Stats: Categories', 'Categories', 'read', 'post-volume-stats-categories', 'sdpvs_category_page');
+	add_submenu_page(dirname(__FILE__), 'Post Volume Stats: Tags', 'Tags', 'read', 'post-volume-stats-tags', 'sdpvs_tag_page');
 }
 
 add_action('admin_menu', 'sdpvs_register_custom_page_in_menu');
@@ -206,7 +186,7 @@ function sanitize($input) {
  *************/
 
 function sdpvs_load_ajax_scripts() {
-	wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.3', 'screen');
+	wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.4', 'screen');
 	wp_enqueue_script('sdpvs_loader', plugins_url('sdpvs_loader.js', __FILE__), array('jquery'), '1.0.0', true);
 
 	// Importing external JQuery UI element using "wp-includes/script-loader.php"

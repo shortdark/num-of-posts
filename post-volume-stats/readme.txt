@@ -9,7 +9,7 @@ Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Shows stats for the volume of posts per year, category, tag, day-of-the-week and hour-of-the-day.
+Shows stats for the volume of posts per year, month, day-of-the-month, day-of-the-week, hour-of-the-day, categories and tags.
 
 == Description ==
 
@@ -41,6 +41,21 @@ Here are the latest screenshots...
 3. You can view the stats for each year individually. This shows the same blog with stats for one year selected.
 
 == Changelog ==
+
+= 3.0.06 =
+
+* Bug fix - allowed top line of bar chart if it is on the boundary of the chart.
+* I18n improvements.
+* Added "Category" and "Tag" admin subpages.
+* Tidied.
+
+= 3.0.05 =
+
+* Bug fixes.
+
+= 3.0.04 =
+
+* Added lines and legends to the bar charts.
 
 = 3.0.03 =
 
