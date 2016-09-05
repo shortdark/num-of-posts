@@ -1,9 +1,57 @@
 jQuery(document).ready(function($) {
+	
+	
+	$('#select-all').click(function(e) {
+			// Iterate each checkbox
+			$(':checkbox').each(function() {
+				this.checked = true;
+			});
+	});
+	
+	$('#deselect-all').click(function(e) {
+			// Iterate each checkbox
+			$(':checkbox').each(function() {
+				this.checked = false;
+			});
+	});
+
+	$(".sdpvs_tagselect").submit(function(e) {
+
+		// Serialize the form data
+		var sdpvs_checkboxdata = $(this).serialize();
+
+		var data = {
+			action : "sdpvs_select_tags",
+			whichtags : sdpvs_checkboxdata,
+			security : sdpvs_vars.ajax_nonce,
+		};
+
+		$.post(ajaxurl, data, function(response) {
+			$('#sdpvs_listsource').html(response);
+		});
+		return false;
+	});
+
+	$(".sdpvs_tagselect").submit(function(e) {
+		// Serialize the form data
+		var sdpvs_checkboxdata = $(this).serialize();
+
+		var data = {
+			action : "sdpvs_show_tags",
+			whichtags : sdpvs_checkboxdata,
+			security : sdpvs_vars.ajax_nonce,
+		};
+
+		$.post(ajaxurl, data, function(response) {
+			$('#sdpvs_listpublic').html(response);
+		});
+		return false;
+	});
 
 	$(".sdpvs_form").submit(function(e) {
 		$("#sdpvs_loading").show();
 		$(".sdpvs_load_content").attr('disabled', true);
-		
+
 		// Serialize the form data
 		var sdpvs_buttondata = $(this).serialize();
 
@@ -30,11 +78,12 @@ jQuery(document).ready(function($) {
 			container.hide();
 		}
 	});
-	
+
 	// Simple way to make the box draggable using jQuery UI...
 	$(function() {
 		$("#sdpvs_listcontent").draggable();
 	});
 
+	
 
 });

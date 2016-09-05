@@ -116,7 +116,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				} elseif ("asc" == $order) {
 					$x_start = $bar_width + $graphleft + ($i * $bar_width);
 				}
-				if ($chart_array[$i]['title'] == $searchyear and "year" == $which) {
+				if ($chart_array[$i]['name'] == $searchyear and "year" == $which) {
 					$color = $highlight_color;
 					$set_explicit_color = "background-color: $color;";
 				} else {
@@ -126,12 +126,12 @@ class sdpvsBarChart extends sdpvsArrays {
 				$bar_height = intval($graphheight * ($chart_array[$i]['volume'] / $this -> highest_val));
 
 				if ("year" == $which) {
-					if ($chart_array[$i]['title'] == $searchyear) {
+					if ($chart_array[$i]['name'] == $searchyear) {
 						$year_form_value = "";
 					} else {
-						$year_form_value = $chart_array[$i]['title'];
+						$year_form_value = $chart_array[$i]['name'];
 					}
-					$legend = $chart_array[$i]['title'];
+					$legend = $chart_array[$i]['name'];
 					if (strlen($legend) * 7 < $bar_width) {
 						$legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
 						$legend_y = $y_start + 17;
@@ -146,11 +146,11 @@ class sdpvsBarChart extends sdpvsArrays {
 					settings_fields('sdpvs_year_option');
 					// echo "<input type=\"hidden\" name=\"_wp_http_referer\" value=\"/wp-admin/admin.php?page=$slug\">";
 					echo " <input type=\"hidden\" name=\"sdpvs_year_option[year_number]\" id=\"year-number\" value=\"$year_form_value\">
-					<input type=\"submit\" style=\"height: " . $bar_height . "px; width: " . $bar_width . "px; $set_explicit_color\" title=\"{$chart_array[$i]['title']}, {$chart_array[$i]['volume']} posts\" class=\"sdpvs_year_bar\">
+					<input type=\"submit\" style=\"height: " . $bar_height . "px; width: " . $bar_width . "px; $set_explicit_color\" title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\" class=\"sdpvs_year_bar\">
           			</form>
   					</foreignObject>";
 				} else {
-					echo "<a xlink:title=\"{$chart_array[$i]['title']}, {$chart_array[$i]['volume']} posts\"><path fill-opacity=\"0.5\" d=\"M$x_start $y_start v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"$color\" class=\"sdpvs_bar\"></path></a>";
+					echo "<a xlink:title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\"><path fill-opacity=\"0.5\" d=\"M$x_start $y_start v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"$color\" class=\"sdpvs_bar\"></path></a>";
 				}
 
 			}

@@ -26,8 +26,9 @@ Go to the [Shortdark Wordpress plugin page](http://www.shortdark.net/wordpress-p
 
 This section describes how to install the plugin and get it working.
 
-1. Upload the plugin folder to the `/wp-content/plugins/` directory, or install the plugin through the WordPress plugins screen directly.
-2. Activate the plugin through the 'Plugins' screen in WordPress
+1. Upload the plugin folder to the `/wp-content/plugins/` directory, or install the plugin through the WordPress 
+plugins screen directly.
+2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. The menu item "Post Volume Stats" should now be in your admin menu.
 
 == Screenshots ==
@@ -35,12 +36,16 @@ This section describes how to install the plugin and get it working.
 Here are the latest screenshots...
 
 1. Shows the stats for a blog with 3 years of posts.
-
 2. Shows the draggable AJAX data lists, and highlighted bar of a bar chart.
-
 3. You can view the stats for each year individually. This shows the same blog with stats for one year selected.
+4. The new "Tag" page allows the user to export the data to HTML, but soon it will allow the user 
+to take a more indepth view.
 
 == Changelog ==
+
+= 3.0.07 =
+
+* Export "Tags" data to HTML.
 
 = 3.0.06 =
 

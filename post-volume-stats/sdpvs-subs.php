@@ -79,11 +79,18 @@ defined('ABSPATH') or die('No script kiddies please!' );
 
 		echo "<hr>";
 		
-		echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear);
+		echo "<div style='display: inline-block; width: 250px; vertical-align: top;' id='sdpvs_listselect'>";
+		echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear,'subpage');
+		echo "</div>";
 		
-		echo '<h2>' . esc_html__('Coming Soon', 'post-volume-stats') . '</h2>';
-		echo '<p>' . esc_html__("It'll soon be easier to export these results.", 'post-volume-stats') . '</p>';
-
+		echo "<div style='display: inline-block; width: 500px; vertical-align: top;' id='sdpvs_listsource'>";
+		echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear,'source');
+		echo "</div>";
+		
+		echo "<div style='display: inline-block; width: 250px; vertical-align: top;' id='sdpvs_listpublic'>";
+		echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear,'public');
+		echo "</div>";
+		
 		return;
 	}
 

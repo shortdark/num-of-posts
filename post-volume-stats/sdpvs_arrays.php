@@ -150,7 +150,7 @@ abstract class sdpvsArrays {
 			if (0 > $found_posts or !$found_posts or "" == $found_posts) {
 				$found_posts = 0;
 			}
-			$this -> year_array[$i]['title'] = $searchyear;
+			$this -> year_array[$i]['name'] = $searchyear;
 			$this -> year_array[$i]['volume'] = $found_posts;
 			$wpdb -> flush();
 		}
@@ -164,7 +164,7 @@ abstract class sdpvsArrays {
 		$searchyear = absint($searchyear);
 		$days_of_week = array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
 		for ($w = 0; $w <= 6; $w++) {
-			$this -> dow_array[$w]['title'] = $days_of_week[$w];
+			$this -> dow_array[$w]['name'] = $days_of_week[$w];
 		}
 		global $wpdb;
 		if (0 < $searchyear) {
@@ -201,7 +201,7 @@ abstract class sdpvsArrays {
 				$found_posts = 0;
 			}
 			$j = sprintf("%02s", $i);
-			$this -> hour_array[$i]['title'] = "$j:00-$j:59";
+			$this -> hour_array[$i]['name'] = "$j:00-$j:59";
 			$this -> hour_array[$i]['volume'] = $found_posts;
 		}
 		$wpdb -> flush();
@@ -215,7 +215,7 @@ abstract class sdpvsArrays {
 		$months_of_year = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 		$searchyear = absint($searchyear);
 		for ($w = 0; $w < 12; $w++) {
-			$this -> month_array[$w]['title'] = $months_of_year[$w];
+			$this -> month_array[$w]['name'] = $months_of_year[$w];
 		}
 		global $wpdb;
 		for ($i = 0; $i < 12; $i++) {
@@ -254,7 +254,7 @@ abstract class sdpvsArrays {
 			if (0 > $found_posts or !$found_posts or "" == $found_posts) {
 				$found_posts = 0;
 			}
-			$this -> dom_array[$i]['title'] = $searchday;
+			$this -> dom_array[$i]['name'] = $searchday;
 			$this -> dom_array[$i]['volume'] = $found_posts;
 		}
 		$wpdb -> flush();
@@ -299,7 +299,7 @@ abstract class sdpvsArrays {
 		$this -> first_val = 0;
 		$this -> total_volume_of_posts = 0;
 		$i = 0;
-		while ($testarray[$i]['title']) {
+		while ($testarray[$i]['name']) {
 			$this -> total_volume_of_posts += $testarray[$i]['volume'];
 			if (0 < $testarray[$i]['volume'] and $this -> highest_val < $testarray[$i]['volume']) {
 				$this -> highest_val = $testarray[$i]['volume'];

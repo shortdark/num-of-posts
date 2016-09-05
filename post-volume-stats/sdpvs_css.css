@@ -43,6 +43,12 @@ a .sdpvs_segment:hover, a .sdpvs_bar:hover {
 	border: 1px solid #fff;
 }
 
+/* Tag Select Page */
+
+#select-all, #deselect-all {
+	cursor: pointer;
+}
+
 /* LIST BOX */
 
 #sdpvs_listcontent {
