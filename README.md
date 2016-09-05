@@ -9,4 +9,6 @@ The lists have been moved to AJAX, to free up more space and so it works better 
 
 Now, you are able to select a year and just see the stats for that one year. 
 
+The latest thing added is the ability to export the data as HTML, so that you can insert it into a blog post. This will eventually be improved and some more ideas for presenting the data added. It's a work of constant evolution.
+
 https://wordpress.org/plugins/post-volume-stats/
