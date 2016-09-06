@@ -85,14 +85,12 @@ class sdpvsTextLists extends sdpvsArrays {
 					$x = 0;
 					while ($select_array[1][$x]) {
 						if ($select_array[1][$x] == $this -> category_array[$c]['id']) {
-							// make all ordered lists and remove the $n
-							$n++;
-							$percentage_of_total = ($this -> category_array[$c]['volume'] / $this -> total_volume_of_posts) * 100;
-							$percentage_of_total = sprintf("%.1f", $percentage_of_total);
+							// $percentage_of_total = ($this -> category_array[$c]['volume'] / $this -> total_volume_of_posts) * 100;
+							// $percentage_of_total = sprintf("%.1f", $percentage_of_total);
 
-							$link = get_tag_link($this -> category_array[$c]['id']);
+							$link = get_category_link($this -> category_array[$c]['id']);
 
-							$selectable .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts, %4$s&#37;', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> category_array[$c]['name'], $this -> category_array[$c]['volume'], $percentage_of_total) . '</li>';
+							$selectable .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> category_array[$c]['name'], $this -> category_array[$c]['volume']) . '</li>';
 
 						}
 						$x++;
@@ -158,9 +156,8 @@ class sdpvsTextLists extends sdpvsArrays {
 			$t = 0;
 			while ($this -> tag_array[$t]['id']) {
 				if (0 < $this -> tag_array[$t]['volume']) {
-					if ("admin" == $list_type or "subpage" == $list_type) {
-						$link = admin_url('edit.php?tag=' . $this -> tag_array[$t]['slug']);
-					}
+					$link = admin_url('edit.php?tag=' . $this -> tag_array[$t]['slug']);
+
 					if ("admin" == $list_type) {
 						$posts_per_tag .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> tag_array[$t]['name'], $this -> tag_array[$t]['volume']) . '</li>';
 					} elseif ("subpage" == $list_type) {
@@ -183,15 +180,12 @@ class sdpvsTextLists extends sdpvsArrays {
 					$x = 0;
 					while ($select_array[1][$x]) {
 						if ($select_array[1][$x] == $this -> tag_array[$t]['id']) {
-							// make all ordered lists and remove the $n
-							$n++;
-							$percentage_of_total = ($this -> tag_array[$t]['volume'] / $this -> total_volume_of_posts) * 100;
-							$percentage_of_total = sprintf("%.1f", $percentage_of_total);
+							// $percentage_of_total = ($this -> tag_array[$t]['volume'] / $this -> total_volume_of_posts) * 100;
+							// $percentage_of_total = sprintf("%.1f", $percentage_of_total);
 
 							$link = get_tag_link($this -> tag_array[$t]['id']);
 
-							// $posts_per_tag .= '&lt;li&gt;' . sprintf(wp_kses(__('&lt;a href="%1$s"&gt;%2$s&lt;/a&gt;: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> tag_array[$t]['name'], $this -> tag_array[$t]['volume']) . '&lt;/li&gt;';
-							$selectable .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts, %4$s&#37;', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> tag_array[$t]['name'], $this -> tag_array[$t]['volume'], $percentage_of_total) . '</li>';
+							$selectable .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> tag_array[$t]['name'], $this -> tag_array[$t]['volume']) . '</li>';
 
 						}
 						$x++;
