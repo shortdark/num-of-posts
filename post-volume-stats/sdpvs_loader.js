@@ -15,6 +15,39 @@ jQuery(document).ready(function($) {
 			});
 	});
 
+	$(".sdpvs_catselect").submit(function(e) {
+
+		// Serialize the form data
+		var sdpvs_checkboxdata = $(this).serialize();
+
+		var data = {
+			action : "sdpvs_select_cats",
+			whichcats : sdpvs_checkboxdata,
+			security : sdpvs_vars.ajax_nonce,
+		};
+
+		$.post(ajaxurl, data, function(response) {
+			$('#sdpvs_listsource').html(response);
+		});
+		return false;
+	});
+
+	$(".sdpvs_catselect").submit(function(e) {
+		// Serialize the form data
+		var sdpvs_checkboxdata = $(this).serialize();
+
+		var data = {
+			action : "sdpvs_show_cats",
+			whichcats : sdpvs_checkboxdata,
+			security : sdpvs_vars.ajax_nonce,
+		};
+
+		$.post(ajaxurl, data, function(response) {
+			$('#sdpvs_listpublic').html(response);
+		});
+		return false;
+	});
+	
 	$(".sdpvs_tagselect").submit(function(e) {
 
 		// Serialize the form data
@@ -47,6 +80,8 @@ jQuery(document).ready(function($) {
 		});
 		return false;
 	});
+	
+	
 
 	$(".sdpvs_form").submit(function(e) {
 		$("#sdpvs_loading").show();

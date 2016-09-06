@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.07
+ * @version 3.0.08
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with graphical representations and detailed lists.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.0.07
+ * Version: 3.0.08
  * Author URI: http://www.shortdark.net/
  */
 
@@ -145,8 +145,8 @@ function sdpvs_tag_page() {
 // Register a custom menu page in the admin.
 function sdpvs_register_custom_page_in_menu() {
 	add_menu_page(esc_html__('Post Volume Stats', 'post-volume-stats'), esc_html__('Post Volume Stats', 'post-volume-stats'), 'manage_options', dirname(__FILE__), 'sdpvs_post_volume_stats_assembled', plugins_url('images/post-volume-stats-16x16.png', __FILE__), 1000);
-	add_submenu_page(dirname(__FILE__), 'Post Volume Stats: Categories', 'Categories', 'read', 'post-volume-stats-categories', 'sdpvs_category_page');
-	add_submenu_page(dirname(__FILE__), 'Post Volume Stats: Tags', 'Tags', 'read', 'post-volume-stats-tags', 'sdpvs_tag_page');
+	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Categories', 'post-volume-stats'), esc_html__('Categories', 'post-volume-stats'), 'read', 'post-volume-stats-categories', 'sdpvs_category_page');
+	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Tags', 'post-volume-stats'), esc_html__('Tags', 'post-volume-stats'), 'read', 'post-volume-stats-tags', 'sdpvs_tag_page');
 }
 
 add_action('admin_menu', 'sdpvs_register_custom_page_in_menu');
@@ -198,6 +198,8 @@ function sdpvs_load_all_scripts() {
 	'ajaxurl' => admin_url('admin-ajax.php'),
 	//To use this variable in javascript use "sdpvs_vars.whichdata"
 	'whichdata' => $whichdata,
+	//To use this variable in javascript use "sdpvs_vars.whichcats"
+	'whichcats' => $whichcats,
 	//To use this variable in javascript use "sdpvs_vars.whichtags"
 	'whichtags' => $whichtags,
 	// nonce...
@@ -243,6 +245,52 @@ function sdpvs_process_ajax() {
 
 add_action('wp_ajax_sdpvs_get_results', 'sdpvs_process_ajax');
 
+function sdpvs_cats_source() {
+	// Security check
+	check_ajax_referer('num-of-posts', 'security');
+
+	// create an instance of the list class
+	$sdpvs_lists = new sdpvsTextLists();
+
+	// Extract the variables from serialized string
+	$gotit = filter_var($_POST['whichcats'], FILTER_SANITIZE_STRING);
+	preg_match_all('/=([0-9]*)/', $gotit, $matches);
+
+	$year = get_option('sdpvs_year_option');
+	$searchyear = absint($year['year_number']);
+
+	echo $sdpvs_lists -> sdpvs_posts_per_category_list($searchyear, 'source', $matches);
+
+	// Always die() AJAX
+	die();
+}
+
+add_action('wp_ajax_sdpvs_select_cats', 'sdpvs_cats_source');
+
+function sdpvs_cats_public() {
+	// Security check
+	check_ajax_referer('num-of-posts', 'security');
+
+	// create an instance of the list class
+	$sdpvs_lists = new sdpvsTextLists();
+
+	// Extract the variables from serialized string
+	$gotit = filter_var($_POST['whichcats'], FILTER_SANITIZE_STRING);
+	preg_match_all('/=([0-9]*)/', $gotit, $matches);
+
+	$year = get_option('sdpvs_year_option');
+	$searchyear = absint($year['year_number']);
+
+	echo $sdpvs_lists -> sdpvs_posts_per_category_list($searchyear, 'public', $matches);
+
+	// Always die() AJAX
+	die();
+}
+
+add_action('wp_ajax_sdpvs_show_cats', 'sdpvs_cats_public');
+
+
+
 function sdpvs_tags_source() {
 	// Security check
 	check_ajax_referer('num-of-posts', 'security');
@@ -286,4 +334,5 @@ function sdpvs_tags_public() {
 }
 
 add_action('wp_ajax_sdpvs_show_tags', 'sdpvs_tags_public');
+
 ?>

@@ -43,6 +43,10 @@ to take a more indepth view.
 
 == Changelog ==
 
+= 3.0.08 =
+
+* Export "Categories" data to HTML.
+
 = 3.0.07 =
 
 * Export "Tags" data to HTML.

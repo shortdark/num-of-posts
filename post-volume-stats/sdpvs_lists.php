@@ -25,23 +25,93 @@ class sdpvsTextLists extends sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER CATEGORY TEXT
 	 */
-	public function sdpvs_posts_per_category_list($searchyear = "") {
+	public function sdpvs_posts_per_category_list($searchyear = "", $list_type = "admin", $select_array = "") {
 		parent::sdpvs_post_category_volumes($searchyear);
-		if (0 < $searchyear) {
-			$posts_per_category = '<h2>' . sprintf(esc_html__('Post Volumes per Category: %d!', 'post-volume-stats'), $searchyear) . '</h2>';
-		} else {
-			$posts_per_category = '<h2>' . esc_html__('Post Volumes per Category!', 'post-volume-stats') . '</h2>';
+		$test = $this -> category_array;
+		parent::find_highest_first_and_total($test);
+
+		if ("subpage" == $list_type) {
+			$posts_per_category = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
+		} elseif ("source" == $list_type) {
+			$posts_per_category = '<h3>' . esc_html__('2. HTML', 'post-volume-stats') . '</h3><code>';
+		} elseif ("public" == $list_type) {
+			$posts_per_category = '<h3>' . esc_html__('3. Preview', 'post-volume-stats') . '</h3>';
 		}
 
-		$c = 0;
-		while ($this -> category_array[$c]['id']) {
-			if (0 < $this -> category_array[$c]['volume']) {
-				$n++;
-				$link = admin_url('edit.php?category_name=' . $this -> category_array[$c]['slug']);
-				$posts_per_category .= sprintf(wp_kses(__('%1$d <a href="%2$s">%3$s</a>: %4$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), $n, esc_url($link), $this -> category_array[$c]['name'], $this -> category_array[$c]['volume']) . '<br />';
-			}
-			$c++;
+		if (0 < $searchyear) {
+			$title = sprintf(esc_html__('Post Volumes per Category: %d!', 'post-volume-stats'), $searchyear);
+		} else {
+			$title = esc_html__('Post Volumes per Category!', 'post-volume-stats');
 		}
+
+		if ("source" == $list_type) {
+			$selectable .= '<h2>' . $title . '</h2>';
+		} else {
+			$posts_per_category .= '<h2>' . $title . '</h2>';
+		}
+
+		if ("" == $select_array and ("admin" == $list_type or "subpage" == $list_type)) {
+			if ("subpage" == $list_type) {
+				$posts_per_category .= '<p>' . esc_html__('Check the tags you\'d like to export then click the \'Show HTML\' button.', 'post-volume-stats') . '</p>';
+				$posts_per_category .= "<form class='sdpvs_catselect' action='' method='POST'>";
+				$posts_per_category .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='Show HTML'></div>";
+				$posts_per_category .= "<div style='display: block; padding: 5px;'><a id='select-all'>Select All</a> / <a id='deselect-all'>Deselect All</a></div>";
+			}
+			$posts_per_category .= '<ol>';
+			$c = 0;
+			while ($this -> category_array[$c]['id']) {
+				if (0 < $this -> category_array[$c]['volume']) {
+					$link = admin_url('edit.php?category_name=' . $this -> category_array[$c]['slug']);
+
+					if ("admin" == $list_type) {
+						$posts_per_category .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> category_array[$c]['name'], $this -> category_array[$c]['volume']) . '</li>';
+					} elseif ("subpage" == $list_type) {
+						$posts_per_category .= "<li><label><input type=\"checkbox\" name=\"tagid\" value=\"{$this->category_array[$c]['id']}\">" . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> category_array[$c]['name'], $this -> category_array[$c]['volume']) . '</label></li>';
+					}
+				}
+				$c++;
+			}
+			$posts_per_category .= '</ol>';
+			if ("subpage" == $list_type) {
+				$posts_per_category .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='Show HTML'></div>";
+				$posts_per_category .= "</form>";
+			}
+		} else {
+			$c = 0;
+			$selectable .= "<ol>";
+			while ($this -> category_array[$c]['id']) {
+				if (0 < $this -> category_array[$c]['volume']) {
+
+					$x = 0;
+					while ($select_array[1][$x]) {
+						if ($select_array[1][$x] == $this -> category_array[$c]['id']) {
+							// make all ordered lists and remove the $n
+							$n++;
+							$percentage_of_total = ($this -> category_array[$c]['volume'] / $this -> total_volume_of_posts) * 100;
+							$percentage_of_total = sprintf("%.1f", $percentage_of_total);
+
+							$link = get_tag_link($this -> category_array[$c]['id']);
+
+							$selectable .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts, %4$s&#37;', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> category_array[$c]['name'], $this -> category_array[$c]['volume'], $percentage_of_total) . '</li>';
+
+						}
+						$x++;
+					}
+
+				}
+				$c++;
+			}
+			$selectable .= "</ol>";
+		}
+
+		if ("source" == $list_type) {
+			$selectable = str_replace("<", "&lt;", $selectable);
+			$selectable = str_replace(">", "&gt;", $selectable);
+			$posts_per_category .= $selectable . '</code>';
+		} elseif ("public" == $list_type) {
+			$posts_per_category .= $selectable;
+		}
+
 		if (0 === $c) {
 			$posts_per_category .= esc_html__('No posts with categories!', 'post-volume-stats') . '<br />';
 		}
@@ -67,7 +137,6 @@ class sdpvsTextLists extends sdpvsArrays {
 
 		if (0 < $searchyear) {
 			$title = sprintf(esc_html__('Post Volumes per Tag: %d!', 'post-volume-stats'), $searchyear);
-
 		} else {
 			$title = esc_html__('Post Volumes per Tag!', 'post-volume-stats');
 		}

@@ -1,8 +1,8 @@
 <?php
 
-defined('ABSPATH') or die('No script kiddies please!' );
+defined('ABSPATH') or die('No script kiddies please!');
 
-	class sdpvsSubPages {
+class sdpvsSubPages {
 
 	public function sdpvs_category_page_content() {
 		// create an instance of the required classes
@@ -12,8 +12,7 @@ defined('ABSPATH') or die('No script kiddies please!' );
 
 		$year = get_option('sdpvs_year_option');
 		$searchyear = absint($year['year_number']);
-		
-		
+
 		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Categories', 'post-volume-stats') . '</h1>';
 
 		// Plugin Description
@@ -29,22 +28,28 @@ defined('ABSPATH') or die('No script kiddies please!' );
 		echo "<div class='sdpvs_col'>";
 		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('year', $searchyear, 'y');
 		echo "</div>";
-		
+
 		// posts per tag pie chart
 		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_pie -> sdpvs_draw_pie_svg('category', $searchyear,'y');
+		echo $sdpvs_pie -> sdpvs_draw_pie_svg('category', $searchyear, 'y');
 		echo "</div>";
 
 		echo "<hr>";
-		
-		echo $sdpvs_lists -> sdpvs_posts_per_category_list($searchyear);
-		
-		echo '<h2>' . esc_html__('Coming Soon', 'post-volume-stats') . '</h2>';
-		echo '<p>' . esc_html__("It'll soon be easier to export these results.", 'post-volume-stats') . '</p>';
+
+		echo "<div style='display: inline-block; width: 250px; vertical-align: top;' id='sdpvs_listselect'>";
+		echo $sdpvs_lists -> sdpvs_posts_per_category_list($searchyear, 'subpage');
+		echo "</div>";
+
+		echo "<div style='display: inline-block; width: 500px; vertical-align: top;' id='sdpvs_listsource'>";
+		echo $sdpvs_lists -> sdpvs_posts_per_category_list($searchyear, 'source');
+		echo "</div>";
+
+		echo "<div style='display: inline-block; width: 250px; vertical-align: top;' id='sdpvs_listpublic'>";
+		echo $sdpvs_lists -> sdpvs_posts_per_category_list($searchyear, 'public');
+		echo "</div>";
 
 		return;
 	}
-
 
 	public function sdpvs_tag_page_content() {
 		// create an instance of the required classes
@@ -54,8 +59,7 @@ defined('ABSPATH') or die('No script kiddies please!' );
 
 		$year = get_option('sdpvs_year_option');
 		$searchyear = absint($year['year_number']);
-		
-		
+
 		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Tags', 'post-volume-stats') . '</h1>';
 
 		// Plugin Description
@@ -71,26 +75,26 @@ defined('ABSPATH') or die('No script kiddies please!' );
 		echo "<div class='sdpvs_col'>";
 		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('year', $searchyear, 'y');
 		echo "</div>";
-		
+
 		// posts per tag pie chart
 		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_pie -> sdpvs_draw_pie_svg('tag', $searchyear,'y');
+		echo $sdpvs_pie -> sdpvs_draw_pie_svg('tag', $searchyear, 'y');
 		echo "</div>";
 
 		echo "<hr>";
-		
+
 		echo "<div style='display: inline-block; width: 250px; vertical-align: top;' id='sdpvs_listselect'>";
-		echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear,'subpage');
+		echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear, 'subpage');
 		echo "</div>";
-		
+
 		echo "<div style='display: inline-block; width: 500px; vertical-align: top;' id='sdpvs_listsource'>";
-		echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear,'source');
+		echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear, 'source');
 		echo "</div>";
-		
+
 		echo "<div style='display: inline-block; width: 250px; vertical-align: top;' id='sdpvs_listpublic'>";
-		echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear,'public');
+		echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear, 'public');
 		echo "</div>";
-		
+
 		return;
 	}
 
