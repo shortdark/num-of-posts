@@ -16,7 +16,6 @@ jQuery(document).ready(function($) {
 	});
 
 	$(".sdpvs_catselect").submit(function(e) {
-
 		// Serialize the form data
 		var sdpvs_checkboxdata = $(this).serialize();
 
@@ -27,23 +26,7 @@ jQuery(document).ready(function($) {
 		};
 
 		$.post(ajaxurl, data, function(response) {
-			$('#sdpvs_listsource').html(response);
-		});
-		return false;
-	});
-
-	$(".sdpvs_catselect").submit(function(e) {
-		// Serialize the form data
-		var sdpvs_checkboxdata = $(this).serialize();
-
-		var data = {
-			action : "sdpvs_show_cats",
-			whichcats : sdpvs_checkboxdata,
-			security : sdpvs_vars.ajax_nonce,
-		};
-
-		$.post(ajaxurl, data, function(response) {
-			$('#sdpvs_listpublic').html(response);
+			$('#sdpvs_ajax_lists').html(response);
 		});
 		return false;
 	});
@@ -60,23 +43,7 @@ jQuery(document).ready(function($) {
 		};
 
 		$.post(ajaxurl, data, function(response) {
-			$('#sdpvs_listsource').html(response);
-		});
-		return false;
-	});
-
-	$(".sdpvs_tagselect").submit(function(e) {
-		// Serialize the form data
-		var sdpvs_checkboxdata = $(this).serialize();
-
-		var data = {
-			action : "sdpvs_show_tags",
-			whichtags : sdpvs_checkboxdata,
-			security : sdpvs_vars.ajax_nonce,
-		};
-
-		$.post(ajaxurl, data, function(response) {
-			$('#sdpvs_listpublic').html(response);
+			$('#sdpvs_ajax_lists').html(response);
 		});
 		return false;
 	});

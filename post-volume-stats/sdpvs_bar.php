@@ -13,7 +13,7 @@ class sdpvsBarChart extends sdpvsArrays {
 	/**
 	 * DISPLAY DATA IN A BAR CHART
 	 */
-	public function sdpvs_draw_bar_chart_svg($which = "", $searchyear = "", $subpage = "") {
+	public function sdpvs_draw_bar_chart_svg($which = "", $searchyear = "", $subpage = "", $public = "") {
 		$searchyear = absint($searchyear);
 		$years_total = 0;
 		$number_of_years = 0;
@@ -22,7 +22,7 @@ class sdpvsBarChart extends sdpvsArrays {
 		$graphheight = 200;
 		$graphtop = 10;
 		$graphbottom = 30;
-		$graphleft = 50;
+		$graphleft = '';
 		$graph_color = "blue";
 		$highlight_color = "red";
 
@@ -32,36 +32,66 @@ class sdpvsBarChart extends sdpvsArrays {
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = $this -> first_val + 1;
 			$order = "desc";
-			echo '<h2>' . esc_html__('Years', 'post-volume-stats') . '</h2>';
+			if ("y" != $public) {
+				echo '<h2>' . esc_html__('Years', 'post-volume-stats') . '</h2>';
+			} else {
+				echo '<h2>' . esc_html__('Posts per Year', 'post-volume-stats') . '</h2>';
+			}
 		} elseif ("dayofweek" == $which) {
 			parent::sdpvs_number_of_posts_per_dayofweek($searchyear);
 			$chart_array = $this -> dow_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 7;
 			$order = "asc";
-			echo '<h2>' . esc_html__('Days of the Week', 'post-volume-stats') . '</h2>';
+			if ("y" != $public) {
+				echo '<h2>' . esc_html__('Days of the Week', 'post-volume-stats') . '</h2>';
+			} else {
+				echo '<h2>' . esc_html__('Posts per Day of the Week', 'post-volume-stats') . '</h2>';
+			}
 		} elseif ("hour" == $which) {
 			parent::sdpvs_number_of_posts_per_hour($searchyear);
 			$chart_array = $this -> hour_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 24;
 			$order = "asc";
-			echo '<h2>' . esc_html__('Hours', 'post-volume-stats') . '</h2>';
+			if ("y" != $public) {
+				echo '<h2>' . esc_html__('Hours', 'post-volume-stats') . '</h2>';
+			} else {
+				echo '<h2>' . esc_html__('Posts per Hour', 'post-volume-stats') . '</h2>';
+			}
 		} elseif ("month" == $which) {
 			parent::sdpvs_number_of_posts_per_month($searchyear);
 			$chart_array = $this -> month_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 12;
 			$order = "asc";
-			echo '<h2>' . esc_html__('Months', 'post-volume-stats') . '</h2>';
+			if ("y" != $public) {
+				echo '<h2>' . esc_html__('Months', 'post-volume-stats') . '</h2>';
+			} else {
+				echo '<h2>' . esc_html__('Posts per Month', 'post-volume-stats') . '</h2>';
+			}
 		} elseif ("dayofmonth" == $which) {
 			parent::sdpvs_number_of_posts_per_dayofmonth($searchyear);
 			$chart_array = $this -> dom_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 31;
 			$order = "asc";
-			echo '<h2>' . esc_html__('Days of the Month', 'post-volume-stats') . '</h2>';
+			if ("y" != $public) {
+				echo '<h2>' . esc_html__('Days of the Month', 'post-volume-stats') . '</h2>';
+			} else {
+				echo '<h2>' . esc_html__('Posts per Day of the Month', 'post-volume-stats') . '</h2>';
+			}
 		}
+		if ("year" != $which and "y" == $public) {
+			if (0 < $searchyear) {
+				echo '<h3>' . sprintf(esc_html__('%d', 'post-volume-stats'), $searchyear) . '</h3>';
+			} else {
+				echo '<h3>' . esc_html__('All-time', 'post-volume-stats') . '</h3>';
+			}
+		}
+
+		// specify the margin width on the left of the bar chart
+		$graphleft = (strlen($this -> highest_val) * 7) + 5;
 
 		$bar_width = $graphwidth / $bars_total;
 		if (17 > $bar_width) {
@@ -140,15 +170,21 @@ class sdpvsBarChart extends sdpvsArrays {
 					$form_y_offset = $y_start - $bar_height;
 					$form_x_offset = $x_start - $bar_width;
 					$slug = SDPVS__PLUGIN_FOLDER;
-					echo "<path fill-opacity=\"0.5\" d=\"M$x_start $y_start v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"white\"></path>";
-					echo "<foreignObject x=\"$form_x_offset\" y=\"$form_y_offset\" width=\"$bar_width\" height=\"$bar_height\">";
-					echo "<form action=\"options.php\" method=\"post\" class=\"sdpvs_year_form\" style=\"border:0; margin:0;padding:0;\">";
-					settings_fields('sdpvs_year_option');
-					// echo "<input type=\"hidden\" name=\"_wp_http_referer\" value=\"/wp-admin/admin.php?page=$slug\">";
-					echo " <input type=\"hidden\" name=\"sdpvs_year_option[year_number]\" id=\"year-number\" value=\"$year_form_value\">
-					<input type=\"submit\" style=\"height: " . $bar_height . "px; width: " . $bar_width . "px; $set_explicit_color\" title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\" class=\"sdpvs_year_bar\">
-          			</form>
-  					</foreignObject>";
+
+					if ("y" != $public) {
+						echo "<path fill-opacity=\"0.5\" d=\"M$x_start $y_start v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"white\"></path>";
+						echo "<foreignObject x=\"$form_x_offset\" y=\"$form_y_offset\" width=\"$bar_width\" height=\"$bar_height\">";
+						echo "<form action=\"options.php\" method=\"post\" class=\"sdpvs_year_form\" style=\"border:0; margin:0;padding:0;\">";
+						settings_fields('sdpvs_year_option');
+						// echo "<input type=\"hidden\" name=\"_wp_http_referer\" value=\"/wp-admin/admin.php?page=$slug\">";
+						echo " <input type=\"hidden\" name=\"sdpvs_year_option[year_number]\" id=\"year-number\" value=\"$year_form_value\">
+						<input type=\"submit\" style=\"height: " . $bar_height . "px; width: " . $bar_width . "px; $set_explicit_color\" title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\" class=\"sdpvs_year_bar\">
+          				</form>
+  						</foreignObject>";
+					} else {
+						echo "<a xlink:title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\"><path fill-opacity=\"0.5\" d=\"M$x_start $y_start v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"$color\" class=\"sdpvs_bar\"></path></a>";
+					}
+
 				} else {
 					echo "<a xlink:title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\"><path fill-opacity=\"0.5\" d=\"M$x_start $y_start v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"$color\" class=\"sdpvs_bar\"></path></a>";
 				}
@@ -158,7 +194,7 @@ class sdpvsBarChart extends sdpvsArrays {
 		}
 
 		echo "</svg>\n";
-		if ("n" == $subpage) {
+		if ("n" == $subpage and "y" != $public) {
 			echo "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form></p>";
 		}
 

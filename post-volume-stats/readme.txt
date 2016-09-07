@@ -2,9 +2,9 @@
 === Post Volume Stats ===
 Contributors: shortdark
 Donate link: http://www.shortdark.net/wordpress-plugin/
-Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour
+Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget
 Requires at least: 3.5
-Tested up to: 4.6
+Tested up to: 4.6.1
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,10 +13,11 @@ Shows stats for the volume of posts per year, month, day-of-the-month, day-of-th
 
 == Description ==
 
-This plugin to look at the volume of posts in each category and tag, and also the volume 
+This plugin looks at the volume of posts in each category and tag, and also the volume 
 of posts per year, month, day-of-the-month, day-of-the-week and hour. It works better the more posts 
 you have, and if you use categories and tags. You can now specify a year to look at the post volume stats for
-that year.
+that year. You can now export the tag and category results to HTML, and now the bar charts can be added to a sidebar 
+with Post Volume Stats widget.
 
 Please let me know if you like this plugin by leaving a review or [contacting me](http://www.shortdark.net/contact-me/).
 
@@ -35,13 +36,31 @@ plugins screen directly.
 
 Here are the latest screenshots...
 
-1. Shows the stats for a blog with 3 years of posts.
+1. Shows the main page of "Post Volume Stats".
 2. Shows the draggable AJAX data lists, and highlighted bar of a bar chart.
 3. You can view the stats for each year individually. This shows the same blog with stats for one year selected.
-4. The new "Tag" page allows the user to export the data to HTML, but soon it will allow the user 
-to take a more indepth view.
+4. The new "Category" and "Tag" pages allow the user to export the data to HTML. Soon these pages will allow 
+the user to take a more indepth view into the stats.
 
 == Changelog ==
+
+= 3.0.12 =
+
+* Wording fixed.
+* Duplicate methods merged.
+* Updated version of WordPress.
+
+= 3.0.11 =
+
+* Bug-fix.
+
+= 3.0.10 =
+
+* Widget added.
+
+= 3.0.09 =
+
+* Updated version numbers to re-load scripts and bug-fix.
 
 = 3.0.08 =
 

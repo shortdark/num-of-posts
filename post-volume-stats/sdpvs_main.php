@@ -22,6 +22,8 @@ class sdpvsMainContent {
 			echo '<p class="sdpvs">' . sprintf(esc_html__('These are the all-time stats for %s. Click a bar of the "Years" bar chart to change to that year.', 'post-volume-stats'), get_bloginfo('name')) . '</p>';
 		}
 
+		echo '<p class="sdpvs"><strong>' . esc_html__('NEW: You can now add the bar charts to your blog\'s sidebar with the new widget!!!', 'post-volume-stats') . '</strong></p>';
+
 		echo "<hr>";
 
 		// year bar chart

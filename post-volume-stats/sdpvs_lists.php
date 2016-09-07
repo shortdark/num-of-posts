@@ -23,74 +23,92 @@ class sdpvsTextLists extends sdpvsArrays {
 	}
 
 	/*
-	 * NUMBER OF POSTS PER CATEGORY TEXT
+	 * NUMBER OF POSTS PER CATEGORY / TAG TEXT
 	 */
-	public function sdpvs_posts_per_category_list($searchyear = "", $list_type = "admin", $select_array = "") {
-		parent::sdpvs_post_category_volumes($searchyear);
-		$test = $this -> category_array;
-		parent::find_highest_first_and_total($test);
+	public function sdpvs_posts_per_cat_tag_list($type, $searchyear = "", $list_type = "admin", $select_array = "") {
+		if ("category" == $type) {
+			parent::sdpvs_post_category_volumes($searchyear);
+			$universal_array = $this -> category_array;
+			$typetitle = "Category";
+			$typetitleplural = "Categories";
+			$form_name='sdpvs_catselect';
+		} elseif ("tag" == $type) {
+			parent::sdpvs_post_tag_volumes($searchyear);
+			$universal_array = $this -> tag_array;
+			$typetitle = "Tag";
+			$typetitleplural = "Tags";
+			$form_name='sdpvs_tagselect';
+		}
+		parent::find_highest_first_and_total($universal_array);
 
 		if ("subpage" == $list_type) {
-			$posts_per_category = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
+			$posts_per_cat_tag = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
 		} elseif ("source" == $list_type) {
-			$posts_per_category = '<h3>' . esc_html__('2. HTML', 'post-volume-stats') . '</h3><code>';
+			$posts_per_cat_tag = '<h3>' . esc_html__('2. HTML', 'post-volume-stats') . '</h3><code>';
 		} elseif ("public" == $list_type) {
-			$posts_per_category = '<h3>' . esc_html__('3. Preview', 'post-volume-stats') . '</h3>';
+			$posts_per_cat_tag = '<h3>' . esc_html__('3. Preview', 'post-volume-stats') . '</h3>';
 		}
 
 		if (0 < $searchyear) {
-			$title = sprintf(esc_html__('Post Volumes per Category: %d!', 'post-volume-stats'), $searchyear);
+			$title = sprintf(esc_html__('Post Volumes per %1$s: %2$d!', 'post-volume-stats'), $typetitle, $searchyear);
 		} else {
-			$title = esc_html__('Post Volumes per Category!', 'post-volume-stats');
+			$title = sprintf(esc_html__('Post Volumes per %s!', 'post-volume-stats'), $typetitle);
 		}
 
 		if ("source" == $list_type) {
 			$selectable .= '<h2>' . $title . '</h2>';
 		} else {
-			$posts_per_category .= '<h2>' . $title . '</h2>';
+			$posts_per_cat_tag .= '<h2>' . $title . '</h2>';
 		}
 
 		if ("" == $select_array and ("admin" == $list_type or "subpage" == $list_type)) {
 			if ("subpage" == $list_type) {
-				$posts_per_category .= '<p>' . esc_html__('Check the tags you\'d like to export then click the \'Show HTML\' button.', 'post-volume-stats') . '</p>';
-				$posts_per_category .= "<form class='sdpvs_catselect' action='' method='POST'>";
-				$posts_per_category .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='Show HTML'></div>";
-				$posts_per_category .= "<div style='display: block; padding: 5px;'><a id='select-all'>Select All</a> / <a id='deselect-all'>Deselect All</a></div>";
+				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export then click the \'Show HTML\' button.', 'post-volume-stats'), $typetitleplural) . '</p>';
+				$posts_per_cat_tag .= "<form class='$form_name' action='' method='POST'>";
+				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='Show HTML'></div>";
+				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><a id='select-all'>Select All</a> / <a id='deselect-all'>Deselect All</a></div>";
 			}
-			$posts_per_category .= '<ol>';
+			$posts_per_cat_tag .= '<ol>';
 			$c = 0;
-			while ($this -> category_array[$c]['id']) {
-				if (0 < $this -> category_array[$c]['volume']) {
-					$link = admin_url('edit.php?category_name=' . $this -> category_array[$c]['slug']);
-
+			while ($universal_array[$c]['id']) {
+				if (0 < $universal_array[$c]['volume']) {
+					if ("category" == $type) {
+						$link = admin_url('edit.php?category_name=' . $universal_array[$c]['slug']);
+					} elseif ("tag" == $type) {
+						$link = admin_url('edit.php?tag=' . $universal_array[$c]['slug']);
+					}
+					
 					if ("admin" == $list_type) {
-						$posts_per_category .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> category_array[$c]['name'], $this -> category_array[$c]['volume']) . '</li>';
+						$posts_per_cat_tag .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $universal_array[$c]['name'], $universal_array[$c]['volume']) . '</li>';
 					} elseif ("subpage" == $list_type) {
-						$posts_per_category .= "<li><label><input type=\"checkbox\" name=\"tagid\" value=\"{$this->category_array[$c]['id']}\">" . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> category_array[$c]['name'], $this -> category_array[$c]['volume']) . '</label></li>';
+						$posts_per_cat_tag .= "<li><label><input type=\"checkbox\" name=\"tagid\" value=\"{$universal_array[$c]['id']}\">" . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $universal_array[$c]['name'], $universal_array[$c]['volume']) . '</label></li>';
 					}
 				}
 				$c++;
 			}
-			$posts_per_category .= '</ol>';
+			$posts_per_cat_tag .= '</ol>';
 			if ("subpage" == $list_type) {
-				$posts_per_category .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='Show HTML'></div>";
-				$posts_per_category .= "</form>";
+				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='Show HTML'></div>";
+				$posts_per_cat_tag .= "</form>";
 			}
 		} else {
 			$c = 0;
 			$selectable .= "<ol>";
-			while ($this -> category_array[$c]['id']) {
-				if (0 < $this -> category_array[$c]['volume']) {
+			while ($universal_array[$c]['id']) {
+				if (0 < $universal_array[$c]['volume']) {
 
 					$x = 0;
 					while ($select_array[1][$x]) {
-						if ($select_array[1][$x] == $this -> category_array[$c]['id']) {
-							// $percentage_of_total = ($this -> category_array[$c]['volume'] / $this -> total_volume_of_posts) * 100;
+						if ($select_array[1][$x] == $universal_array[$c]['id']) {
+							// $percentage_of_total = ($universal_array[$c]['volume'] / $this -> total_volume_of_posts) * 100;
 							// $percentage_of_total = sprintf("%.1f", $percentage_of_total);
+							if ("category" == $type) {
+								$link = get_category_link($universal_array[$c]['id']);
+							} elseif ("tag" == $type) {
+								$link = get_tag_link($universal_array[$c]['id']);
+							}
 
-							$link = get_category_link($this -> category_array[$c]['id']);
-
-							$selectable .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> category_array[$c]['name'], $this -> category_array[$c]['volume']) . '</li>';
+							$selectable .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $universal_array[$c]['name'], $universal_array[$c]['volume']) . '</li>';
 
 						}
 						$x++;
@@ -105,111 +123,17 @@ class sdpvsTextLists extends sdpvsArrays {
 		if ("source" == $list_type) {
 			$selectable = str_replace("<", "&lt;", $selectable);
 			$selectable = str_replace(">", "&gt;", $selectable);
-			$posts_per_category .= $selectable . '</code>';
+			$posts_per_cat_tag .= $selectable . '</code>';
 		} elseif ("public" == $list_type) {
-			$posts_per_category .= $selectable;
+			$posts_per_cat_tag .= $selectable;
 		}
 
 		if (0 === $c) {
-			$posts_per_category .= esc_html__('No posts with categories!', 'post-volume-stats') . '<br />';
+			$posts_per_cat_tag .= sprintf(esc_html__('No posts with %s!', 'post-volume-stats'),$typetitleplural) . '<br />';
 		}
-		return $posts_per_category;
+		return $posts_per_cat_tag;
 	}
-
-	/*
-	 * NUMBER OF POSTS PER TAG TEXT
-	 */
-	public function sdpvs_posts_per_tag_list($searchyear = "", $list_type = "admin", $select_array = "") {
-
-		parent::sdpvs_post_tag_volumes($searchyear);
-		$test = $this -> tag_array;
-		parent::find_highest_first_and_total($test);
-
-		if ("subpage" == $list_type) {
-			$posts_per_tag = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
-		} elseif ("source" == $list_type) {
-			$posts_per_tag = '<h3>' . esc_html__('2. HTML', 'post-volume-stats') . '</h3><code>';
-		} elseif ("public" == $list_type) {
-			$posts_per_tag = '<h3>' . esc_html__('3. Preview', 'post-volume-stats') . '</h3>';
-		}
-
-		if (0 < $searchyear) {
-			$title = sprintf(esc_html__('Post Volumes per Tag: %d!', 'post-volume-stats'), $searchyear);
-		} else {
-			$title = esc_html__('Post Volumes per Tag!', 'post-volume-stats');
-		}
-
-		if ("source" == $list_type) {
-			$selectable .= '<h2>' . $title . '</h2>';
-		} else {
-			$posts_per_tag .= '<h2>' . $title . '</h2>';
-		}
-
-		if ("" == $select_array and ("admin" == $list_type or "subpage" == $list_type)) {
-			if ("subpage" == $list_type) {
-				$posts_per_tag .= '<p>' . esc_html__('Check the tags you\'d like to export then click the \'Show HTML\' button.', 'post-volume-stats') . '</p>';
-				$posts_per_tag .= "<form class='sdpvs_tagselect' action='' method='POST'>";
-				$posts_per_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='Show HTML'></div>";
-				$posts_per_tag .= "<div style='display: block; padding: 5px;'><a id='select-all'>Select All</a> / <a id='deselect-all'>Deselect All</a></div>";
-			}
-			$posts_per_tag .= '<ol>';
-			$t = 0;
-			while ($this -> tag_array[$t]['id']) {
-				if (0 < $this -> tag_array[$t]['volume']) {
-					$link = admin_url('edit.php?tag=' . $this -> tag_array[$t]['slug']);
-
-					if ("admin" == $list_type) {
-						$posts_per_tag .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> tag_array[$t]['name'], $this -> tag_array[$t]['volume']) . '</li>';
-					} elseif ("subpage" == $list_type) {
-						$posts_per_tag .= "<li><label><input type=\"checkbox\" name=\"tagid\" value=\"{$this->tag_array[$t]['id']}\">" . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> tag_array[$t]['name'], $this -> tag_array[$t]['volume']) . '</label></li>';
-					}
-				}
-				$t++;
-			}
-			$posts_per_tag .= '</ol>';
-			if ("subpage" == $list_type) {
-				$posts_per_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='Show HTML'></div>";
-				$posts_per_tag .= "</form>";
-			}
-		} else {
-			$t = 0;
-			$selectable .= "<ol>";
-			while ($this -> tag_array[$t]['id']) {
-				if (0 < $this -> tag_array[$t]['volume']) {
-
-					$x = 0;
-					while ($select_array[1][$x]) {
-						if ($select_array[1][$x] == $this -> tag_array[$t]['id']) {
-							// $percentage_of_total = ($this -> tag_array[$t]['volume'] / $this -> total_volume_of_posts) * 100;
-							// $percentage_of_total = sprintf("%.1f", $percentage_of_total);
-
-							$link = get_tag_link($this -> tag_array[$t]['id']);
-
-							$selectable .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $this -> tag_array[$t]['name'], $this -> tag_array[$t]['volume']) . '</li>';
-
-						}
-						$x++;
-					}
-
-				}
-				$t++;
-			}
-			$selectable .= "</ol>";
-		}
-
-		if (0 === $t) {
-			$posts_per_tag .= esc_html__('No posts with tags!', 'post-volume-stats') . '<br />';
-		}
-
-		if ("source" == $list_type) {
-			$selectable = str_replace("<", "&lt;", $selectable);
-			$selectable = str_replace(">", "&gt;", $selectable);
-			$posts_per_tag .= $selectable . '</code>';
-		} elseif ("public" == $list_type) {
-			$posts_per_tag .= $selectable;
-		}
-		return $posts_per_tag;
-	}
+	
 
 	/*
 	 * NUMBER OF POSTS PER DAY-OF-WEEK TEXT

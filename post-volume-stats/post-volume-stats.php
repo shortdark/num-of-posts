@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.08
+ * @version 3.0.12
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with graphical representations and detailed lists.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.0.08
+ * Version: 3.0.12
  * Author URI: http://www.shortdark.net/
  */
 
@@ -55,7 +55,9 @@ require_once (SDPVS__PLUGIN_DIR . 'sdpvs_lists.php');
 
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_main.php');
 
-require_once (SDPVS__PLUGIN_DIR . 'sdpvs-subs.php');
+require_once (SDPVS__PLUGIN_DIR . 'sdpvs_subs.php');
+
+require_once (SDPVS__PLUGIN_DIR . 'sdpvs_widget.php');
 
 /**********************
  ** ASSEMBLE THE PAGE
@@ -109,7 +111,7 @@ function sdpvs_category_page() {
 		$sdpvs_sub = new sdpvsSubPages();
 
 		// Call the method
-		$sdpvs_sub -> sdpvs_category_page_content();
+		$sdpvs_sub -> sdpvs_combined_page_content('category');
 
 		// Stop the timer
 		$time_end = microtime(true);
@@ -131,7 +133,7 @@ function sdpvs_tag_page() {
 		$sdpvs_sub = new sdpvsSubPages();
 
 		// Call the method
-		$sdpvs_sub -> sdpvs_tag_page_content();
+		$sdpvs_sub -> sdpvs_combined_page_content('tag');
 
 		// Stop the timer
 		$time_end = microtime(true);
@@ -185,9 +187,9 @@ function sanitize($input) {
  ** AJAX...
  *************/
 
-function sdpvs_load_all_scripts() {
-	wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.4', 'screen');
-	wp_enqueue_script('sdpvs_loader', plugins_url('sdpvs_loader.js', __FILE__), array('jquery'), '1.0.0', true);
+function sdpvs_load_all_admin_scripts() {
+	wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.5', 'screen');
+	wp_enqueue_script('sdpvs_loader', plugins_url('sdpvs_loader.js', __FILE__), array('jquery'), '1.0.2', true);
 
 	// Importing external JQuery UI element using "wp-includes/script-loader.php"
 	wp_enqueue_script("jquery-ui-draggable");
@@ -206,7 +208,14 @@ function sdpvs_load_all_scripts() {
 	'ajax_nonce' => wp_create_nonce('num-of-posts'), ));
 }
 
-add_action('admin_enqueue_scripts', 'sdpvs_load_all_scripts');
+add_action('admin_enqueue_scripts', 'sdpvs_load_all_admin_scripts');
+
+// Add scripts and stylesheets to the public-facing blog
+function sdpvs_load_all_public_scripts() {
+	wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.5', 'screen');
+}
+
+add_action( 'wp_enqueue_scripts', 'sdpvs_load_all_public_scripts' );
 
 function sdpvs_process_ajax() {
 	// Security check
@@ -230,9 +239,9 @@ function sdpvs_process_ajax() {
 	} elseif ("dayofweek" == $answer) {
 		echo $sdpvs_lists -> sdpvs_posts_per_dayofweek_list($searchyear);
 	} elseif ("category" == $answer) {
-		echo $sdpvs_lists -> sdpvs_posts_per_category_list($searchyear);
+		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($answer, $searchyear, 'admin', '');
 	} elseif ("tag" == $answer) {
-		echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear);
+		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($answer, $searchyear, 'admin', '');
 	} elseif ("month" == $answer) {
 		echo $sdpvs_lists -> sdpvs_posts_per_month_list($searchyear);
 	} elseif ("dayofmonth" == $answer) {
@@ -245,12 +254,13 @@ function sdpvs_process_ajax() {
 
 add_action('wp_ajax_sdpvs_get_results', 'sdpvs_process_ajax');
 
-function sdpvs_cats_source() {
+function sdpvs_cats_lists() {
 	// Security check
 	check_ajax_referer('num-of-posts', 'security');
 
 	// create an instance of the list class
-	$sdpvs_lists = new sdpvsTextLists();
+	// $sdpvs_lists = new sdpvsTextLists();
+	$sdpvs_sub = new sdpvsSubPages();
 
 	// Extract the variables from serialized string
 	$gotit = filter_var($_POST['whichcats'], FILTER_SANITIZE_STRING);
@@ -259,44 +269,21 @@ function sdpvs_cats_source() {
 	$year = get_option('sdpvs_year_option');
 	$searchyear = absint($year['year_number']);
 
-	echo $sdpvs_lists -> sdpvs_posts_per_category_list($searchyear, 'source', $matches);
+	echo $sdpvs_sub -> update_ajax_lists('category', $searchyear, $matches);
 
 	// Always die() AJAX
 	die();
 }
 
-add_action('wp_ajax_sdpvs_select_cats', 'sdpvs_cats_source');
+add_action('wp_ajax_sdpvs_select_cats', 'sdpvs_cats_lists');
 
-function sdpvs_cats_public() {
+function sdpvs_tags_lists() {
 	// Security check
 	check_ajax_referer('num-of-posts', 'security');
 
 	// create an instance of the list class
-	$sdpvs_lists = new sdpvsTextLists();
-
-	// Extract the variables from serialized string
-	$gotit = filter_var($_POST['whichcats'], FILTER_SANITIZE_STRING);
-	preg_match_all('/=([0-9]*)/', $gotit, $matches);
-
-	$year = get_option('sdpvs_year_option');
-	$searchyear = absint($year['year_number']);
-
-	echo $sdpvs_lists -> sdpvs_posts_per_category_list($searchyear, 'public', $matches);
-
-	// Always die() AJAX
-	die();
-}
-
-add_action('wp_ajax_sdpvs_show_cats', 'sdpvs_cats_public');
-
-
-
-function sdpvs_tags_source() {
-	// Security check
-	check_ajax_referer('num-of-posts', 'security');
-
-	// create an instance of the list class
-	$sdpvs_lists = new sdpvsTextLists();
+	// $sdpvs_lists = new sdpvsTextLists();
+	$sdpvs_sub = new sdpvsSubPages();
 
 	// Extract the variables from serialized string
 	$gotit = filter_var($_POST['whichtags'], FILTER_SANITIZE_STRING);
@@ -305,34 +292,12 @@ function sdpvs_tags_source() {
 	$year = get_option('sdpvs_year_option');
 	$searchyear = absint($year['year_number']);
 
-	echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear, 'source', $matches);
+	echo $sdpvs_sub -> update_ajax_lists('tag', $searchyear, $matches);
 
 	// Always die() AJAX
 	die();
 }
 
-add_action('wp_ajax_sdpvs_select_tags', 'sdpvs_tags_source');
-
-function sdpvs_tags_public() {
-	// Security check
-	check_ajax_referer('num-of-posts', 'security');
-
-	// create an instance of the list class
-	$sdpvs_lists = new sdpvsTextLists();
-
-	// Extract the variables from serialized string
-	$gotit = filter_var($_POST['whichtags'], FILTER_SANITIZE_STRING);
-	preg_match_all('/=([0-9]*)/', $gotit, $matches);
-
-	$year = get_option('sdpvs_year_option');
-	$searchyear = absint($year['year_number']);
-
-	echo $sdpvs_lists -> sdpvs_posts_per_tag_list($searchyear, 'public', $matches);
-
-	// Always die() AJAX
-	die();
-}
-
-add_action('wp_ajax_sdpvs_show_tags', 'sdpvs_tags_public');
+add_action('wp_ajax_sdpvs_select_tags', 'sdpvs_tags_lists');
 
 ?>
