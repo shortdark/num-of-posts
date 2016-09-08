@@ -6,7 +6,7 @@ Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, h
 Requires at least: 3.5
 Tested up to: 4.6.1
 Stable tag: trunk
-License: GPLv2
+License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Shows stats for the volume of posts per year, month, day-of-the-month, day-of-the-week, hour-of-the-day, categories and tags.
@@ -23,6 +23,10 @@ Please let me know if you like this plugin by leaving a review or [contacting me
 
 Go to the [Shortdark Wordpress plugin page](http://www.shortdark.net/wordpress-plugin/) for more information.
 
+= Translations =
+
+You can translate Post Volume Stats on [__translate.wordpress.org__](https://translate.wordpress.org/projects/wp-plugins/post-volume-stats).
+
 == Installation ==
 
 This section describes how to install the plugin and get it working.
@@ -30,7 +34,7 @@ This section describes how to install the plugin and get it working.
 1. Upload the plugin folder to the `/wp-content/plugins/` directory, or install the plugin through the WordPress 
 plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. The menu item "Post Volume Stats" should now be in your admin menu.
+3. The menu item "Post Volume Stats" should now be in your admin menu and the "Post Volume Stats" widget should also be available to use.
 
 == Screenshots ==
 
@@ -41,8 +45,15 @@ Here are the latest screenshots...
 3. You can view the stats for each year individually. This shows the same blog with stats for one year selected.
 4. The new "Category" and "Tag" pages allow the user to export the data to HTML. Soon these pages will allow 
 the user to take a more indepth view into the stats.
+5. Shows the widget in the "live preview" area of the admin.
 
 == Changelog ==
+
+= 3.0.13 =
+
+* Updated readme.txt with "translations" info.
+* Widget screenshot.
+* Minor changes.
 
 = 3.0.12 =
 

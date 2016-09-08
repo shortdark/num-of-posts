@@ -5,11 +5,12 @@ defined('ABSPATH') or die('No script kiddies please!');
 class sdpvsSubPages {
 
 	public function sdpvs_combined_page_content($type = "") {
+
 		// create an instance of the required classes
 		$sdpvs_bar = new sdpvsBarChart();
 		$sdpvs_pie = new sdpvsPieChart();
 		$sdpvs_lists = new sdpvsTextLists();
-
+		
 		$year = get_option('sdpvs_year_option');
 		$searchyear = absint($year['year_number']);
 
@@ -60,10 +61,11 @@ class sdpvsSubPages {
 		return;
 	}
 
-	function update_ajax_lists($type, $searchyear, $matches) {
-			
-		$sdpvs_lists = new sdpvsTextLists();
+	public function update_ajax_lists($type, $searchyear, $matches) {
 		
+		// create an instance of the required classes
+		$sdpvs_lists = new sdpvsTextLists();
+
 		echo "<div style='display: inline-block; width: 500px; vertical-align: top;' id='sdpvs_listsource'>";
 		if ("category" == $type) {
 			echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list('category', $searchyear, 'source', $matches);

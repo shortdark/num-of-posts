@@ -92,6 +92,10 @@ class sdpvsTextLists extends sdpvsArrays {
 				$posts_per_cat_tag .= "</form>";
 			}
 		} else {
+			
+			// This is very slow on a large blog, even when only a few boxes are checked.
+			// Make it so that it only grabs the info for the boxes that are checked.
+			
 			$c = 0;
 			$selectable .= "<ol>";
 			while ($universal_array[$c]['id']) {

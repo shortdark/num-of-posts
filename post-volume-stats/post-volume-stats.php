@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.12
+ * @version 3.0.13
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with graphical representations and detailed lists.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.0.12
+ * Version: 3.0.13
  * Author URI: http://www.shortdark.net/
  */
 

@@ -112,12 +112,15 @@ class SDPVS_Widget extends WP_Widget {
 		?>
 
 		<p>
-		<label for="<?php echo $this -> get_field_id('title'); ?>"><?php esc_html_e('Widget Title', 'post-volume-stats'); ?></label>
+		<label for="<?php echo $this -> get_field_id('title'); ?>"><?php esc_html_e('Title', 'post-volume-stats'); ?></label>
 		<input class="widefat" id="<?php echo $this -> get_field_id('title'); ?>" name="<?php echo $this -> get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
 		</p>
 		<p>
 		<label for="<?php echo esc_attr($this -> get_field_id('textarea')); ?>"><?php esc_html_e('Description', 'post-volume-stats'); ?></label>
 		<textarea class="widefat" id="<?php echo esc_attr($this -> get_field_id('textarea')); ?>" name="<?php echo esc_attr($this -> get_field_name('textarea')); ?>"><?php echo esc_html($textarea); ?></textarea>
+		</p>
+		<p>
+		<?php esc_html_e('Select charts to display:', 'post-volume-stats'); ?>
 		</p>
 		<p>
 		<input id="<?php echo esc_attr($this -> get_field_id('checkbox1')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox1')); ?>" type="checkbox" value="year" <?php checked('year', $checkbox1); ?> />
