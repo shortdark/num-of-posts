@@ -49,6 +49,10 @@ the user to take a more indepth view into the stats.
 
 == Changelog ==
 
+= 3.0.14 =
+
+* Tidied "export" method to reduce script time elapsed.
+
 = 3.0.13 =
 
 * Updated readme.txt with "translations" info.

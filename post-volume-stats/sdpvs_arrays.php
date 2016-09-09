@@ -14,6 +14,24 @@ abstract class sdpvsArrays {
 	protected $published_volume;
 
 	/*
+	 * GET DETAILS FOR ONE CATEGORY / TAG
+	 */
+
+	protected function sdpvs_get_one_item_info($term_id = "", $taxonomy_type = "") {
+		$term_id = absint($term_id);
+		if (0 < $term_id and ('category' == $taxonomy_type or 'post_tag' == $taxonomy_type)) {
+			global $wpdb;
+			$count = $wpdb -> get_var($wpdb -> prepare("SELECT count FROM $wpdb->term_taxonomy WHERE taxonomy = %s AND term_id = %d ", $taxonomy_type, $term_id));
+			$iteminfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $term_id));
+			$one_item_array['name'] = $iteminfo -> name;
+			$one_item_array['slug'] = $iteminfo -> slug;
+			$one_item_array['volume'] = $count;
+			return $one_item_array;
+		}
+		return;
+	}
+
+	/*
 	 * NUMBER OF POSTS PER CATEGORY
 	 */
 	protected function sdpvs_post_category_volumes($searchyear = "") {

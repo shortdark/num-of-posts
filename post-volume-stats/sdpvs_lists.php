@@ -27,26 +27,23 @@ class sdpvsTextLists extends sdpvsArrays {
 	 */
 	public function sdpvs_posts_per_cat_tag_list($type, $searchyear = "", $list_type = "admin", $select_array = "") {
 		if ("category" == $type) {
-			parent::sdpvs_post_category_volumes($searchyear);
-			$universal_array = $this -> category_array;
 			$typetitle = "Category";
 			$typetitleplural = "Categories";
-			$form_name='sdpvs_catselect';
+			$form_name = 'sdpvs_catselect';
+			$taxonomy_type = 'category';
 		} elseif ("tag" == $type) {
-			parent::sdpvs_post_tag_volumes($searchyear);
-			$universal_array = $this -> tag_array;
 			$typetitle = "Tag";
 			$typetitleplural = "Tags";
-			$form_name='sdpvs_tagselect';
+			$form_name = 'sdpvs_tagselect';
+			$taxonomy_type = 'post_tag';
 		}
-		parent::find_highest_first_and_total($universal_array);
 
 		if ("subpage" == $list_type) {
 			$posts_per_cat_tag = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
 		} elseif ("source" == $list_type) {
-			$posts_per_cat_tag = '<h3>' . esc_html__('2. HTML', 'post-volume-stats') . '</h3><code>';
+			$posts_per_cat_tag = '<h3>' . esc_html__('2. HTML', 'post-volume-stats') . '</h3><p>Copy and paste into text editor</p><code>';
 		} elseif ("public" == $list_type) {
-			$posts_per_cat_tag = '<h3>' . esc_html__('3. Preview', 'post-volume-stats') . '</h3>';
+			$posts_per_cat_tag = '<h3>' . esc_html__('3. Preview', 'post-volume-stats') . '</h3><p>Copy and paste into visual editor</p>';
 		}
 
 		if (0 < $searchyear) {
@@ -62,6 +59,14 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 
 		if ("" == $select_array and ("admin" == $list_type or "subpage" == $list_type)) {
+			// Only grab all data when everything is required
+			if ("category" == $type) {
+				parent::sdpvs_post_category_volumes($searchyear);
+				$universal_array = $this -> category_array;
+			} elseif ("tag" == $type) {
+				parent::sdpvs_post_tag_volumes($searchyear);
+				$universal_array = $this -> tag_array;
+			}
 			if ("subpage" == $list_type) {
 				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export then click the \'Show HTML\' button.', 'post-volume-stats'), $typetitleplural) . '</p>';
 				$posts_per_cat_tag .= "<form class='$form_name' action='' method='POST'>";
@@ -77,7 +82,7 @@ class sdpvsTextLists extends sdpvsArrays {
 					} elseif ("tag" == $type) {
 						$link = admin_url('edit.php?tag=' . $universal_array[$c]['slug']);
 					}
-					
+
 					if ("admin" == $list_type) {
 						$posts_per_cat_tag .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $universal_array[$c]['name'], $universal_array[$c]['volume']) . '</li>';
 					} elseif ("subpage" == $list_type) {
@@ -92,35 +97,30 @@ class sdpvsTextLists extends sdpvsArrays {
 				$posts_per_cat_tag .= "</form>";
 			}
 		} else {
-			
-			// This is very slow on a large blog, even when only a few boxes are checked.
-			// Make it so that it only grabs the info for the boxes that are checked.
-			
-			$c = 0;
+
 			$selectable .= "<ol>";
-			while ($universal_array[$c]['id']) {
-				if (0 < $universal_array[$c]['volume']) {
 
-					$x = 0;
-					while ($select_array[1][$x]) {
-						if ($select_array[1][$x] == $universal_array[$c]['id']) {
-							// $percentage_of_total = ($universal_array[$c]['volume'] / $this -> total_volume_of_posts) * 100;
-							// $percentage_of_total = sprintf("%.1f", $percentage_of_total);
-							if ("category" == $type) {
-								$link = get_category_link($universal_array[$c]['id']);
-							} elseif ("tag" == $type) {
-								$link = get_tag_link($universal_array[$c]['id']);
-							}
+			$x = 0;
+			while ($select_array[1][$x]) {
+				if (0 < $select_array[1][$x]) {
 
-							$selectable .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $universal_array[$c]['name'], $universal_array[$c]['volume']) . '</li>';
+					$term_id = $select_array[1][$x];
 
-						}
-						$x++;
+					// Get slug, name and volume
+					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type);
+
+					if ("category" == $type) {
+						$link = get_category_link($term_id);
+					} elseif ("tag" == $type) {
+						$link = get_tag_link($term_id);
 					}
 
+					$selectable .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $item['name'], $item['volume']) . '</li>';
+
 				}
-				$c++;
+				$x++;
 			}
+
 			$selectable .= "</ol>";
 		}
 
@@ -133,11 +133,10 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 
 		if (0 === $c) {
-			$posts_per_cat_tag .= sprintf(esc_html__('No posts with %s!', 'post-volume-stats'),$typetitleplural) . '<br />';
+			$posts_per_cat_tag .= sprintf(esc_html__('No posts with %s!', 'post-volume-stats'), $typetitleplural) . '<br />';
 		}
 		return $posts_per_cat_tag;
 	}
-	
 
 	/*
 	 * NUMBER OF POSTS PER DAY-OF-WEEK TEXT
