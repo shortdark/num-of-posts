@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.14
+ * @version 3.0.15
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with graphical representations and detailed lists.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.0.14
+ * Version: 3.0.15
  * Author URI: http://www.shortdark.net/
  */
 
@@ -153,6 +153,16 @@ function sdpvs_register_custom_page_in_menu() {
 
 add_action('admin_menu', 'sdpvs_register_custom_page_in_menu');
 
+
+/**
+ * Load plugin textdomain.
+ */
+function sdpvs_load_textdomain() {
+  load_plugin_textdomain( 'post-volume-stats', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' ); 
+}
+
+add_action( 'init', 'sdpvs_load_textdomain' );
+
 /***************
  ** USER INPUT
  ***************/
@@ -266,10 +276,10 @@ function sdpvs_cats_lists() {
 	$gotit = filter_var($_POST['whichcats'], FILTER_SANITIZE_STRING);
 	preg_match_all('/=([0-9]*)/', $gotit, $matches);
 
-	$year = get_option('sdpvs_year_option');
-	$searchyear = absint($year['year_number']);
+	// $year = get_option('sdpvs_year_option');
+	// $searchyear = absint($year['year_number']);
 
-	echo $sdpvs_sub -> update_ajax_lists('category', $searchyear, $matches);
+	echo $sdpvs_sub -> update_ajax_lists('category', $matches);
 
 	// Always die() AJAX
 	die();
@@ -289,10 +299,10 @@ function sdpvs_tags_lists() {
 	$gotit = filter_var($_POST['whichtags'], FILTER_SANITIZE_STRING);
 	preg_match_all('/=([0-9]*)/', $gotit, $matches);
 
-	$year = get_option('sdpvs_year_option');
-	$searchyear = absint($year['year_number']);
+	// $year = get_option('sdpvs_year_option');
+	// $searchyear = absint($year['year_number']);
 
-	echo $sdpvs_sub -> update_ajax_lists('tag', $searchyear, $matches);
+	echo $sdpvs_sub -> update_ajax_lists('tag', $matches);
 
 	// Always die() AJAX
 	die();

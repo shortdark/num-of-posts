@@ -17,15 +17,34 @@ abstract class sdpvsArrays {
 	 * GET DETAILS FOR ONE CATEGORY / TAG
 	 */
 
-	protected function sdpvs_get_one_item_info($term_id = "", $taxonomy_type = "") {
+	protected function sdpvs_get_one_item_info($term_id = "", $taxonomy_type = "", $searchyear = "") {
 		$term_id = absint($term_id);
 		if (0 < $term_id and ('category' == $taxonomy_type or 'post_tag' == $taxonomy_type)) {
 			global $wpdb;
-			$count = $wpdb -> get_var($wpdb -> prepare("SELECT count FROM $wpdb->term_taxonomy WHERE taxonomy = %s AND term_id = %d ", $taxonomy_type, $term_id));
-			$iteminfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $term_id));
-			$one_item_array['name'] = $iteminfo -> name;
-			$one_item_array['slug'] = $iteminfo -> slug;
-			$one_item_array['volume'] = $count;
+			if ("" == $searchyear) {
+				$count = $wpdb -> get_var($wpdb -> prepare("SELECT count FROM $wpdb->term_taxonomy WHERE taxonomy = %s AND term_id = %d ", $taxonomy_type, $term_id));
+				$iteminfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $term_id));
+				$one_item_array['name'] = $iteminfo -> name;
+				$one_item_array['slug'] = $iteminfo -> slug;
+				$one_item_array['volume'] = $count;
+			} else {
+				$tax_id = $wpdb -> get_var("SELECT term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy = '$taxonomy_type' AND term_id = '$term_id' ");
+				$count = $wpdb -> get_var("
+					SELECT COUNT(*)
+					FROM $wpdb->posts 
+					INNER JOIN $wpdb->term_relationships 
+					ON $wpdb->posts.post_status = 'publish' 
+					AND $wpdb->posts.post_type = 'post' 
+					AND $wpdb->posts.post_date LIKE '$searchyear%' 	
+					AND $wpdb->term_relationships.object_id = $wpdb->posts.ID 
+					AND $wpdb->term_relationships.term_taxonomy_id = $tax_id
+				");
+				$iteminfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $term_id));
+				$one_item_array['name'] = $iteminfo -> name;
+				$one_item_array['slug'] = $iteminfo -> slug;
+				$one_item_array['volume'] = $count;
+			}
+
 			return $one_item_array;
 		}
 		return;

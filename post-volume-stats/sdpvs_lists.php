@@ -107,7 +107,7 @@ class sdpvsTextLists extends sdpvsArrays {
 					$term_id = $select_array[1][$x];
 
 					// Get slug, name and volume
-					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type);
+					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear);
 
 					if ("category" == $type) {
 						$link = get_category_link($term_id);

@@ -1,0 +1,227 @@
+# Copyright (C) 2016 Post Volume Stats
+# This file is distributed under the same license as the Post Volume Stats package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Post Volume Stats 3.0.14\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/post-volume-"
+"stats\n"
+"POT-Creation-Date: 2016-09-10 19:45:37+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#. #-#-#-#-#  plugin.pot (Post Volume Stats 3.0.14)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: post-volume-stats.php:80 post-volume-stats.php:149 sdpvs_widget.php:15
+msgid "Post Volume Stats"
+msgstr ""
+
+#: post-volume-stats.php:99
+msgid "Script time elapsed: %f seconds"
+msgstr ""
+
+#: post-volume-stats.php:150
+msgid "Post Volume Stats: Categories"
+msgstr ""
+
+#: post-volume-stats.php:150 sdpvs_pie.php:93
+msgid "Categories"
+msgstr ""
+
+#: post-volume-stats.php:151
+msgid "Post Volume Stats: Tags"
+msgstr ""
+
+#: post-volume-stats.php:151 sdpvs_pie.php:100
+msgid "Tags"
+msgstr ""
+
+#: sdpvs_bar.php:36 sdpvs_widget.php:127
+msgid "Years"
+msgstr ""
+
+#: sdpvs_bar.php:38
+msgid "Posts per Year"
+msgstr ""
+
+#: sdpvs_bar.php:47 sdpvs_widget.php:139
+msgid "Days of the Week"
+msgstr ""
+
+#: sdpvs_bar.php:49
+msgid "Posts per Day of the Week"
+msgstr ""
+
+#: sdpvs_bar.php:58
+msgid "Hours"
+msgstr ""
+
+#: sdpvs_bar.php:60
+msgid "Posts per Hour"
+msgstr ""
+
+#: sdpvs_bar.php:69 sdpvs_widget.php:131
+msgid "Months"
+msgstr ""
+
+#: sdpvs_bar.php:71
+msgid "Posts per Month"
+msgstr ""
+
+#: sdpvs_bar.php:80 sdpvs_widget.php:135
+msgid "Days of the Month"
+msgstr ""
+
+#: sdpvs_bar.php:82
+msgid "Posts per Day of the Month"
+msgstr ""
+
+#: sdpvs_bar.php:87 sdpvs_bar.php:168
+msgid "%d"
+msgstr ""
+
+#: sdpvs_bar.php:89
+msgid "All-time"
+msgstr ""
+
+#: sdpvs_info.php:22
+msgid "%d published posts over %d days is %f posts per day."
+msgstr ""
+
+#: sdpvs_lists.php:13
+msgid "Post Volumes per Year"
+msgstr ""
+
+#: sdpvs_lists.php:14
+msgid "%d posts over the past %d years."
+msgstr ""
+
+#: sdpvs_lists.php:42
+msgid "1. Select"
+msgstr ""
+
+#: sdpvs_lists.php:44
+msgid "2. HTML"
+msgstr ""
+
+#: sdpvs_lists.php:46
+msgid "3. Preview"
+msgstr ""
+
+#: sdpvs_lists.php:50
+msgid "Post Volumes per %1$s: %2$d!"
+msgstr ""
+
+#: sdpvs_lists.php:52
+msgid "Post Volumes per %s!"
+msgstr ""
+
+#: sdpvs_lists.php:71
+msgid "Check the %s you'd like to export then click the 'Show HTML' button."
+msgstr ""
+
+#: sdpvs_lists.php:87 sdpvs_lists.php:89 sdpvs_lists.php:118
+msgid "<a href=\"%1$s\">%2$s</a>: %3$d posts"
+msgstr ""
+
+#: sdpvs_lists.php:136
+msgid "No posts with %s!"
+msgstr ""
+
+#: sdpvs_lists.php:148
+msgid "Post Volumes per Day of the Week"
+msgstr ""
+
+#: sdpvs_lists.php:154 sdpvs_lists.php:170 sdpvs_lists.php:186
+#: sdpvs_lists.php:202
+msgid "%s: %d posts"
+msgstr ""
+
+#: sdpvs_lists.php:167
+msgid "Post Volumes per Hour"
+msgstr ""
+
+#: sdpvs_lists.php:181
+msgid "Post Volumes per Month"
+msgstr ""
+
+#: sdpvs_lists.php:197
+msgid "Post Volumes per Day of the Month"
+msgstr ""
+
+#: sdpvs_main.php:20
+msgid ""
+"These are the stats for %s for the selected year: %d. Click a bar of the "
+"\"Years\" bar chart to change to that year or click the selected year (red) "
+"to view the all-time stats."
+msgstr ""
+
+#: sdpvs_main.php:22
+msgid ""
+"These are the all-time stats for %s. Click a bar of the \"Years\" bar chart "
+"to change to that year."
+msgstr ""
+
+#: sdpvs_main.php:25
+msgid ""
+"NEW: You can now add the bar charts to your blog's sidebar with the new "
+"widget!!!"
+msgstr ""
+
+#: sdpvs_subs.php:25
+msgid "Post Volume Stats: %s"
+msgstr ""
+
+#: sdpvs_subs.php:29
+msgid ""
+"These are the \"%1$s\" stats for %2$s for the selected year: %3$d. Click a "
+"bar of the \"Years\" bar chart to change to that year or click the selected "
+"year (red) to view the all-time stats."
+msgstr ""
+
+#: sdpvs_subs.php:31
+msgid ""
+"These are the all-time \"%1$s\" stats for %2$s. Click a bar of the \"Years\" "
+"bar chart to change to that year."
+msgstr ""
+
+#: sdpvs_widget.php:13
+msgid "Add a chart from \"Post Volume Stats\" to your sidebar!"
+msgstr ""
+
+#: sdpvs_widget.php:115
+msgid "Title"
+msgstr ""
+
+#: sdpvs_widget.php:119
+msgid "Description"
+msgstr ""
+
+#: sdpvs_widget.php:123
+msgid "Select charts to display:"
+msgstr ""
+
+#: sdpvs_widget.php:143
+msgid "Hour"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/shortdark/num-of-posts"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Displays the post stats in the admin area with graphical representations and "
+"detailed lists."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Neil Ludlow"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://www.shortdark.net/"
+msgstr ""

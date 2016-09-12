@@ -49,6 +49,11 @@ the user to take a more indepth view into the stats.
 
 == Changelog ==
 
+= 3.0.15 =
+
+* Fixed bug on exports.
+* Added "load_plugin_textdomain".
+
 = 3.0.14 =
 
 * Tidied "export" method to reduce script time elapsed.

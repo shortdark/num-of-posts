@@ -61,10 +61,13 @@ class sdpvsSubPages {
 		return;
 	}
 
-	public function update_ajax_lists($type, $searchyear, $matches) {
+	public function update_ajax_lists($type, $matches) {
 		
 		// create an instance of the required classes
 		$sdpvs_lists = new sdpvsTextLists();
+		
+		$year = get_option('sdpvs_year_option');
+		$searchyear = absint($year['year_number']);
 
 		echo "<div style='display: inline-block; width: 500px; vertical-align: top;' id='sdpvs_listsource'>";
 		if ("category" == $type) {
