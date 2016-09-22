@@ -4,14 +4,18 @@ defined('ABSPATH') or die('No script kiddies please!');
 
 abstract class sdpvsArrays {
 
-	protected $year_array;
-	protected $category_array;
-	protected $tag_array;
-	protected $dow_array;
-	protected $hour_array;
-	protected $earliest_date;
-	protected $latest_date;
-	protected $published_volume;
+	protected $year_array = array();
+	protected $category_array = array();
+	protected $tag_array = array();
+	protected $dow_array = array();
+	protected $hour_array = array();
+	protected $earliest_date = "";
+	protected $latest_date = "";
+	protected $published_volume = 0;
+
+	protected $highest_val = 0;
+	protected $first_val = 0;
+	protected $total_volume_of_posts = 0;
 
 	/*
 	 * GET DETAILS FOR ONE CATEGORY / TAG
@@ -64,12 +68,14 @@ abstract class sdpvsArrays {
 				$this -> category_array[$c]['name'] = $catinfo -> name;
 				$this -> category_array[$c]['slug'] = $catinfo -> slug;
 				$this -> category_array[$c]['volume'] = $category -> count;
+				$this -> category_array[$c]['angle'] = 0;
 				$c++;
 			}
 		} else {
 			$cats = $wpdb -> get_results("SELECT term_id, term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy = 'category' ORDER BY term_id DESC ");
 			$c = 0;
 			$highestval = 0;
+			// if ($cats) {
 			foreach ($cats as $category) {
 				$posts = 0;
 				$posts = $wpdb -> get_var("
@@ -91,17 +97,19 @@ abstract class sdpvsArrays {
 					$c++;
 				}
 			}
+			// }
 			$d = 0;
 			for ($i = $highestval; $i > 0; $i--) {
 				$c = 0;
-				while ($cat_array[$c]['id']) {
-					if ($i == $cat_array[$c]['volume']) {
+				while (array_key_exists($c, $cat_array)) {
+					if ($i == $cat_array[$c]['volume'] and 0 < $cat_array[$c]['id']) {
 						$temp = $cat_array[$c]['id'];
 						$catinfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $temp));
 						$this -> category_array[$d]['id'] = $temp;
 						$this -> category_array[$d]['name'] = $catinfo -> name;
 						$this -> category_array[$d]['slug'] = $catinfo -> slug;
 						$this -> category_array[$d]['volume'] = $cat_array[$c]['volume'];
+						$this -> category_array[$d]['angle'] = 0;
 						$d++;
 					}
 					$c++;
@@ -127,6 +135,7 @@ abstract class sdpvsArrays {
 				$this -> tag_array[$t]['name'] = $taginfo -> name;
 				$this -> tag_array[$t]['slug'] = $taginfo -> slug;
 				$this -> tag_array[$t]['volume'] = $tag -> count;
+				$this -> tag_array[$t]['angle'] = 0;
 				$t++;
 			}
 		} else {
@@ -157,7 +166,7 @@ abstract class sdpvsArrays {
 			$d = 0;
 			for ($i = $highestval; $i > 0; $i--) {
 				$t = 0;
-				while ($tg_array[$t]['id']) {
+				while (array_key_exists($t, $tg_array)) {
 					if ($i == $tg_array[$t]['volume']) {
 						$temp = $tg_array[$t]['id'];
 						$taginfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $temp));
@@ -165,6 +174,7 @@ abstract class sdpvsArrays {
 						$this -> tag_array[$d]['name'] = $taginfo -> name;
 						$this -> tag_array[$d]['slug'] = $taginfo -> slug;
 						$this -> tag_array[$d]['volume'] = $tg_array[$t]['volume'];
+						$this -> tag_array[$d]['angle'] = 0;
 						$d++;
 					}
 					$t++;
@@ -202,6 +212,7 @@ abstract class sdpvsArrays {
 		$days_of_week = array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
 		for ($w = 0; $w <= 6; $w++) {
 			$this -> dow_array[$w]['name'] = $days_of_week[$w];
+			$this -> dow_array[$w]['volume'] = 0;
 		}
 		global $wpdb;
 		if (0 < $searchyear) {
@@ -253,6 +264,7 @@ abstract class sdpvsArrays {
 		$searchyear = absint($searchyear);
 		for ($w = 0; $w < 12; $w++) {
 			$this -> month_array[$w]['name'] = $months_of_year[$w];
+			$this -> month_array[$w]['volume'] = 0;
 		}
 		global $wpdb;
 		for ($i = 0; $i < 12; $i++) {
@@ -331,12 +343,12 @@ abstract class sdpvsArrays {
 	/*
 	 * FIND HIGHEST, FIRST AND TOTAL VOLUME VALUES
 	 */
-	protected function find_highest_first_and_total($testarray) {
+	protected function find_highest_first_and_total($testarray = array()) {
 		$this -> highest_val = 0;
 		$this -> first_val = 0;
 		$this -> total_volume_of_posts = 0;
 		$i = 0;
-		while ($testarray[$i]['name']) {
+		while (array_key_exists($i, $testarray)) {
 			$this -> total_volume_of_posts += $testarray[$i]['volume'];
 			if (0 < $testarray[$i]['volume'] and $this -> highest_val < $testarray[$i]['volume']) {
 				$this -> highest_val = $testarray[$i]['volume'];

@@ -15,7 +15,7 @@ class sdpvsPieChart extends sdpvsArrays {
 	 */
 	private function sdpvs_count_post_categories($year = "") {
 		$c = 0;
-		while ($this -> category_array[$c]['id']) {
+		while (array_key_exists($c, $this -> category_array)) {
 			if (0 < $this -> category_array[$c]['volume']) {
 				$this -> number_of_categories++;
 				$this -> total_category_posts += $this -> category_array[$c]['volume'];
@@ -32,7 +32,7 @@ class sdpvsPieChart extends sdpvsArrays {
 		parent::sdpvs_post_category_volumes($year);
 		$this -> sdpvs_count_post_categories($year);
 		$c = 0;
-		while ($this -> category_array[$c]['id']) {
+		while (array_key_exists($c, $this -> category_array)) {
 			if (0 < $this -> category_array[$c]['volume']) {
 				$this -> category_array[$c]['angle'] = ($this -> category_array[$c]['volume'] / $this -> total_category_posts) * 360;
 			}
@@ -46,7 +46,7 @@ class sdpvsPieChart extends sdpvsArrays {
 	 */
 	private function sdpvs_count_post_tags($year = "") {
 		$t = 0;
-		while ($this -> tag_array[$t]['id']) {
+		while (array_key_exists($t, $this -> tag_array)) {
 			if (0 < $this -> tag_array[$t]['volume']) {
 				$this -> number_of_tags++;
 				$this -> total_tag_posts += $this -> tag_array[$t]['volume'];
@@ -65,7 +65,7 @@ class sdpvsPieChart extends sdpvsArrays {
 		$this -> sdpvs_count_post_tags($year);
 
 		$t = 0;
-		while ($this -> tag_array[$t]['id']) {
+		while (array_key_exists($t, $this -> tag_array)) {
 			if (0 < $this -> tag_array[$t]['volume']) {
 				$this -> tag_array[$t]['angle'] = ($this -> tag_array[$t]['volume'] / $this -> total_tag_posts) * 360;
 			}
@@ -104,7 +104,7 @@ class sdpvsPieChart extends sdpvsArrays {
 		$pie_svg .= "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" class=\"sdpvs_pie\"><circle cx=\"$radius\" cy=\"$radius\" r=\"$radius\" stroke=\"black\" stroke-width=\"1\" />\n";
 
 		$c = 0;
-		while ($pie_array[$c]['name']) {
+		while (array_key_exists($c, $pie_array)) {
 			if (0 < $pie_array[$c]['volume']) {
 				if (0 < $pie_array[$c]['angle']) {
 					$prev_angle = $testangle_orig;

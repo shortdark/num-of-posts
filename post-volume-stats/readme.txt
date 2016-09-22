@@ -49,6 +49,10 @@ the user to take a more indepth view into the stats.
 
 == Changelog ==
 
+= 3.0.16 =
+
+* Tidied debug notices.
+
 = 3.0.15 =
 
 * Fixed bug on exports.

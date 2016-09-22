@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.15
+ * @version 3.0.16
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with graphical representations and detailed lists.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.0.15
+ * Version: 3.0.16
  * Author URI: http://www.shortdark.net/
  */
 
@@ -175,7 +175,8 @@ function sdpvs_register_settings() {
 	'sdpvs_year_option', // setting name
 	'sanitize');
 	add_settings_field('year_number', // ID
-	'Year Number' // Title
+	'Year Number', // Title
+	'', SDPVS__PLUGIN_FOLDER
 	);
 
 }
@@ -199,11 +200,18 @@ function sanitize($input) {
 
 function sdpvs_load_all_admin_scripts() {
 	wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.5', 'screen');
-	wp_enqueue_script('sdpvs_loader', plugins_url('sdpvs_loader.js', __FILE__), array('jquery'), '1.0.2', true);
+	
 
 	// Importing external JQuery UI element using "wp-includes/script-loader.php"
 	wp_enqueue_script("jquery-ui-draggable");
-
+	
+	wp_register_script( 'sdpvs_loader', plugins_url('sdpvs_loader.js', __FILE__) );
+	wp_enqueue_script('sdpvs_loader', plugins_url('sdpvs_loader.js', __FILE__), array('jquery'), '1.0.2', true);
+	
+	$whichdata = "";
+	$whichcats = "";
+	$whichtags = "";
+	
 	//Here we create a javascript object variable called "sdpvs_vars". We can access any variable in the array using sdpvs_vars.name_of_sub_variable
 	wp_localize_script('sdpvs_loader', 'sdpvs_vars', array(
 	//To use this variable in javascript use "sdpvs_vars.ajaxurl"
@@ -216,6 +224,8 @@ function sdpvs_load_all_admin_scripts() {
 	'whichtags' => $whichtags,
 	// nonce...
 	'ajax_nonce' => wp_create_nonce('num-of-posts'), ));
+	
+	
 }
 
 add_action('admin_enqueue_scripts', 'sdpvs_load_all_admin_scripts');
