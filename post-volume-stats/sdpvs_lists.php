@@ -31,20 +31,24 @@ class sdpvsTextLists extends sdpvsArrays {
 			$typetitleplural = "Categories";
 			$form_name = 'sdpvs_catselect';
 			$taxonomy_type = 'category';
+			$whichlist = 'category';
 		} elseif ("tag" == $type) {
 			$typetitle = "Tag";
 			$typetitleplural = "Tags";
 			$form_name = 'sdpvs_tagselect';
 			$taxonomy_type = 'post_tag';
+			$whichlist = 'tag';
 		}
 
+		/*
 		if ("subpage" == $list_type) {
-			$posts_per_cat_tag = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
-		} elseif ("source" == $list_type) {
-			$posts_per_cat_tag = '<h3>' . esc_html__('2. HTML', 'post-volume-stats') . '</h3><p>Copy and paste into text editor</p><code>';
-		} elseif ("public" == $list_type) {
-			$posts_per_cat_tag = '<h3>' . esc_html__('3. Preview', 'post-volume-stats') . '</h3><p>Copy and paste into visual editor</p>';
-		}
+					$posts_per_cat_tag = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
+				} elseif ("source" == $list_type) {
+					$posts_per_cat_tag = '<h3>' . esc_html__('2. HTML', 'post-volume-stats') . '</h3><p>Copy and paste into text editor</p><code>';
+				} elseif ("public" == $list_type) {
+					$posts_per_cat_tag = '<h3>' . esc_html__('3. Preview', 'post-volume-stats') . '</h3><p>Copy and paste into visual editor</p>';
+				}*/
+		
 
 		if (0 < $searchyear) {
 			$title = sprintf(esc_html__('Post Volumes per %1$s: %2$d!', 'post-volume-stats'), $typetitle, $searchyear);
@@ -52,10 +56,10 @@ class sdpvsTextLists extends sdpvsArrays {
 			$title = sprintf(esc_html__('Post Volumes per %s!', 'post-volume-stats'), $typetitle);
 		}
 
-		if ("source" == $list_type) {
-			$selectable .= '<h2>' . $title . '</h2>';
+		if ("source" == $list_type or "export" == $list_type) {
+			$selectable = '<h2>' . $title . '</h2>';
 		} else {
-			$posts_per_cat_tag .= '<h2>' . $title . '</h2>';
+			$posts_per_cat_tag = '<h2>' . $title . '</h2>';
 		}
 
 		if ("" == $select_array and ("admin" == $list_type or "subpage" == $list_type)) {
@@ -68,14 +72,18 @@ class sdpvsTextLists extends sdpvsArrays {
 				$universal_array = $this -> tag_array;
 			}
 			if ("subpage" == $list_type) {
-				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export then click the \'Show HTML\' button.', 'post-volume-stats'), $typetitleplural) . '</p>';
-				$posts_per_cat_tag .= "<form class='$form_name' action='' method='POST'>";
-				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='Show HTML'></div>";
-				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><a id='select-all'>Select All</a> / <a id='deselect-all'>Deselect All</a></div>";
+				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export to a post then click the \'Export\' button.', 'post-volume-stats'), $typetitleplural) . '</p>';
+  
+				// $posts_per_cat_tag .= "<form class='$form_name' action='' method='POST'>";
+				$posts_per_cat_tag .= "<form action='" . esc_url( admin_url('admin-post.php') ) . "' method='POST'>";
+				$posts_per_cat_tag .= "<input type=\"hidden\" name=\"action\" value=\"export_lists\">";
+				$posts_per_cat_tag .= "<input type=\"hidden\" name=\"whichlist\" value=\"$whichlist\">";
+				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='" . esc_html__('Export') . "'></div>";
+				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><a id='select-all'>Select All</a> / <a id='deselect-all'>" . esc_html__('Deselect All') . "</a></div>";
 			}
 			$posts_per_cat_tag .= '<ol>';
 			$c = 0;
-			while ($universal_array[$c]['id']) {
+			while (array_key_exists($c, $universal_array)) {
 				if (0 < $universal_array[$c]['volume']) {
 					if ("category" == $type) {
 						$link = admin_url('edit.php?category_name=' . $universal_array[$c]['slug']);
@@ -86,14 +94,14 @@ class sdpvsTextLists extends sdpvsArrays {
 					if ("admin" == $list_type) {
 						$posts_per_cat_tag .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $universal_array[$c]['name'], $universal_array[$c]['volume']) . '</li>';
 					} elseif ("subpage" == $list_type) {
-						$posts_per_cat_tag .= "<li><label><input type=\"checkbox\" name=\"tagid\" value=\"{$universal_array[$c]['id']}\">" . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $universal_array[$c]['name'], $universal_array[$c]['volume']) . '</label></li>';
+						$posts_per_cat_tag .= "<li><label><input type=\"checkbox\" name=\"tagid[]\" value=\"{$universal_array[$c]['id']}\">" . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $universal_array[$c]['name'], $universal_array[$c]['volume']) . '</label></li>';
 					}
 				}
 				$c++;
 			}
 			$posts_per_cat_tag .= '</ol>';
 			if ("subpage" == $list_type) {
-				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='Show HTML'></div>";
+				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='" . esc_html__('Export') . "'></div>";
 				$posts_per_cat_tag .= "</form>";
 			}
 		} else {
@@ -101,11 +109,13 @@ class sdpvsTextLists extends sdpvsArrays {
 			$selectable .= "<ol>";
 
 			$x = 0;
-			while ($select_array[1][$x]) {
-				if (0 < $select_array[1][$x]) {
+			// while ($select_array[1][$x]) {
+				// if (0 < $select_array[1][$x]) {
+					// $term_id = $select_array[1][$x];
+			while ($select_array[$x]) {
+				if (0 < $select_array[$x]) {
 
-					$term_id = $select_array[1][$x];
-
+					$term_id = absint($select_array[$x]);
 					// Get slug, name and volume
 					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear);
 
@@ -130,6 +140,8 @@ class sdpvsTextLists extends sdpvsArrays {
 			$posts_per_cat_tag .= $selectable . '</code>';
 		} elseif ("public" == $list_type) {
 			$posts_per_cat_tag .= $selectable;
+		} elseif ("export" == $list_type) {
+			$posts_per_cat_tag = $selectable;
 		}
 
 		if (0 === $c) {

@@ -1,15 +1,15 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.16
+ * @version 3.0.17
  */
 /*
  * Plugin Name: Post Volume Stats
  * Plugin URI: https://github.com/shortdark/num-of-posts
- * Description: Displays the post stats in the admin area with graphical representations and detailed lists.
+ * Description: Displays the post stats in the admin area with pie, bar charts and detailed lists that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.0.16
+ * Version: 3.0.17
  * Author URI: http://www.shortdark.net/
  */
 
@@ -153,15 +153,14 @@ function sdpvs_register_custom_page_in_menu() {
 
 add_action('admin_menu', 'sdpvs_register_custom_page_in_menu');
 
-
 /**
  * Load plugin textdomain.
  */
 function sdpvs_load_textdomain() {
-  load_plugin_textdomain( 'post-volume-stats', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' ); 
+	load_plugin_textdomain('post-volume-stats', false, dirname(plugin_basename(__FILE__)) . '/languages');
 }
 
-add_action( 'init', 'sdpvs_load_textdomain' );
+add_action('init', 'sdpvs_load_textdomain');
 
 /***************
  ** USER INPUT
@@ -176,8 +175,7 @@ function sdpvs_register_settings() {
 	'sanitize');
 	add_settings_field('year_number', // ID
 	'Year Number', // Title
-	'', SDPVS__PLUGIN_FOLDER
-	);
+	'', SDPVS__PLUGIN_FOLDER);
 
 }
 
@@ -200,18 +198,17 @@ function sanitize($input) {
 
 function sdpvs_load_all_admin_scripts() {
 	wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.5', 'screen');
-	
 
 	// Importing external JQuery UI element using "wp-includes/script-loader.php"
 	wp_enqueue_script("jquery-ui-draggable");
-	
-	wp_register_script( 'sdpvs_loader', plugins_url('sdpvs_loader.js', __FILE__) );
+
+	wp_register_script('sdpvs_loader', plugins_url('sdpvs_loader.js', __FILE__));
 	wp_enqueue_script('sdpvs_loader', plugins_url('sdpvs_loader.js', __FILE__), array('jquery'), '1.0.2', true);
-	
+
 	$whichdata = "";
 	$whichcats = "";
 	$whichtags = "";
-	
+
 	//Here we create a javascript object variable called "sdpvs_vars". We can access any variable in the array using sdpvs_vars.name_of_sub_variable
 	wp_localize_script('sdpvs_loader', 'sdpvs_vars', array(
 	//To use this variable in javascript use "sdpvs_vars.ajaxurl"
@@ -224,8 +221,7 @@ function sdpvs_load_all_admin_scripts() {
 	'whichtags' => $whichtags,
 	// nonce...
 	'ajax_nonce' => wp_create_nonce('num-of-posts'), ));
-	
-	
+
 }
 
 add_action('admin_enqueue_scripts', 'sdpvs_load_all_admin_scripts');
@@ -235,7 +231,7 @@ function sdpvs_load_all_public_scripts() {
 	wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.5', 'screen');
 }
 
-add_action( 'wp_enqueue_scripts', 'sdpvs_load_all_public_scripts' );
+add_action('wp_enqueue_scripts', 'sdpvs_load_all_public_scripts');
 
 function sdpvs_process_ajax() {
 	// Security check
@@ -274,50 +270,31 @@ function sdpvs_process_ajax() {
 
 add_action('wp_ajax_sdpvs_get_results', 'sdpvs_process_ajax');
 
-function sdpvs_cats_lists() {
-	// Security check
-	check_ajax_referer('num-of-posts', 'security');
+function sdpvs_admin_export_lists() {
+	$sdpvs_lists = new sdpvsTextLists();
 
-	// create an instance of the list class
-	// $sdpvs_lists = new sdpvsTextLists();
-	$sdpvs_sub = new sdpvsSubPages();
+	$matches = $_POST['tagid'];
 
-	// Extract the variables from serialized string
-	$gotit = filter_var($_POST['whichcats'], FILTER_SANITIZE_STRING);
-	preg_match_all('/=([0-9]*)/', $gotit, $matches);
+	$year = get_option('sdpvs_year_option');
+	$searchyear = absint($year['year_number']);
+	$whichlist = filter_var($_POST['whichlist'], FILTER_SANITIZE_STRING);
 
-	// $year = get_option('sdpvs_year_option');
-	// $searchyear = absint($year['year_number']);
+	if ($searchyear)
+		$title = ucfirst($whichlist) . ' Stats: ' . $searchyear;
+	else
+		$title = ucfirst($whichlist) . ' Stats: All-time';
 
-	echo $sdpvs_sub -> update_ajax_lists('category', $matches);
+	$post_content = $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($whichlist, $searchyear, 'export', $matches);
+	$my_post = array('post_title' => $title, 'post_content' => $post_content, 'post_status' => 'draft');
+	// Insert the post into the database and get the post ID.
+	$post_id = wp_insert_post($my_post, $wp_error);
 
-	// Always die() AJAX
-	die();
+	$url = admin_url("post.php?post=$post_id&action=edit");
+
+	if (wp_redirect($url)) {
+		exit ;
+	}
 }
 
-add_action('wp_ajax_sdpvs_select_cats', 'sdpvs_cats_lists');
-
-function sdpvs_tags_lists() {
-	// Security check
-	check_ajax_referer('num-of-posts', 'security');
-
-	// create an instance of the list class
-	// $sdpvs_lists = new sdpvsTextLists();
-	$sdpvs_sub = new sdpvsSubPages();
-
-	// Extract the variables from serialized string
-	$gotit = filter_var($_POST['whichtags'], FILTER_SANITIZE_STRING);
-	preg_match_all('/=([0-9]*)/', $gotit, $matches);
-
-	// $year = get_option('sdpvs_year_option');
-	// $searchyear = absint($year['year_number']);
-
-	echo $sdpvs_sub -> update_ajax_lists('tag', $matches);
-
-	// Always die() AJAX
-	die();
-}
-
-add_action('wp_ajax_sdpvs_select_tags', 'sdpvs_tags_lists');
-
+add_action('admin_post_export_lists', 'sdpvs_admin_export_lists');
 ?>

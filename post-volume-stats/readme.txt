@@ -49,6 +49,11 @@ the user to take a more indepth view into the stats.
 
 == Changelog ==
 
+= 3.0.17 =
+
+* Changed from "Show HTML" to "Export" into post.
+* One more debug notice fixed.
+
 = 3.0.16 =
 
 * Tidied debug notices.
