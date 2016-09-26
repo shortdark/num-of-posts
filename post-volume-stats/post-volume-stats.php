@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.17
+ * @version 3.0.18
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie, bar charts and detailed lists that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.0.17
+ * Version: 3.0.18
  * Author URI: http://www.shortdark.net/
  */
 
@@ -270,10 +270,52 @@ function sdpvs_process_ajax() {
 
 add_action('wp_ajax_sdpvs_get_results', 'sdpvs_process_ajax');
 
+function sdpvs_cats_lists() {
+	// Security check
+	check_ajax_referer('num-of-posts', 'security');
+
+	$sdpvs_sub = new sdpvsSubPages();
+
+	// Extract the variables from serialized string
+	$gotit = filter_var($_POST['whichcats'], FILTER_SANITIZE_STRING);
+	preg_match_all('/=([0-9]*)/', $gotit, $matches);
+
+	echo $sdpvs_sub -> update_ajax_lists('category', $matches);
+
+	// Always die() AJAX
+	die();
+}
+
+add_action('wp_ajax_sdpvs_select_cats', 'sdpvs_cats_lists');
+
+function sdpvs_tags_lists() {
+	// Security check
+	check_ajax_referer('num-of-posts', 'security');
+
+	$sdpvs_sub = new sdpvsSubPages();
+
+	// Extract the variables from serialized string
+	$gotit = filter_var($_POST['whichtags'], FILTER_SANITIZE_STRING);
+	preg_match_all('/=([0-9]*)/', $gotit, $matches);
+
+	echo $sdpvs_sub -> update_ajax_lists('tag', $matches);
+
+	// Always die() AJAX
+	die();
+}
+
+add_action('wp_ajax_sdpvs_select_tags', 'sdpvs_tags_lists');
+
+/*************
+ ** EXPORT...
+ *************/
+
 function sdpvs_admin_export_lists() {
 	$sdpvs_lists = new sdpvsTextLists();
 
-	$matches = $_POST['tagid'];
+	// Extract the variables from encoded string
+	$matches_string = filter_var($_POST['matches'], FILTER_SANITIZE_STRING);
+	preg_match_all('/\[([0-9]*)\]/', $matches_string, $matches);
 
 	$year = get_option('sdpvs_year_option');
 	$searchyear = absint($year['year_number']);

@@ -49,6 +49,10 @@ the user to take a more indepth view into the stats.
 
 == Changelog ==
 
+= 3.0.18 =
+
+* Reverted back to having the preview, then from the preview you can "Export" into post.
+
 = 3.0.17 =
 
 * Changed from "Show HTML" to "Export" into post.

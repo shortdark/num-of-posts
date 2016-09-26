@@ -40,15 +40,31 @@ class sdpvsTextLists extends sdpvsArrays {
 			$whichlist = 'tag';
 		}
 
-		/*
 		if ("subpage" == $list_type) {
-					$posts_per_cat_tag = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
-				} elseif ("source" == $list_type) {
-					$posts_per_cat_tag = '<h3>' . esc_html__('2. HTML', 'post-volume-stats') . '</h3><p>Copy and paste into text editor</p><code>';
-				} elseif ("public" == $list_type) {
-					$posts_per_cat_tag = '<h3>' . esc_html__('3. Preview', 'post-volume-stats') . '</h3><p>Copy and paste into visual editor</p>';
-				}*/
-		
+			$posts_per_cat_tag = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
+		} elseif ("source" == $list_type) {
+			$posts_per_cat_tag = '<h3>' . esc_html__('2. HTML', 'post-volume-stats') . '</h3><p>' . esc_html__('Copy and paste into HTML.') . '</p><code>';
+		} elseif ("public" == $list_type) {
+			$posts_per_cat_tag = '<h3>' . esc_html__('3. Preview', 'post-volume-stats') . '</h3>';
+			$posts_per_cat_tag .= "<form action='" . esc_url(admin_url('admin-post.php')) . "' method='POST'>";
+			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"action\" value=\"export_lists\">";
+			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"whichlist\" value=\"$whichlist\">";
+			// $matches_string = json_encode($select_array);
+			$x = 0;
+			while ($select_array[1][$x]) {
+
+				if (0 < $select_array[1][$x]) {
+					if (0 != $x) {
+						$matches_string .= ",";
+					}
+					$matches_string .= "[" . $select_array[1][$x] . "]";
+				}
+				$x++;
+			}
+			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"matches\" value='$matches_string'>";
+			$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='" . esc_html__('Export to a new post') . "'></div>";
+			$posts_per_cat_tag .= "</form>";
+		}
 
 		if (0 < $searchyear) {
 			$title = sprintf(esc_html__('Post Volumes per %1$s: %2$d!', 'post-volume-stats'), $typetitle, $searchyear);
@@ -59,7 +75,7 @@ class sdpvsTextLists extends sdpvsArrays {
 		if ("source" == $list_type or "export" == $list_type) {
 			$selectable = '<h2>' . $title . '</h2>';
 		} else {
-			$posts_per_cat_tag = '<h2>' . $title . '</h2>';
+			$posts_per_cat_tag .= '<h2>' . $title . '</h2>';
 		}
 
 		if ("" == $select_array and ("admin" == $list_type or "subpage" == $list_type)) {
@@ -73,12 +89,9 @@ class sdpvsTextLists extends sdpvsArrays {
 			}
 			if ("subpage" == $list_type) {
 				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export to a post then click the \'Export\' button.', 'post-volume-stats'), $typetitleplural) . '</p>';
-  
-				// $posts_per_cat_tag .= "<form class='$form_name' action='' method='POST'>";
-				$posts_per_cat_tag .= "<form action='" . esc_url( admin_url('admin-post.php') ) . "' method='POST'>";
-				$posts_per_cat_tag .= "<input type=\"hidden\" name=\"action\" value=\"export_lists\">";
-				$posts_per_cat_tag .= "<input type=\"hidden\" name=\"whichlist\" value=\"$whichlist\">";
-				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='" . esc_html__('Export') . "'></div>";
+
+				$posts_per_cat_tag .= "<form class='$form_name' action='' method='POST'>";
+				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='" . esc_html__('Show HTML') . "'></div>";
 				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><a id='select-all'>Select All</a> / <a id='deselect-all'>" . esc_html__('Deselect All') . "</a></div>";
 			}
 			$posts_per_cat_tag .= '<ol>';
@@ -101,7 +114,7 @@ class sdpvsTextLists extends sdpvsArrays {
 			}
 			$posts_per_cat_tag .= '</ol>';
 			if ("subpage" == $list_type) {
-				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='" . esc_html__('Export') . "'></div>";
+				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='" . esc_html__('Show HTML') . "'></div>";
 				$posts_per_cat_tag .= "</form>";
 			}
 		} else {
@@ -109,13 +122,11 @@ class sdpvsTextLists extends sdpvsArrays {
 			$selectable .= "<ol>";
 
 			$x = 0;
-			// while ($select_array[1][$x]) {
-				// if (0 < $select_array[1][$x]) {
-					// $term_id = $select_array[1][$x];
-			while ($select_array[$x]) {
-				if (0 < $select_array[$x]) {
 
-					$term_id = absint($select_array[$x]);
+			while ($select_array[1][$x]) {
+				if (0 < $select_array[1][$x]) {
+					$term_id = $select_array[1][$x];
+
 					// Get slug, name and volume
 					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear);
 
