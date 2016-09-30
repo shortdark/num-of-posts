@@ -43,11 +43,15 @@ Here are the latest screenshots...
 1. Shows the main page of "Post Volume Stats".
 2. Shows the draggable AJAX data lists, and highlighted bar of a bar chart.
 3. You can view the stats for each year individually. This shows the same blog with stats for one year selected.
-4. The new "Category" and "Tag" pages allow the user to export the data to HTML. Soon these pages will allow 
-the user to take a more indepth view into the stats.
-5. Shows the widget in the "live preview" area of the admin.
+4. The new "Category" and "Tag" pages allow the user to export the data into an HTML list.
+5. The export button adds the HTML list into a new blog post.
+6. Shows the widget in the "live preview" area of the admin.
 
 == Changelog ==
+
+= 3.0.19 =
+
+* Improved the colors in the pie charts.
 
 = 3.0.18 =
 

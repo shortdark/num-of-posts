@@ -114,20 +114,30 @@ class sdpvsPieChart extends sdpvsArrays {
 					$large = $this -> sdpvs_is_it_a_large_angle($testangle_orig, $prev_angle);
 					$startingline = $this -> sdpvs_draw_starting_line($prev_angle, $this -> newx, $this -> newy);
 					$this -> sdpvs_get_absolute_coordinates_from_angle($quadrant, $radius, $testangle);
-
+					
+					/*
 					if (90 > $number_of_containers) {
-						$opacity = $pie_array[$c]['angle'] / 180;
-					} elseif (1000 > $number_of_containers) {
-						$opacity = $pie_array[$c]['angle'] / 30;
-					} else {
-						$opacity = $pie_array[$c]['angle'] / 15;
+											$opacity = $pie_array[$c]['angle'] / 180;
+										} elseif (1000 > $number_of_containers) {
+											$opacity = $pie_array[$c]['angle'] / 30;
+										} else {
+											$opacity = $pie_array[$c]['angle'] / 15;
+										}
+					
+										if (1 < $opacity) {
+											$opacity = 1;
+										}
+										$opacity = sprintf("%.1f", $opacity);
+										$color = "rgba(255,0,0,$opacity)";*/
+					
+					
+					// Change the hue instead
+					if(0==$c){
+						$largest_angle = $pie_array[$c]['angle'];
 					}
-
-					if (1 < $opacity) {
-						$opacity = 1;
-					}
-					$opacity = sprintf("%.1f", $opacity);
-					$color = "rgba(255,0,0,$opacity)";
+					
+					$hue = 240 - intval($pie_array[$c]['angle']*240 / $largest_angle);
+					$color = "hsl($hue, 70%, 65%)";
 
 					$display_angle_as = sprintf("%.1f", $pie_array[$c]['angle']);
 

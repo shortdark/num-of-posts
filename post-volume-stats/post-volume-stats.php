@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.18
+ * @version 3.0.19
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie, bar charts and detailed lists that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.0.18
+ * Version: 3.0.19
  * Author URI: http://www.shortdark.net/
  */
 
@@ -75,6 +75,9 @@ function sdpvs_post_volume_stats_assembled() {
 
 		// Call the method
 		$sdpvs_content = new sdpvsMainContent();
+		
+		// Admin notices can be used once they're properly dimissable
+		// echo '<div class="notice notice-info is-dismissible"><p class="sdpvs"><strong>' . esc_html__('NEW: You can now export category and tag data directly into a new blog post at the click of a button. There is also a Post Volume Stats widget to add bar charts into your sidebar.', 'post-volume-stats') . '</strong></p></div>';
 
 		// Title
 		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats', 'post-volume-stats') . '</h1>';
