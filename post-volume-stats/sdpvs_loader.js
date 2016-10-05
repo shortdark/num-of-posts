@@ -1,5 +1,15 @@
 jQuery(document).ready(function($) {
 	
+	$("#sdpvs-notice > .notice-dismiss").click(function(e) {
+		var data = {
+			action : "sdpvs_admin_notice",
+			security : sdpvs_vars.ajax_nonce,
+		};
+
+		$.post(ajaxurl, data, function(response) {
+		});
+		return false;
+	});
 	
 	$('#select-all').click(function(e) {
 			// Iterate each checkbox

@@ -43,11 +43,16 @@ Here are the latest screenshots...
 1. Shows the main page of "Post Volume Stats".
 2. Shows the draggable AJAX data lists, and highlighted bar of a bar chart.
 3. You can view the stats for each year individually. This shows the same blog with stats for one year selected.
-4. The new "Category" and "Tag" pages allow the user to export the data into an HTML list.
+4. The new "Category" and "Tag" pages allow the user to export the data into an HTML list. This page also shows a line graph of the selected tags/categories.
 5. The export button adds the HTML list into a new blog post.
 6. Shows the widget in the "live preview" area of the admin.
 
 == Changelog ==
+
+= 3.0.20 =
+
+* Admin notices added.
+* Line graph added to tags/categories pages.
 
 = 3.0.19 =
 

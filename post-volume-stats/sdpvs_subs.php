@@ -46,11 +46,7 @@ class sdpvsSubPages {
 		echo "<hr>";
 
 		echo "<div style='display: inline-block; width: 250px; vertical-align: top;' id='sdpvs_listselect'>";
-		if ("category" == $type) {
-			echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list('category', $searchyear, 'subpage', '');
-		} elseif ("tag" == $type) {
-			echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list('tag', $searchyear, 'subpage', '');
-		}
+		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, 'subpage', '');
 		echo "</div>";
 
 		// Get both methods from AJAX call.
@@ -64,25 +60,24 @@ class sdpvsSubPages {
 	public function update_ajax_lists($type, $matches) {
 		
 		// create an instance of the required classes
+		$sdpvs_bar = new sdpvsBarChart();
 		$sdpvs_lists = new sdpvsTextLists();
 		
 		$year = get_option('sdpvs_year_option');
 		$searchyear = absint($year['year_number']);
-
+		
 		echo "<div style='display: inline-block; width: 500px; vertical-align: top;' id='sdpvs_listsource'>";
-		if ("category" == $type) {
-			echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list('category', $searchyear, 'source', $matches);
-		} elseif ("tag" == $type) {
-			echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list('tag', $searchyear, 'source', $matches);
-		}
+		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, 'source', $matches);
 		echo "</div>";
 
 		echo "<div style='display: inline-block; width: 250px; vertical-align: top;' id='sdpvs_listpublic'>";
-		if ("category" == $type) {
-			echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list('category', $searchyear, 'public', $matches);
-		} elseif ("tag" == $type) {
-			echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list('tag', $searchyear, 'public', $matches);
-		}
+		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, 'public', $matches);
+		echo "</div>";
+		
+		// Big Graph goes here!
+		
+		echo "<div style='display: block; width: 750px; vertical-align: top;' id='sdpvs_listgraph'>";
+		echo $sdpvs_bar -> sdpvs_posts_per_cat_tag_graph($type, $matches);
 		echo "</div>";
 
 		return;

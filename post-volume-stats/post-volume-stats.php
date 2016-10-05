@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.19
+ * @version 3.0.20
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie, bar charts and detailed lists that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.0.19
+ * Version: 3.0.20
  * Author URI: http://www.shortdark.net/
  */
 
@@ -75,7 +75,7 @@ function sdpvs_post_volume_stats_assembled() {
 
 		// Call the method
 		$sdpvs_content = new sdpvsMainContent();
-		
+
 		// Admin notices can be used once they're properly dimissable
 		// echo '<div class="notice notice-info is-dismissible"><p class="sdpvs"><strong>' . esc_html__('NEW: You can now export category and tag data directly into a new blog post at the click of a button. There is also a Post Volume Stats widget to add bar charts into your sidebar.', 'post-volume-stats') . '</strong></p></div>';
 
@@ -309,6 +309,19 @@ function sdpvs_tags_lists() {
 
 add_action('wp_ajax_sdpvs_select_tags', 'sdpvs_tags_lists');
 
+function sdpvs_remove_admin_notice() {
+	// Security check
+	check_ajax_referer('num-of-posts', 'security');
+
+	// activate this with AJAX, #sdpvs-notice
+	set_transient('sdpvs-admin-notice-004', true, 0);
+
+	// Always die() AJAX
+	die();
+}
+
+add_action('wp_ajax_sdpvs_admin_notice', 'sdpvs_remove_admin_notice');
+
 /*************
  ** EXPORT...
  *************/
@@ -342,4 +355,19 @@ function sdpvs_admin_export_lists() {
 }
 
 add_action('admin_post_export_lists', 'sdpvs_admin_export_lists');
+
+/*****************
+ ** ADMIN NOTICE...
+ *****************/
+
+add_action('admin_notices', 'sdpvs_check_activation_notice');
+function sdpvs_check_activation_notice() {
+	if (!get_transient('sdpvs-admin-notice-004')) {
+		$sdpvs_link = admin_url('admin.php?page=' . SDPVS__PLUGIN_FOLDER);
+		echo '<div id="sdpvs-notice" class="notice notice-info is-dismissible"><p class="sdpvs"><strong>' . sprintf(wp_kses(__('NEW to <a href="%1$s">Post Volume Stats</a>: Compare tags and categories in line graphs.', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($sdpvs_link)) . '</strong></p></div>';
+	}
+}
+
+
+
 ?>

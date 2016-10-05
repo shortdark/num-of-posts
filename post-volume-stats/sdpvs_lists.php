@@ -49,10 +49,10 @@ class sdpvsTextLists extends sdpvsArrays {
 			$posts_per_cat_tag .= "<form action='" . esc_url(admin_url('admin-post.php')) . "' method='POST'>";
 			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"action\" value=\"export_lists\">";
 			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"whichlist\" value=\"$whichlist\">";
-			// $matches_string = json_encode($select_array);
+
+			// Make a string for the export button AJAX
 			$x = 0;
 			while ($select_array[1][$x]) {
-
 				if (0 < $select_array[1][$x]) {
 					if (0 != $x) {
 						$matches_string .= ",";
