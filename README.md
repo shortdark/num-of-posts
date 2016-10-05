@@ -3,12 +3,10 @@ My first WordPress plugin. I originally based it on the one file plugin, Hello D
 
 Because I based the plugin on "Hello Dolly" the PHP wasn't OOP to begin with. When I changed the code back to OOP (some of the code comes from another project that was OOP) it worked fine just needed some tidying up. There are probably better ways to do a lot of the functionality, and better ways to interact with WordPress so I aim to continually improve the plugin to get closer to perfection.
 
-Currently there is a graphical representation of year, category, tag, day-of-the-week, hour-of-the-day, month and day-of-the-month stats, with more to come.
+There are graphical representation of year, category, tag, day-of-the-week, hour-of-the-day, month and day-of-the-month stats. The lists have been moved to AJAX, to free up more space and so it works better on mobile devices. You are also able to select a year and just see the stats for that one year. 
 
-The lists have been moved to AJAX, to free up more space and so it works better on mobile devices. There are now separate subpages for a more detailed look at the stats and future exporting, etc.
+The tags and categories subpages allow the ability to export the data as HTML lists; a click of a button creates a new post with the selected list in it. There is also now a way to compare tags and categories over different years with a line graph. This will be improved and eventually be exportable. 
 
-Now, you are able to select a year and just see the stats for that one year. 
-
-The latest thing added is the ability to export the data as HTML, so that you can insert it into a blog post. This will eventually be improved and some more ideas for presenting the data added. It's a work of constant evolution.
+It's a work of constant evolution.
 
 https://wordpress.org/plugins/post-volume-stats/
