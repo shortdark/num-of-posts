@@ -23,9 +23,27 @@ class sdpvsTextLists extends sdpvsArrays {
 	}
 
 	/*
+	 * GET THE COLOR LIST FOR THE LINE GRAPHS
+	 */
+	public function sdpvs_color_list() {
+		$this -> color_list[0] = "#f00";
+		$this -> color_list[1] = "#f0f";
+		$this -> color_list[2] = "#90f";
+		$this -> color_list[3] = "#30f";
+		$this -> color_list[4] = "#09f";
+		$this -> color_list[5] = "#0ff";
+		$this -> color_list[6] = "#0f3";
+		$this -> color_list[7] = "#cf0";
+		$this -> color_list[8] = "#fc0";
+		$this -> color_list[9] = "#f60";
+		$this -> color_list[10] = "#000";
+		return $this -> color_list;
+	}
+
+	/*
 	 * NUMBER OF POSTS PER CATEGORY / TAG TEXT
 	 */
-	public function sdpvs_posts_per_cat_tag_list($type, $searchyear = "", $list_type = "admin", $select_array = "") {
+	public function sdpvs_posts_per_cat_tag_list($type, $searchyear = "", $list_type = "admin", $select_array = "", $colorlist) {
 		if ("category" == $type) {
 			$typetitle = "Category";
 			$typetitleplural = "Categories";
@@ -43,9 +61,9 @@ class sdpvsTextLists extends sdpvsArrays {
 		if ("subpage" == $list_type) {
 			$posts_per_cat_tag = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
 		} elseif ("source" == $list_type) {
-			$posts_per_cat_tag = '<h3>' . esc_html__('2. HTML', 'post-volume-stats') . '</h3><p>' . esc_html__('Copy and paste into HTML.') . '</p><code>';
+			$posts_per_cat_tag = '<h3>' . esc_html__('2. HTML', 'post-volume-stats') . '</h3><p>' . esc_html__('Copy and paste the list into HTML.') . '</p><code>';
 		} elseif ("public" == $list_type) {
-			$posts_per_cat_tag = '<h3>' . esc_html__('3. Preview', 'post-volume-stats') . '</h3>';
+			$posts_per_cat_tag = '<h3>' . esc_html__('3. Preview', 'post-volume-stats') . '</h3><p>' . esc_html__('Export the list and line graph into a new post by exporting.') . '</p>';
 			$posts_per_cat_tag .= "<form action='" . esc_url(admin_url('admin-post.php')) . "' method='POST'>";
 			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"action\" value=\"export_lists\">";
 			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"whichlist\" value=\"$whichlist\">";
@@ -62,7 +80,7 @@ class sdpvsTextLists extends sdpvsArrays {
 				$x++;
 			}
 			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"matches\" value='$matches_string'>";
-			$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='" . esc_html__('Export to a new post') . "'></div>";
+			$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='" . esc_html__('Export') . "'></div>";
 			$posts_per_cat_tag .= "</form>";
 		}
 
@@ -88,7 +106,7 @@ class sdpvsTextLists extends sdpvsArrays {
 				$universal_array = $this -> tag_array;
 			}
 			if ("subpage" == $list_type) {
-				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export to a post then click the \'Export\' button.', 'post-volume-stats'), $typetitleplural) . '</p>';
+				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export to a post then click the \'Export\' button. On mobile devices you may have to scroll down as the results may be at the bottom of the page.', 'post-volume-stats'), $typetitleplural) . '</p>';
 
 				$posts_per_cat_tag .= "<form class='$form_name' action='' method='POST'>";
 				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='" . esc_html__('Show HTML') . "'></div>";
@@ -105,7 +123,7 @@ class sdpvsTextLists extends sdpvsArrays {
 					}
 
 					if ("admin" == $list_type) {
-						$posts_per_cat_tag .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $universal_array[$c]['name'], $universal_array[$c]['volume']) . '</li>';
+						$posts_per_cat_tag .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array(), 'style' => array()))), esc_url($link), $universal_array[$c]['name'], $universal_array[$c]['volume']) . '</li>';
 					} elseif ("subpage" == $list_type) {
 						$posts_per_cat_tag .= "<li><label><input type=\"checkbox\" name=\"tagid[]\" value=\"{$universal_array[$c]['id']}\">" . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $universal_array[$c]['name'], $universal_array[$c]['volume']) . '</label></li>';
 					}
@@ -136,7 +154,13 @@ class sdpvsTextLists extends sdpvsArrays {
 						$link = get_tag_link($term_id);
 					}
 
-					$selectable .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $item['name'], $item['volume']) . '</li>';
+					if (10 > $x) {
+						$color = $colorlist[$x];
+					} else {
+						$color = "#000";
+					}
+
+					$selectable .= '<li>' . sprintf(wp_kses(__('<a href="%1$s" style="color:%2$s">%3$s</a>: %4$d posts', 'post-volume-stats'), array('a' => array('href' => array(), 'style' => array()))), esc_url($link), $color, $item['name'], $item['volume']) . '</li>';
 
 				}
 				$x++;

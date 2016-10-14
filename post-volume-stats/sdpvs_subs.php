@@ -10,7 +10,7 @@ class sdpvsSubPages {
 		$sdpvs_bar = new sdpvsBarChart();
 		$sdpvs_pie = new sdpvsPieChart();
 		$sdpvs_lists = new sdpvsTextLists();
-		
+
 		$year = get_option('sdpvs_year_option');
 		$searchyear = absint($year['year_number']);
 
@@ -32,6 +32,8 @@ class sdpvsSubPages {
 		}
 
 		echo "<hr>";
+		
+		echo "<div style='display: inline-block; width: 250px; vertical-align: top;'>";
 
 		// year bar chart
 		echo "<div class='sdpvs_col'>";
@@ -39,14 +41,15 @@ class sdpvsSubPages {
 		echo "</div>";
 
 		// posts per tag pie chart
-		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_pie -> sdpvs_draw_pie_svg($type, $searchyear, 'y');
-		echo "</div>";
+		// echo "<div class='sdpvs_col'>";
+		// echo $sdpvs_pie -> sdpvs_draw_pie_svg($type, $searchyear, 'y');
+		// echo "</div>";
+		// echo "<hr>";
 
-		echo "<hr>";
-
-		echo "<div style='display: inline-block; width: 250px; vertical-align: top;' id='sdpvs_listselect'>";
+		echo "<div style='display: block; width: 250px; vertical-align: top;' id='sdpvs_listselect'>";
 		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, 'subpage', '');
+		echo "</div>";
+		
 		echo "</div>";
 
 		// Get both methods from AJAX call.
@@ -58,26 +61,32 @@ class sdpvsSubPages {
 	}
 
 	public function update_ajax_lists($type, $matches) {
-		
+
 		// create an instance of the required classes
 		$sdpvs_bar = new sdpvsBarChart();
 		$sdpvs_lists = new sdpvsTextLists();
-		
+
 		$year = get_option('sdpvs_year_option');
 		$searchyear = absint($year['year_number']);
-		
+
+		$color = $sdpvs_lists -> sdpvs_color_list();
+
 		echo "<div style='display: inline-block; width: 500px; vertical-align: top;' id='sdpvs_listsource'>";
-		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, 'source', $matches);
+		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, 'source', $matches, $color);
 		echo "</div>";
 
 		echo "<div style='display: inline-block; width: 250px; vertical-align: top;' id='sdpvs_listpublic'>";
-		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, 'public', $matches);
+		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, 'public', $matches, $color);
 		echo "</div>";
-		
+
 		// Big Graph goes here!
-		
+
+		// echo "<div style='display: block; width: 750px; vertical-align: top;' id='sdpvs_listgraph'>";
+		// echo $sdpvs_bar -> sdpvs_posts_per_cat_tag_graph($type, $matches, $color);
+		// echo "</div>";
+
 		echo "<div style='display: block; width: 750px; vertical-align: top;' id='sdpvs_listgraph'>";
-		echo $sdpvs_bar -> sdpvs_posts_per_cat_tag_graph($type, $matches);
+		echo $sdpvs_bar -> sdpvs_comparison_line_graph($type, $matches, $color);
 		echo "</div>";
 
 		return;

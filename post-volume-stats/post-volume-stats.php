@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.20
+ * @version 3.0.22
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie, bar charts and detailed lists that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.0.20
+ * Version: 3.0.22
  * Author URI: http://www.shortdark.net/
  */
 
@@ -116,6 +116,10 @@ function sdpvs_category_page() {
 		// Call the method
 		$sdpvs_sub -> sdpvs_combined_page_content('category');
 
+		$link = "https://wordpress.org/plugins/post-volume-stats/";
+		$linkdesc = "Post Volume Stats plugin page";
+		echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
+
 		// Stop the timer
 		$time_end = microtime(true);
 		$elapsed_time = sprintf("%.5f", $time_end - $time_start);
@@ -137,6 +141,10 @@ function sdpvs_tag_page() {
 
 		// Call the method
 		$sdpvs_sub -> sdpvs_combined_page_content('tag');
+
+		$link = "https://wordpress.org/plugins/post-volume-stats/";
+		$linkdesc = "Post Volume Stats plugin page";
+		echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
 
 		// Stop the timer
 		$time_end = microtime(true);
@@ -328,6 +336,7 @@ add_action('wp_ajax_sdpvs_admin_notice', 'sdpvs_remove_admin_notice');
 
 function sdpvs_admin_export_lists() {
 	$sdpvs_lists = new sdpvsTextLists();
+	$sdpvs_bar = new sdpvsBarChart();
 
 	// Extract the variables from encoded string
 	$matches_string = filter_var($_POST['matches'], FILTER_SANITIZE_STRING);
@@ -342,7 +351,14 @@ function sdpvs_admin_export_lists() {
 	else
 		$title = ucfirst($whichlist) . ' Stats: All-time';
 
-	$post_content = $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($whichlist, $searchyear, 'export', $matches);
+	$color = $sdpvs_lists -> sdpvs_color_list();
+	$link = "https://wordpress.org/plugins/post-volume-stats/";
+	$linkdesc = "Post Volume Stats";
+
+	$post_content = $sdpvs_bar -> sdpvs_comparison_line_graph($whichlist, $matches, $color);
+	$post_content .= $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($whichlist, $searchyear, 'export', $matches, $color);
+	$post_content .= '<p class="alignright">Line graph made with ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
+
 	$my_post = array('post_title' => $title, 'post_content' => $post_content, 'post_status' => 'draft');
 	// Insert the post into the database and get the post ID.
 	$post_id = wp_insert_post($my_post, $wp_error);
@@ -367,7 +383,4 @@ function sdpvs_check_activation_notice() {
 		echo '<div id="sdpvs-notice" class="notice notice-info is-dismissible"><p class="sdpvs"><strong>' . sprintf(wp_kses(__('NEW to <a href="%1$s">Post Volume Stats</a>: Compare tags and categories in line graphs.', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($sdpvs_link)) . '</strong></p></div>';
 	}
 }
-
-
-
 ?>

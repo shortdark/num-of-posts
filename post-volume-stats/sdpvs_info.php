@@ -22,7 +22,12 @@ class sdpvsInfo extends sdpvsArrays {
 		echo '<p>' . sprintf(esc_html__('%d published posts over %d days is %f posts per day.', 'post-volume-stats'), $this -> published_volume, $days, $posts_per_day) . '</p>';
 		// echo '<p>' . sprintf(esc_html__('Earliest post date: %s', 'post-volume-stats'), $this -> earliest_date) . '</p>';
 		// echo '<p>' . sprintf(esc_html__('Latest post date: %s', 'post-volume-stats'), $this -> latest_date) . '</p>';
-
+		
+		$link = "https://wordpress.org/plugins/post-volume-stats/";
+		$linkdesc = "Post Volume Stats plugin page";
+		
+		echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
+		
 		return;
 	}
 

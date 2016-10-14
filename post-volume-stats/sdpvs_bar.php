@@ -10,6 +10,8 @@ class sdpvsBarChart extends sdpvsArrays {
 
 	protected $highest_val;
 
+	protected $highest_val2;
+
 	/**
 	 * DISPLAY DATA IN A BAR CHART
 	 */
@@ -204,12 +206,12 @@ class sdpvsBarChart extends sdpvsArrays {
 	/**
 	 * BIG TAG / CATEGORY GRAPH
 	 */
-	public function sdpvs_posts_per_cat_tag_graph($type = "", $select_array = "") {
+	public function sdpvs_posts_per_cat_tag_graph($type = "", $select_array = "", $colorlist) {
 		$years_total = 0;
 		$number_of_years = 0;
 		$highest_val = 0;
-		$graphwidth = 700;
-		$graphheight = 200;
+		$graphwidth = 600;
+		$graphheight = 400;
 		$graphtop = 10;
 		$graphbottom = 30;
 		$graphleft = 0;
@@ -309,33 +311,37 @@ class sdpvsBarChart extends sdpvsArrays {
 		$x = 0;
 		while ($select_array[1][$x]) {
 			if (0 < $select_array[1][$x]) {
-				
-				if(0==$x){
-					$color = "#f00";
-				}elseif(1==$x){
-					$color = "#f09";
-				}elseif(2==$x){
-					$color = "#f0f";
-				}elseif(3==$x){
-					$color = "#90f";
-				}elseif(4==$x){
-					$color = "#30f";
-				}elseif(5==$x){
-					$color = "#03f";
-				}elseif(6==$x){
-					$color = "#09f";
-				}elseif(7==$x){
-					$color = "#0ff";
-				}elseif(8==$x){
-					$color = "#0f9";
-				}elseif(9==$x){
-					$color = "#cf0";
-				}elseif(10==$x){
-					$color = "#fc0";
+
+				/*
+				 if (0 == $x) {
+				 $color = "#f00";
+				 } elseif (1 == $x) {
+				 $color = "#f0f";
+				 } elseif (2 == $x) {
+				 $color = "#90f";
+				 } elseif (3 == $x) {
+				 $color = "#30f";
+				 } elseif (4 == $x) {
+				 $color = "#09f";
+				 } elseif (5 == $x) {
+				 $color = "#0ff";
+				 } elseif (6 == $x) {
+				 $color = "#0f3";
+				 } elseif (7 == $x) {
+				 $color = "#cf0";
+				 } elseif (8 == $x) {
+				 $color = "#fc0";
+				 } elseif (9 == $x) {
+				 $color = "#f60";
+				 } else {
+				 $color = "#000";
+				 }*/
+
+				if(10 > $x){
+					$color = $colorlist[$x];
 				}else{
 					$color = "#000";
 				}
-				
 				$term_id = $select_array[1][$x];
 
 				for ($i = 0; $i <= $this -> first_val; $i++) {
@@ -343,7 +349,7 @@ class sdpvsBarChart extends sdpvsArrays {
 					// Get slug, name and volume
 					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear);
 					$x_start = $svgwidth - ($i * $bar_width);
-					
+
 					$point_height = intval($graphheight * ($item['volume'] / $this -> highest_val));
 					$x_start = $svgwidth - ($i * $bar_width) - $bar_width / 2;
 					$y_start = $graphheight + $graphtop - $point_height;
@@ -375,6 +381,165 @@ class sdpvsBarChart extends sdpvsArrays {
 		echo "</svg>\n";
 
 		return;
+	}
+
+	/**
+	 * BIG LINE-ONLY GRAPH
+	 */
+	public function sdpvs_comparison_line_graph($type = "", $select_array = "", $colorlist) {
+		$years_total = 0;
+		$number_of_years = 0;
+		$highest_val = 0;
+		$graphwidth = 600;
+		$graphheight = 400;
+		$graphtop = 10;
+		$graphbottom = 30;
+		$graphleft = 0;
+		// specified in code
+		$graph_color = "blue";
+		$highlight_color = "red";
+
+		if ("category" == $type) {
+			$taxonomy_type = 'category';
+		} elseif ("tag" == $type) {
+			$taxonomy_type = 'post_tag';
+		}
+
+		// All this just gets the number of years
+		parent::sdpvs_number_of_posts_per_year();
+		$chart_array = $this -> year_array;
+		parent::find_highest_first_and_total($chart_array);
+		$bars_total = $this -> first_val + 1;
+		$order = "desc";
+
+		$x = 0;
+		while ($select_array[1][$x]) {
+			if (0 < $select_array[1][$x]) {
+				$term_id = $select_array[1][$x];
+				for ($i = 0; $i <= $this -> first_val; $i++) {
+					$searchyear = absint($chart_array[$i]['name']);
+					// Get slug, name and volume
+					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear);
+					if (!$this -> highest_val2 or $this -> highest_val2 < $item['volume']) {
+						$this -> highest_val2 = $item['volume'];
+					}
+				}
+			}
+			$x++;
+		}
+
+		// specify the margin width on the left of the bar chart
+		$graphleft = (strlen($this -> highest_val2) * 7) + 5;
+
+		$bar_width = $graphwidth / $bars_total;
+		if (17 > $bar_width) {
+			$text_indent = 0;
+		} elseif (26 > $bar_width) {
+			$text_indent = 2;
+		} else {
+			$text_indent = ($bar_width / 2) - 2;
+		}
+		$svgwidth = $graphwidth + $graphleft;
+		$svgheight = $graphheight + $graphtop + $graphbottom;
+
+		$this->svg_output_string = "<svg width=\"" . $svgwidth . "px\" height=\"" . $svgheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" class=\"sdpvs_bar\">\n";
+		$this->svg_output_string .= "<path stroke=\"black\" stroke-width=\"1\" d=\"M$graphleft $graphtop v $graphheight\"></path>";
+
+		$number_per_increment = ceil($this -> highest_val2 / 5);
+		// If an increment is a strange number, like 39, round it up or down to 40 or 35.
+		if (5 < $number_per_increment) {
+			$inc_mod = $number_per_increment % 5;
+			if (0 == $inc_mod) {
+			} elseif (0.5 < $inc_mod) {
+				while (0 != $number_per_increment % 5) {
+					$number_per_increment++;
+				}
+			} elseif (0.5 >= $inc_mod) {
+				while (0 != $number_per_increment % 5) {
+					$number_per_increment--;
+				}
+			}
+		}
+		$horiz_line_increment = $graphheight * ($number_per_increment / $this -> highest_val2);
+
+		for ($j = 0; $j <= 5; $j++) {
+			$depth = $graphtop + $graphheight - ($j * $horiz_line_increment);
+			if ($graphtop <= $depth) {
+				$value = $j * $number_per_increment;
+				if (0 == $j) {
+					$this->svg_output_string .= "<path stroke=\"black\" stroke-width=\"1\" d=\"M$graphleft $depth h $graphwidth\"></path>";
+				} else {
+					$this->svg_output_string .= "<path stroke=\"black\" stroke-width=\"0.2\" d=\"M$graphleft $depth h $graphwidth\"></path>";
+				}
+				$text_x = $graphleft - (strlen($value) * 7) - 5;
+				$text_y = $depth + 4;
+				$this->svg_output_string .= "<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">$value</text>";
+			}
+		}
+
+		$y_start = $graphheight + $graphtop;
+		for ($i = 0; $i <= $this -> first_val; $i++) {
+			$legend = absint($chart_array[$i]['name']);
+			$x_start = $svgwidth - ($i * $bar_width);
+
+			if (strlen($legend) * 7 < $bar_width) {
+				$legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
+				$legend_y = $y_start + 17;
+				$this->svg_output_string .= "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
+			}
+		}
+
+		$x = 0;
+		while ($select_array[1][$x]) {
+			if (0 < $select_array[1][$x]) {
+				
+				if(10 > $x){
+					$color = $colorlist[$x];
+				}else{
+					$color = "#000";
+				}
+
+				
+
+				$term_id = $select_array[1][$x];
+
+				for ($i = 0; $i <= $this -> first_val; $i++) {
+					$searchyear = absint($chart_array[$i]['name']);
+					// Get slug, name and volume
+					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear);
+					$x_start = $svgwidth - ($i * $bar_width);
+
+					$point_height = intval($graphheight * ($item['volume'] / $this -> highest_val2));
+					$x_start = $svgwidth - ($i * $bar_width) - $bar_width / 2;
+					$y_start = $graphheight + $graphtop - $point_height;
+
+					if (0 == $i) {
+						$line_graph = "<path d=\"M$x_start $y_start, ";
+					} elseif ($i == $this -> first_val) {
+						$line_graph .= "$x_start $y_start\" fill=\"transparent\" stroke=\"$color\"/>";
+					} else {
+						$line_graph .= "$x_start $y_start, ";
+					}
+
+					$this->svg_output_string .= "<a xlink:title=\"{$item['name']}, {$item['volume']} posts out of {$chart_array[$i]['volume']}\"><circle cx=\"$x_start\" cy=\"$y_start\" r=\"2\" stroke=\"$color\" stroke-width=\"2\" fill=\"$color\" /></a>";
+				}
+				$this->svg_output_string .= $line_graph;
+
+				if ("category" == $type) {
+					$link = get_category_link($term_id);
+				} elseif ("tag" == $type) {
+					$link = get_tag_link($term_id);
+				}
+
+				
+
+			}
+			$x++;
+		}
+
+		$this->svg_output_string .= "</svg>\n";
+
+		return $this->svg_output_string;
 	}
 
 }
