@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Post Volume Stats package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Volume Stats 3.0.22\n"
+"Project-Id-Version: Post Volume Stats 3.0.14\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/post-volume-"
 "stats\n"
-"POT-Creation-Date: 2016-10-14 19:07:36+00:00\n"
+"POT-Creation-Date: 2016-09-10 19:45:37+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,96 +13,78 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#. #-#-#-#-#  plugin.pot (Post Volume Stats 3.0.22)  #-#-#-#-#
+#. #-#-#-#-#  plugin.pot (Post Volume Stats 3.0.14)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: post-volume-stats.php:83 post-volume-stats.php:160 sdpvs_widget.php:15
+#: post-volume-stats.php:80 post-volume-stats.php:149 sdpvs_widget.php:15
 msgid "Post Volume Stats"
 msgstr ""
 
-#: post-volume-stats.php:102
+#: post-volume-stats.php:99
 msgid "Script time elapsed: %f seconds"
 msgstr ""
 
-#: post-volume-stats.php:121 post-volume-stats.php:147 sdpvs_info.php:29
-msgid "<a href=\"%1$s\" target=\"_blank\">%2$s</a>. Thank you."
-msgstr ""
-
-#: post-volume-stats.php:161
+#: post-volume-stats.php:150
 msgid "Post Volume Stats: Categories"
 msgstr ""
 
-#: post-volume-stats.php:161 sdpvs_pie.php:93
+#: post-volume-stats.php:150 sdpvs_pie.php:93
 msgid "Categories"
 msgstr ""
 
-#: post-volume-stats.php:162
+#: post-volume-stats.php:151
 msgid "Post Volume Stats: Tags"
 msgstr ""
 
-#: post-volume-stats.php:162 sdpvs_pie.php:100
+#: post-volume-stats.php:151 sdpvs_pie.php:100
 msgid "Tags"
 msgstr ""
 
-#: post-volume-stats.php:360
-msgid "<a href=\"%1$s\" target=\"_blank\">%2$s</a>."
-msgstr ""
-
-#: post-volume-stats.php:383
-msgid ""
-"NEW to <a href=\"%1$s\">Post Volume Stats</a>: Compare tags and categories "
-"in line graphs."
-msgstr ""
-
-#: sdpvs_bar.php:38 sdpvs_widget.php:127
+#: sdpvs_bar.php:36 sdpvs_widget.php:127
 msgid "Years"
 msgstr ""
 
-#: sdpvs_bar.php:40
+#: sdpvs_bar.php:38
 msgid "Posts per Year"
 msgstr ""
 
-#: sdpvs_bar.php:49 sdpvs_widget.php:139
+#: sdpvs_bar.php:47 sdpvs_widget.php:139
 msgid "Days of the Week"
 msgstr ""
 
-#: sdpvs_bar.php:51
+#: sdpvs_bar.php:49
 msgid "Posts per Day of the Week"
 msgstr ""
 
-#: sdpvs_bar.php:60
+#: sdpvs_bar.php:58
 msgid "Hours"
 msgstr ""
 
-#: sdpvs_bar.php:62
+#: sdpvs_bar.php:60
 msgid "Posts per Hour"
 msgstr ""
 
-#: sdpvs_bar.php:71 sdpvs_widget.php:131
+#: sdpvs_bar.php:69 sdpvs_widget.php:131
 msgid "Months"
 msgstr ""
 
-#: sdpvs_bar.php:73
+#: sdpvs_bar.php:71
 msgid "Posts per Month"
 msgstr ""
 
-#: sdpvs_bar.php:82 sdpvs_widget.php:135
+#: sdpvs_bar.php:80 sdpvs_widget.php:135
 msgid "Days of the Month"
 msgstr ""
 
-#: sdpvs_bar.php:84
+#: sdpvs_bar.php:82
 msgid "Posts per Day of the Month"
 msgstr ""
 
-#: sdpvs_bar.php:89 sdpvs_bar.php:170 sdpvs_bar.php:302 sdpvs_bar.php:488
+#: sdpvs_bar.php:87 sdpvs_bar.php:168
 msgid "%d"
 msgstr ""
 
-#: sdpvs_bar.php:91
+#: sdpvs_bar.php:89
 msgid "All-time"
-msgstr ""
-
-#: sdpvs_bar.php:375 sdpvs_lists.php:126 sdpvs_lists.php:128
-msgid "<a href=\"%1$s\">%2$s</a>: %3$d posts"
 msgstr ""
 
 #: sdpvs_info.php:22
@@ -117,79 +99,56 @@ msgstr ""
 msgid "%d posts over the past %d years."
 msgstr ""
 
-#: sdpvs_lists.php:62
+#: sdpvs_lists.php:42
 msgid "1. Select"
 msgstr ""
 
-#: sdpvs_lists.php:64
+#: sdpvs_lists.php:44
 msgid "2. HTML"
 msgstr ""
 
-#: sdpvs_lists.php:64
-msgid "Copy and paste the list into HTML."
-msgstr ""
-
-#: sdpvs_lists.php:66
+#: sdpvs_lists.php:46
 msgid "3. Preview"
 msgstr ""
 
-#: sdpvs_lists.php:66
-msgid "Export the list and line graph into a new post by exporting."
-msgstr ""
-
-#: sdpvs_lists.php:83
-msgid "Export"
-msgstr ""
-
-#: sdpvs_lists.php:88
+#: sdpvs_lists.php:50
 msgid "Post Volumes per %1$s: %2$d!"
 msgstr ""
 
-#: sdpvs_lists.php:90
+#: sdpvs_lists.php:52
 msgid "Post Volumes per %s!"
 msgstr ""
 
-#: sdpvs_lists.php:109
-msgid ""
-"Check the %s you'd like to export to a post then click the 'Export' button. "
-"On mobile devices you may have to scroll down as the results may be at the "
-"bottom of the page."
+#: sdpvs_lists.php:71
+msgid "Check the %s you'd like to export then click the 'Show HTML' button."
 msgstr ""
 
-#: sdpvs_lists.php:112 sdpvs_lists.php:135
-msgid "Show HTML"
+#: sdpvs_lists.php:87 sdpvs_lists.php:89 sdpvs_lists.php:118
+msgid "<a href=\"%1$s\">%2$s</a>: %3$d posts"
 msgstr ""
 
-#: sdpvs_lists.php:113
-msgid "Deselect All"
-msgstr ""
-
-#: sdpvs_lists.php:163
-msgid "<a href=\"%1$s\" style=\"color:%2$s\">%3$s</a>: %4$d posts"
-msgstr ""
-
-#: sdpvs_lists.php:183
+#: sdpvs_lists.php:136
 msgid "No posts with %s!"
 msgstr ""
 
-#: sdpvs_lists.php:195
+#: sdpvs_lists.php:148
 msgid "Post Volumes per Day of the Week"
 msgstr ""
 
-#: sdpvs_lists.php:201 sdpvs_lists.php:217 sdpvs_lists.php:233
-#: sdpvs_lists.php:249
+#: sdpvs_lists.php:154 sdpvs_lists.php:170 sdpvs_lists.php:186
+#: sdpvs_lists.php:202
 msgid "%s: %d posts"
 msgstr ""
 
-#: sdpvs_lists.php:214
+#: sdpvs_lists.php:167
 msgid "Post Volumes per Hour"
 msgstr ""
 
-#: sdpvs_lists.php:228
+#: sdpvs_lists.php:181
 msgid "Post Volumes per Month"
 msgstr ""
 
-#: sdpvs_lists.php:244
+#: sdpvs_lists.php:197
 msgid "Post Volumes per Day of the Month"
 msgstr ""
 
@@ -204,6 +163,12 @@ msgstr ""
 msgid ""
 "These are the all-time stats for %s. Click a bar of the \"Years\" bar chart "
 "to change to that year."
+msgstr ""
+
+#: sdpvs_main.php:25
+msgid ""
+"NEW: You can now add the bar charts to your blog's sidebar with the new "
+"widget!!!"
 msgstr ""
 
 #: sdpvs_subs.php:25
@@ -249,8 +214,8 @@ msgstr ""
 
 #. Description of the plugin/theme
 msgid ""
-"Displays the post stats in the admin area with pie, bar charts and detailed "
-"lists that can be exported to posts."
+"Displays the post stats in the admin area with graphical representations and "
+"detailed lists."
 msgstr ""
 
 #. Author of the plugin/theme

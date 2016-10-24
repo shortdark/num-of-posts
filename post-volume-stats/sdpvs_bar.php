@@ -312,34 +312,9 @@ class sdpvsBarChart extends sdpvsArrays {
 		while ($select_array[1][$x]) {
 			if (0 < $select_array[1][$x]) {
 
-				/*
-				 if (0 == $x) {
-				 $color = "#f00";
-				 } elseif (1 == $x) {
-				 $color = "#f0f";
-				 } elseif (2 == $x) {
-				 $color = "#90f";
-				 } elseif (3 == $x) {
-				 $color = "#30f";
-				 } elseif (4 == $x) {
-				 $color = "#09f";
-				 } elseif (5 == $x) {
-				 $color = "#0ff";
-				 } elseif (6 == $x) {
-				 $color = "#0f3";
-				 } elseif (7 == $x) {
-				 $color = "#cf0";
-				 } elseif (8 == $x) {
-				 $color = "#fc0";
-				 } elseif (9 == $x) {
-				 $color = "#f60";
-				 } else {
-				 $color = "#000";
-				 }*/
-
-				if(10 > $x){
+				if (10 > $x) {
 					$color = $colorlist[$x];
-				}else{
+				} else {
 					$color = "#000";
 				}
 				$term_id = $select_array[1][$x];
@@ -442,8 +417,8 @@ class sdpvsBarChart extends sdpvsArrays {
 		$svgwidth = $graphwidth + $graphleft;
 		$svgheight = $graphheight + $graphtop + $graphbottom;
 
-		$this->svg_output_string = "<svg width=\"" . $svgwidth . "px\" height=\"" . $svgheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" class=\"sdpvs_bar\">\n";
-		$this->svg_output_string .= "<path stroke=\"black\" stroke-width=\"1\" d=\"M$graphleft $graphtop v $graphheight\"></path>";
+		$this -> svg_output_string = "<svg width=\"" . $svgwidth . "px\" height=\"" . $svgheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" class=\"sdpvs_bar\">\n";
+		$this -> svg_output_string .= "<path stroke=\"black\" stroke-width=\"1\" d=\"M$graphleft $graphtop v $graphheight\"></path>";
 
 		$number_per_increment = ceil($this -> highest_val2 / 5);
 		// If an increment is a strange number, like 39, round it up or down to 40 or 35.
@@ -467,13 +442,13 @@ class sdpvsBarChart extends sdpvsArrays {
 			if ($graphtop <= $depth) {
 				$value = $j * $number_per_increment;
 				if (0 == $j) {
-					$this->svg_output_string .= "<path stroke=\"black\" stroke-width=\"1\" d=\"M$graphleft $depth h $graphwidth\"></path>";
+					$this -> svg_output_string .= "<path stroke=\"black\" stroke-width=\"1\" d=\"M$graphleft $depth h $graphwidth\"></path>";
 				} else {
-					$this->svg_output_string .= "<path stroke=\"black\" stroke-width=\"0.2\" d=\"M$graphleft $depth h $graphwidth\"></path>";
+					$this -> svg_output_string .= "<path stroke=\"black\" stroke-width=\"0.2\" d=\"M$graphleft $depth h $graphwidth\"></path>";
 				}
 				$text_x = $graphleft - (strlen($value) * 7) - 5;
 				$text_y = $depth + 4;
-				$this->svg_output_string .= "<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">$value</text>";
+				$this -> svg_output_string .= "<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">$value</text>";
 			}
 		}
 
@@ -485,21 +460,19 @@ class sdpvsBarChart extends sdpvsArrays {
 			if (strlen($legend) * 7 < $bar_width) {
 				$legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
 				$legend_y = $y_start + 17;
-				$this->svg_output_string .= "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
+				$this -> svg_output_string .= "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
 			}
 		}
 
 		$x = 0;
 		while ($select_array[1][$x]) {
 			if (0 < $select_array[1][$x]) {
-				
-				if(10 > $x){
+
+				if (10 > $x) {
 					$color = $colorlist[$x];
-				}else{
+				} else {
 					$color = "#000";
 				}
-
-				
 
 				$term_id = $select_array[1][$x];
 
@@ -513,17 +486,19 @@ class sdpvsBarChart extends sdpvsArrays {
 					$x_start = $svgwidth - ($i * $bar_width) - $bar_width / 2;
 					$y_start = $graphheight + $graphtop - $point_height;
 
-					if (0 == $i) {
-						$line_graph = "<path d=\"M$x_start $y_start, ";
-					} elseif ($i == $this -> first_val) {
-						$line_graph .= "$x_start $y_start\" fill=\"transparent\" stroke=\"$color\"/>";
-					} else {
-						$line_graph .= "$x_start $y_start, ";
+					if (0 < $this -> first_val) {
+						if (0 == $i) {
+							$line_graph = "<path d=\"M$x_start $y_start, ";
+						} elseif ($i == $this -> first_val) {
+							$line_graph .= "$x_start $y_start\" fill=\"transparent\" stroke=\"$color\"/>";
+						} else {
+							$line_graph .= "$x_start $y_start, ";
+						}
 					}
 
-					$this->svg_output_string .= "<a xlink:title=\"{$item['name']}, {$item['volume']} posts out of {$chart_array[$i]['volume']}\"><circle cx=\"$x_start\" cy=\"$y_start\" r=\"2\" stroke=\"$color\" stroke-width=\"2\" fill=\"$color\" /></a>";
+					$this -> svg_output_string .= "<a xlink:title=\"{$item['name']}, {$item['volume']} posts out of {$chart_array[$i]['volume']}\"><circle cx=\"$x_start\" cy=\"$y_start\" r=\"2\" stroke=\"$color\" stroke-width=\"2\" fill=\"$color\" /></a>";
 				}
-				$this->svg_output_string .= $line_graph;
+				$this -> svg_output_string .= $line_graph;
 
 				if ("category" == $type) {
 					$link = get_category_link($term_id);
@@ -531,15 +506,13 @@ class sdpvsBarChart extends sdpvsArrays {
 					$link = get_tag_link($term_id);
 				}
 
-				
-
 			}
 			$x++;
 		}
 
-		$this->svg_output_string .= "</svg>\n";
+		$this -> svg_output_string .= "</svg>\n";
 
-		return $this->svg_output_string;
+		return $this -> svg_output_string;
 	}
 
 }

@@ -26,6 +26,9 @@ jQuery(document).ready(function($) {
 	});
 
 	$(".sdpvs_catselect").submit(function(e) {
+		$("#sdpvs_loading").show();
+		$(".sdpvs_preview").attr('disabled', true);
+		
 		// Serialize the form data
 		var sdpvs_checkboxdata = $(this).serialize();
 
@@ -37,11 +40,15 @@ jQuery(document).ready(function($) {
 
 		$.post(ajaxurl, data, function(response) {
 			$('#sdpvs_ajax_lists').html(response);
+			$("#sdpvs_loading").hide();
+			$(".sdpvs_preview").attr('disabled', false);
 		});
 		return false;
 	});
 	
 	$(".sdpvs_tagselect").submit(function(e) {
+		$("#sdpvs_loading").show();
+		$(".sdpvs_preview").attr('disabled', true);
 
 		// Serialize the form data
 		var sdpvs_checkboxdata = $(this).serialize();
@@ -54,6 +61,8 @@ jQuery(document).ready(function($) {
 
 		$.post(ajaxurl, data, function(response) {
 			$('#sdpvs_ajax_lists').html(response);
+			$("#sdpvs_loading").hide();
+			$(".sdpvs_preview").attr('disabled', false);
 		});
 		return false;
 	});

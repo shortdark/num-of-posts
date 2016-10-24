@@ -70,24 +70,21 @@ class sdpvsSubPages {
 		$searchyear = absint($year['year_number']);
 
 		$color = $sdpvs_lists -> sdpvs_color_list();
-
-		echo "<div style='display: inline-block; width: 500px; vertical-align: top;' id='sdpvs_listsource'>";
-		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, 'source', $matches, $color);
-		echo "</div>";
-
-		echo "<div style='display: inline-block; width: 250px; vertical-align: top;' id='sdpvs_listpublic'>";
-		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, 'public', $matches, $color);
-		echo "</div>";
-
-		// Big Graph goes here!
-
-		// echo "<div style='display: block; width: 750px; vertical-align: top;' id='sdpvs_listgraph'>";
-		// echo $sdpvs_bar -> sdpvs_posts_per_cat_tag_graph($type, $matches, $color);
-		// echo "</div>";
-
+		
+		// Big Line Graph
 		echo "<div style='display: block; width: 750px; vertical-align: top;' id='sdpvs_listgraph'>";
 		echo $sdpvs_bar -> sdpvs_comparison_line_graph($type, $matches, $color);
 		echo "</div>";
+
+		echo "<div style='display: inline-block; width: 500px; vertical-align: top;' id='sdpvs_listsource'>";
+		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, 'public', $matches, $color);
+		echo "</div>";
+
+		echo "<div style='display: inline-block; width: 250px; vertical-align: top;' id='sdpvs_listpublic'>";
+		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, 'buttons', $matches, $color);
+		echo "</div>";
+
+		
 
 		return;
 

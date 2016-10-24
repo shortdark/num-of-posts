@@ -59,14 +59,15 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 
 		if ("subpage" == $list_type) {
-			$posts_per_cat_tag = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
-		} elseif ("source" == $list_type) {
-			$posts_per_cat_tag = '<h3>' . esc_html__('2. HTML', 'post-volume-stats') . '</h3><p>' . esc_html__('Copy and paste the list into HTML.') . '</p><code>';
+			// $posts_per_cat_tag = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
 		} elseif ("public" == $list_type) {
-			$posts_per_cat_tag = '<h3>' . esc_html__('3. Preview', 'post-volume-stats') . '</h3><p>' . esc_html__('Export the list and line graph into a new post by exporting.') . '</p>';
+			// $posts_per_cat_tag = '<h3>' . esc_html__('2. Preview', 'post-volume-stats') . '</h3><p>' . esc_html__('Copy and paste the list into HTML.') . '</p>';
+		} elseif ("buttons" == $list_type) {
+			// $posts_per_cat_tag = '<h3>' . esc_html__('3. Export', 'post-volume-stats') . '</h3><p>' . esc_html__('Export the list and line graph into a new post by exporting.') . '</p>';
 			$posts_per_cat_tag .= "<form action='" . esc_url(admin_url('admin-post.php')) . "' method='POST'>";
 			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"action\" value=\"export_lists\">";
 			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"whichlist\" value=\"$whichlist\">";
+			// $posts_per_cat_tag .= "<input type=\"hidden\" name=\"howmuch\" value=\"all\">";
 
 			// Make a string for the export button AJAX
 			$x = 0;
@@ -80,14 +81,18 @@ class sdpvsTextLists extends sdpvsArrays {
 				$x++;
 			}
 			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"matches\" value='$matches_string'>";
-			$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='" . esc_html__('Export') . "'></div>";
+			$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' name='all' class='button-primary' value='" . esc_html__('Export All') . "'></div>";
+			$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' name='graph' class='button-primary' value='" . esc_html__('Export Graph') . "'></div>";
+			$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' name='list' class='button-primary' value='" . esc_html__('Export List') . "'></div>";
 			$posts_per_cat_tag .= "</form>";
 		}
 
-		if (0 < $searchyear) {
-			$title = sprintf(esc_html__('Post Volumes per %1$s: %2$d!', 'post-volume-stats'), $typetitle, $searchyear);
-		} else {
-			$title = sprintf(esc_html__('Post Volumes per %s!', 'post-volume-stats'), $typetitle);
+		if ("buttons" != $list_type and "subpage" != $list_type) {
+			if (0 < $searchyear) {
+				$title = sprintf(esc_html__('Post Volumes per %1$s: %2$d!', 'post-volume-stats'), $typetitle, $searchyear);
+			} else {
+				$title = sprintf(esc_html__('Post Volumes per %s!', 'post-volume-stats'), $typetitle);
+			}
 		}
 
 		if ("source" == $list_type or "export" == $list_type) {
@@ -106,11 +111,11 @@ class sdpvsTextLists extends sdpvsArrays {
 				$universal_array = $this -> tag_array;
 			}
 			if ("subpage" == $list_type) {
-				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export to a post then click the \'Export\' button. On mobile devices you may have to scroll down as the results may be at the bottom of the page.', 'post-volume-stats'), $typetitleplural) . '</p>';
+				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export to a post then click the \'Show Preview\' button. On mobile devices you may have to scroll down as the results may be at the bottom of the page.', 'post-volume-stats'), $typetitleplural) . '</p>';
 
 				$posts_per_cat_tag .= "<form class='$form_name' action='' method='POST'>";
-				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='" . esc_html__('Show HTML') . "'></div>";
-				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><a id='select-all'>Select All</a> / <a id='deselect-all'>" . esc_html__('Deselect All') . "</a></div>";
+				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary sdpvs_preview' value='" . esc_html__('Show Preview') . "'></div>";
+				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><a id='select-all'>" . esc_html__('Select All') . "</a> / <a id='deselect-all'>" . esc_html__('Deselect All') . "</a></div>";
 			}
 			$posts_per_cat_tag .= '<ol>';
 			$c = 0;
