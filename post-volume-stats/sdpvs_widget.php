@@ -30,6 +30,8 @@ class SDPVS_Widget extends WP_Widget {
 		$checkbox3 = esc_attr( $instance['checkbox3'] );
 		$checkbox4 = esc_attr( $instance['checkbox4'] );
 		$checkbox5 = esc_attr( $instance['checkbox5'] );
+		$checkbox6 = esc_attr( $instance['checkbox6'] );
+		$checkbox7 = esc_attr( $instance['checkbox7'] );
 		
    		echo $args['before_widget'];
    		// Display the widget
@@ -76,9 +78,25 @@ class SDPVS_Widget extends WP_Widget {
    				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('hour', '','n','y');
 				echo "</div>";
    			}
-
 			
 		}
+
+		if($checkbox6 or $checkbox7){
+			$sdpvs_pie = new sdpvsPieChart();
+			if('category' == $checkbox6){
+   				// dayofmonth bar chart
+   				echo "<div class='sdpvs_col'>";
+   				echo $sdpvs_pie -> sdpvs_draw_pie_svg('category', '', 'n', 'y');
+				echo "</div>";
+   			}
+			if('tag' == $checkbox7){
+   				// dayofmonth bar chart
+   				echo "<div class='sdpvs_col'>";
+   				echo $sdpvs_pie -> sdpvs_draw_pie_svg('tag', '', 'n', 'y');
+				echo "</div>";
+   			}
+		}
+
 		
    		echo '</div>';
    		echo $args['after_widget'];
@@ -100,6 +118,8 @@ class SDPVS_Widget extends WP_Widget {
 			 $checkbox3 = esc_attr( $instance['checkbox3'] );
 			 $checkbox4 = esc_attr( $instance['checkbox4'] );
 			 $checkbox5 = esc_attr( $instance['checkbox5'] );
+			 $checkbox6 = esc_attr( $instance['checkbox6'] );
+			 $checkbox7 = esc_attr( $instance['checkbox7'] );
 		} else {
 		     $title = '';
 		     $textarea = '';
@@ -108,6 +128,8 @@ class SDPVS_Widget extends WP_Widget {
 			 $checkbox3 = '';
 			 $checkbox4 = '';
 			 $checkbox5 = '';
+			 $checkbox6 = '';
+			 $checkbox7 = '';
 		}
 		?>
 
@@ -142,8 +164,16 @@ class SDPVS_Widget extends WP_Widget {
 		<input id="<?php echo esc_attr($this -> get_field_id('checkbox5')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox5')); ?>" type="checkbox" value="hour" <?php checked('hour', $checkbox5); ?> />
 		<label for="<?php echo esc_attr($this -> get_field_id('checkbox5')); ?>"><?php esc_html_e('Hour', 'post-volume-stats'); ?></label>
 		</p>
+		<p>
+		<input id="<?php echo esc_attr($this -> get_field_id('checkbox6')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox6')); ?>" type="checkbox" value="category" <?php checked('category', $checkbox6); ?> />
+		<label for="<?php echo esc_attr($this -> get_field_id('checkbox6')); ?>"><?php esc_html_e('Categories', 'post-volume-stats'); ?></label>
+		</p>
+		<p>
+		<input id="<?php echo esc_attr($this -> get_field_id('checkbox7')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox7')); ?>" type="checkbox" value="tag" <?php checked('tag', $checkbox7); ?> />
+		<label for="<?php echo esc_attr($this -> get_field_id('checkbox7')); ?>"><?php esc_html_e('Tags', 'post-volume-stats'); ?></label>
+		</p>
 		<?php
-		}
+	}
 
 		/**
 		* Processing widget options on save
@@ -162,13 +192,15 @@ class SDPVS_Widget extends WP_Widget {
 			$instance['checkbox3'] = strip_tags($new_instance['checkbox3']);
 			$instance['checkbox4'] = strip_tags($new_instance['checkbox4']);
 			$instance['checkbox5'] = strip_tags($new_instance['checkbox5']);
+			$instance['checkbox6'] = strip_tags($new_instance['checkbox6']);
+			$instance['checkbox7'] = strip_tags($new_instance['checkbox7']);
 			return $instance;
-			}
 		}
+}
 
 		// register Foo_Widget widget
 		function sdpvs_widget_register() {
-			register_widget( 'SDPVS_Widget' );
+		register_widget( 'SDPVS_Widget' );
 		}
 		add_action( 'widgets_init', 'sdpvs_widget_register' );
 	?>

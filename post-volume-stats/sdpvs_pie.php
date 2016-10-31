@@ -77,7 +77,7 @@ class sdpvsPieChart extends sdpvsArrays {
 	/**
 	 * DISPLAY CATEGORY DATA IN A PIE CHART
 	 */
-	public function sdpvs_draw_pie_svg($type = "", $year = "", $subpage = "") {
+	public function sdpvs_draw_pie_svg($type = "", $year = "", $subpage = "", $public = "") {
 		$testangle_orig = 0;
 		$radius = 100;
 		$prev_angle = 0;
@@ -140,8 +140,19 @@ class sdpvsPieChart extends sdpvsArrays {
 					$color = "hsl($hue, 70%, 65%)";
 
 					$display_angle_as = sprintf("%.1f", $pie_array[$c]['angle']);
+					
+					if("y"==$public){
+						$item_id = $pie_array[$c]['id'];
+						if ("category" == $type) {
+							$link = get_category_link($item_id);
+						}elseif("tag" == $type){
+							$link = get_tag_link($item_id);
+						}
+					}else{
+						$link = admin_url("edit.php?$link_part=" . $pie_array[$c]['slug']);
+					}
 
-					$link = admin_url("edit.php?$link_part=" . $pie_array[$c]['slug']);
+					
 
 					if (360 == $pie_array[$c]['angle']) {
 						// If only one category exists make sure there is a green solid circle
@@ -155,7 +166,7 @@ class sdpvsPieChart extends sdpvsArrays {
 		}
 		$pie_svg .= "</svg>\n";
 
-		if ("n" == $subpage) {
+		if ("n" == $subpage and "y"!=$public) {
 			$pie_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$type'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form></p>";
 		}
 

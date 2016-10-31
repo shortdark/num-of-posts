@@ -50,6 +50,11 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 3.0.24 =
+
+* Added pie charts to Widget.
+* Added links to the line graphs.
+
 = 3.0.23 =
 
 * Fixed bug on line graph for blogs with only one year of posts.

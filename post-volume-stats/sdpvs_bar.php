@@ -361,7 +361,7 @@ class sdpvsBarChart extends sdpvsArrays {
 	/**
 	 * BIG LINE-ONLY GRAPH
 	 */
-	public function sdpvs_comparison_line_graph($type = "", $select_array = "", $colorlist) {
+	public function sdpvs_comparison_line_graph($type = "", $select_array = "", $colorlist, $public = "") {
 		$years_total = 0;
 		$number_of_years = 0;
 		$highest_val = 0;
@@ -476,6 +476,19 @@ class sdpvsBarChart extends sdpvsArrays {
 
 				$term_id = $select_array[1][$x];
 
+				if ("y" == $public) {
+					$item_id = $pie_array[$c]['id'];
+					if ("category" == $type) {
+						$link = get_category_link($term_id);
+						$link_part = "category_name";
+					} elseif ("tag" == $type) {
+						$link = get_tag_link($term_id);
+						$link_part = "tag";
+					}
+					
+				}
+				
+
 				for ($i = 0; $i <= $this -> first_val; $i++) {
 					$searchyear = absint($chart_array[$i]['name']);
 					// Get slug, name and volume
@@ -495,8 +508,17 @@ class sdpvsBarChart extends sdpvsArrays {
 							$line_graph .= "$x_start $y_start, ";
 						}
 					}
+					
+					if("y" != $public){
+						if ("category" == $type) {
+							$link_part = "category_name";
+						} elseif ("tag" == $type) {
+							$link_part = "tag";
+						}
+						$link = admin_url("edit.php?$link_part=" . $item['slug']);
+					}
 
-					$this -> svg_output_string .= "<a xlink:title=\"{$item['name']}, {$item['volume']} posts out of {$chart_array[$i]['volume']}\"><circle cx=\"$x_start\" cy=\"$y_start\" r=\"2\" stroke=\"$color\" stroke-width=\"2\" fill=\"$color\" /></a>";
+					$this -> svg_output_string .= "<a href=\"$link\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:title=\"{$item['name']}, {$item['volume']} posts out of {$chart_array[$i]['volume']}\"><circle cx=\"$x_start\" cy=\"$y_start\" r=\"3\" stroke=\"$color\" stroke-width=\"0\" fill=\"$color\" /></a>";
 				}
 				$this -> svg_output_string .= $line_graph;
 

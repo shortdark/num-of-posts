@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.23
+ * @version 3.0.24
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.0.23
+ * Version: 3.0.24
  * Author URI: http://www.shortdark.net/
  */
 
@@ -373,7 +373,7 @@ function sdpvs_admin_export_lists() {
 	$linkdesc = "Post Volume Stats";
 
 	if ("all" == $howmuch or "graph" == $howmuch) {
-		$post_content = $sdpvs_bar -> sdpvs_comparison_line_graph($whichlist, $matches, $color);
+		$post_content = $sdpvs_bar -> sdpvs_comparison_line_graph($whichlist, $matches, $color,"y");
 	}
 
 	if ("all" == $howmuch or "list" == $howmuch) {
