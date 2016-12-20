@@ -27,6 +27,7 @@ class sdpvsBarChart extends sdpvsArrays {
 		$graphleft = 0;
 		$graph_color = "blue";
 		$highlight_color = "red";
+		$weekend_color = "#ff9900";
 
 		if ("year" == $which) {
 			parent::sdpvs_number_of_posts_per_year();
@@ -82,6 +83,17 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo '<h2>' . esc_html__('Days of the Month', 'post-volume-stats') . '</h2>';
 			} else {
 				echo '<h2>' . esc_html__('Posts per Day of the Month', 'post-volume-stats') . '</h2>';
+			}
+		} elseif ("author" == $which) {
+			parent::sdpvs_number_of_posts_per_author($searchyear);
+			$chart_array = $this -> author_array;
+			parent::find_highest_first_and_total($chart_array);
+			$bars_total = $this -> total_bars;
+			$order = "asc";
+			if ("y" != $public) {
+				echo '<h2>' . esc_html__('Authors', 'post-volume-stats') . '</h2>';
+			} else {
+				echo '<h2>' . esc_html__('Posts per Author', 'post-volume-stats') . '</h2>';
 			}
 		}
 		if ("year" != $which and "y" == $public) {
@@ -150,6 +162,9 @@ class sdpvsBarChart extends sdpvsArrays {
 				}
 				if ($chart_array[$i]['name'] == $searchyear and "year" == $which) {
 					$color = $highlight_color;
+					$set_explicit_color = "background-color: $color;";
+				}elseif ( ($chart_array[$i]['name'] == "Saturday" or $chart_array[$i]['name'] == "Sunday") and "dayofweek" == $which) {
+					$color = $weekend_color;
 					$set_explicit_color = "background-color: $color;";
 				} else {
 					$color = $graph_color;

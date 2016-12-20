@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Post Volume Stats package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Volume Stats 3.0.23\n"
+"Project-Id-Version: Post Volume Stats 3.0.25\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/post-volume-"
 "stats\n"
-"POT-Creation-Date: 2016-10-24 15:40:47+00:00\n"
+"POT-Creation-Date: 2016-12-20 03:12:16+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#. #-#-#-#-#  plugin.pot (Post Volume Stats 3.0.23)  #-#-#-#-#
+#. #-#-#-#-#  plugin.pot (Post Volume Stats 3.0.25)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: post-volume-stats.php:83 post-volume-stats.php:168 sdpvs_widget.php:15
 msgid "Post Volume Stats"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "Script time elapsed: %f seconds"
 msgstr ""
 
-#: post-volume-stats.php:121 post-volume-stats.php:151 sdpvs_info.php:29
+#: post-volume-stats.php:121 post-volume-stats.php:151 sdpvs_info.php:84
 msgid "<a href=\"%1$s\" target=\"_blank\">%2$s</a>. Thank you."
 msgstr ""
 
@@ -31,7 +31,7 @@ msgstr ""
 msgid "Post Volume Stats: Categories"
 msgstr ""
 
-#: post-volume-stats.php:169 sdpvs_pie.php:93
+#: post-volume-stats.php:169 sdpvs_pie.php:93 sdpvs_widget.php:169
 msgid "Categories"
 msgstr ""
 
@@ -39,74 +39,116 @@ msgstr ""
 msgid "Post Volume Stats: Tags"
 msgstr ""
 
-#: post-volume-stats.php:170 sdpvs_pie.php:100
+#: post-volume-stats.php:170 sdpvs_pie.php:100 sdpvs_widget.php:173
 msgid "Tags"
 msgstr ""
 
-#: post-volume-stats.php:382
+#: post-volume-stats.php:384
 msgid "<a href=\"%1$s\" target=\"_blank\">%2$s</a>."
 msgstr ""
 
-#: post-volume-stats.php:405
+#: post-volume-stats.php:407
 msgid ""
 "NEW to <a href=\"%1$s\">Post Volume Stats</a>: Compare tags and categories "
 "in line graphs."
 msgstr ""
 
-#: sdpvs_bar.php:38 sdpvs_widget.php:127
+#: sdpvs_bar.php:39 sdpvs_widget.php:149
 msgid "Years"
 msgstr ""
 
-#: sdpvs_bar.php:40
+#: sdpvs_bar.php:41
 msgid "Posts per Year"
 msgstr ""
 
-#: sdpvs_bar.php:49 sdpvs_widget.php:139
+#: sdpvs_bar.php:50 sdpvs_widget.php:161
 msgid "Days of the Week"
 msgstr ""
 
-#: sdpvs_bar.php:51
+#: sdpvs_bar.php:52
 msgid "Posts per Day of the Week"
 msgstr ""
 
-#: sdpvs_bar.php:60
+#: sdpvs_bar.php:61
 msgid "Hours"
 msgstr ""
 
-#: sdpvs_bar.php:62
+#: sdpvs_bar.php:63
 msgid "Posts per Hour"
 msgstr ""
 
-#: sdpvs_bar.php:71 sdpvs_widget.php:131
+#: sdpvs_bar.php:72 sdpvs_widget.php:153
 msgid "Months"
 msgstr ""
 
-#: sdpvs_bar.php:73
+#: sdpvs_bar.php:74
 msgid "Posts per Month"
 msgstr ""
 
-#: sdpvs_bar.php:82 sdpvs_widget.php:135
+#: sdpvs_bar.php:83 sdpvs_widget.php:157
 msgid "Days of the Month"
 msgstr ""
 
-#: sdpvs_bar.php:84
+#: sdpvs_bar.php:85
 msgid "Posts per Day of the Month"
 msgstr ""
 
-#: sdpvs_bar.php:89 sdpvs_bar.php:170 sdpvs_bar.php:302 sdpvs_bar.php:463
+#: sdpvs_bar.php:94
+msgid "Authors"
+msgstr ""
+
+#: sdpvs_bar.php:96
+msgid "Posts per Author"
+msgstr ""
+
+#: sdpvs_bar.php:101 sdpvs_bar.php:185 sdpvs_bar.php:317 sdpvs_bar.php:478
 msgid "%d"
 msgstr ""
 
-#: sdpvs_bar.php:91
+#: sdpvs_bar.php:103
 msgid "All-time"
 msgstr ""
 
-#: sdpvs_bar.php:350 sdpvs_lists.php:131 sdpvs_lists.php:133
+#: sdpvs_bar.php:365 sdpvs_lists.php:131 sdpvs_lists.php:133
 msgid "<a href=\"%1$s\">%2$s</a>: %3$d posts"
 msgstr ""
 
-#: sdpvs_info.php:22
-msgid "%d published posts over %d days is %f posts per day."
+#: sdpvs_info.php:59
+msgid "Summary"
+msgstr ""
+
+#: sdpvs_info.php:60
+msgid ""
+"%d published posts over %d days is %.3f posts per day or a post every %.3f "
+"days."
+msgstr ""
+
+#: sdpvs_info.php:61
+msgid ""
+"That is %.1f weeks, so that would be %.1f posts per week or a blog post "
+"every %.3f weeks."
+msgstr ""
+
+#: sdpvs_info.php:62
+msgid "Over roughly %.1f months there are %.1f posts per month."
+msgstr ""
+
+#: sdpvs_info.php:63
+msgid ""
+"Taking the number of years as %.3f years, there are %.1f posts per year. Or, "
+"from %d to %d is %d years, which would be %.1f posts per year."
+msgstr ""
+
+#: sdpvs_info.php:64
+msgid "These stats are now from the date of the first post to now."
+msgstr ""
+
+#: sdpvs_info.php:73
+msgid "<a href=\"%1$s\" target=\"_blank\">%2$s</a> "
+msgstr ""
+
+#: sdpvs_info.php:83
+msgid "Thank You"
 msgstr ""
 
 #: sdpvs_lists.php:13
@@ -173,7 +215,7 @@ msgid "Post Volumes per Day of the Week"
 msgstr ""
 
 #: sdpvs_lists.php:206 sdpvs_lists.php:222 sdpvs_lists.php:238
-#: sdpvs_lists.php:254
+#: sdpvs_lists.php:254 sdpvs_lists.php:271
 msgid "%s: %d posts"
 msgstr ""
 
@@ -187,6 +229,10 @@ msgstr ""
 
 #: sdpvs_lists.php:249
 msgid "Post Volumes per Day of the Month"
+msgstr ""
+
+#: sdpvs_lists.php:265
+msgid "Post Volumes per Author"
 msgstr ""
 
 #: sdpvs_main.php:20
@@ -223,19 +269,19 @@ msgstr ""
 msgid "Add a chart from \"Post Volume Stats\" to your sidebar!"
 msgstr ""
 
-#: sdpvs_widget.php:115
+#: sdpvs_widget.php:137
 msgid "Title"
 msgstr ""
 
-#: sdpvs_widget.php:119
+#: sdpvs_widget.php:141
 msgid "Description"
 msgstr ""
 
-#: sdpvs_widget.php:123
+#: sdpvs_widget.php:145
 msgid "Select charts to display:"
 msgstr ""
 
-#: sdpvs_widget.php:143
+#: sdpvs_widget.php:165
 msgid "Hour"
 msgstr ""
 

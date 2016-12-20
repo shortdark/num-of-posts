@@ -2,19 +2,19 @@
 === Post Volume Stats ===
 Contributors: shortdark
 Donate link: http://www.shortdark.net/wordpress-plugin/
-Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget
+Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget, author
 Requires at least: 3.5
-Tested up to: 4.6.1
+Tested up to: 4.7
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Shows stats for the volume of posts per year, month, day-of-the-month, day-of-the-week, hour-of-the-day, categories and tags.
+Shows stats for the volume of posts per year, month, day-of-the-month, day-of-the-week, hour-of-the-day, author, categories and tags.
 
 == Description ==
 
 This plugin looks at the volume of posts in each category and tag, and also the volume 
-of posts per year, month, day-of-the-month, day-of-the-week and hour. It works better the more posts 
+of posts per year, month, day-of-the-month, day-of-the-week, hour and author. It works better the more posts 
 you have, and if you use categories and tags. You can now specify a year to look at the post volume stats for
 that year. The bar charts can be added to a sidebar with Post Volume Stats widget. The category and tag lists and line graphs 
 can be exported to a new post.
@@ -49,6 +49,16 @@ Here are the latest screenshots...
 7. Shows the widget in the "live preview" area of the admin.
 
 == Changelog ==
+
+= 3.0.26 =
+
+* Updated description and POT file.
+
+= 3.0.25 =
+
+* Added more summary text stats to the bottom of the main page.
+* Highlighted weekends on the "posts per day-of-the-week" bar chart.
+* Added "Authors" bar chart.
 
 = 3.0.24 =
 

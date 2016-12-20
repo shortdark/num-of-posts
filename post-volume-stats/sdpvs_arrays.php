@@ -309,6 +309,39 @@ abstract class sdpvsArrays {
 		$wpdb -> flush();
 		return;
 	}
+	
+	/*
+	 * NUMBER OF POSTS PER AUTHOR
+	 */
+	protected function sdpvs_number_of_posts_per_author($searchyear = "") {
+		$blogusers = get_users( array( 'who'  => 'authors' ) );
+		// Array of WP_User objects.
+		$a=0;
+		foreach ( $blogusers as $user ) {
+			$this -> author_array[$a]['id'] = $user->ID;
+			$this -> author_array[$a]['name'] = $user->display_name;
+			$this -> author_array[$a]['volume'] = 0;
+			$a++;
+		}
+		global $wpdb;
+		$a=0;
+		while ( array_key_exists($a, $this -> author_array) ) {
+			$post_author = $this -> author_array[$a]['id'];
+			if (0 < $searchyear) {
+				$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_author = '$post_author' AND post_date LIKE '$searchyear%' ");
+			} else {
+				$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_author = '$post_author' ");
+			}
+
+			if (0 > $found_posts or !$found_posts or "" == $found_posts) {
+				$found_posts = 0;
+			}
+			$this -> author_array[$a]['volume'] = $found_posts;
+			$a++;
+		}
+		$wpdb -> flush();
+		return;
+	}
 
 	/*
 	 * FIND THE POST WITH THE EARLIEST DATE
@@ -347,6 +380,7 @@ abstract class sdpvsArrays {
 		$this -> highest_val = 0;
 		$this -> first_val = 0;
 		$this -> total_volume_of_posts = 0;
+		$this -> total_bars = 0;
 		$i = 0;
 		while (array_key_exists($i, $testarray)) {
 			$this -> total_volume_of_posts += $testarray[$i]['volume'];
@@ -356,6 +390,7 @@ abstract class sdpvsArrays {
 			if (0 < $testarray[$i]['volume']) {
 				$this -> first_val = $i;
 			}
+			$this -> total_bars ++;
 			$i++;
 		}
 

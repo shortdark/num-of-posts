@@ -49,6 +49,11 @@ class sdpvsMainContent {
 		echo "<div class='sdpvs_col'>";
 		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('hour', $selected, 'n');
 		echo "</div>";
+		
+		// posts per author bar chart
+		echo "<div class='sdpvs_col'>";
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('author', $selected, 'n');
+		echo "</div>";
 
 		// posts per category pie chart
 		echo "<div class='sdpvs_col'>";

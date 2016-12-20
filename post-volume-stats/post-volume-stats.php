@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.24
+ * @version 3.0.26
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.0.24
+ * Version: 3.0.26
  * Author URI: http://www.shortdark.net/
  */
 
@@ -281,6 +281,8 @@ function sdpvs_process_ajax() {
 		echo $sdpvs_lists -> sdpvs_posts_per_month_list($searchyear);
 	} elseif ("dayofmonth" == $answer) {
 		echo $sdpvs_lists -> sdpvs_posts_per_day_of_month_list($searchyear);
+	} elseif ("author" == $answer) {
+		echo $sdpvs_lists -> sdpvs_posts_per_author_list($searchyear);
 	}
 
 	// Always die() AJAX

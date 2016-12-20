@@ -255,6 +255,24 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 		return $posts_per_dom;
 	}
+	
+	/*
+	 * NUMBER OF POSTS PER AUTHOR
+	 */
+	public function sdpvs_posts_per_author_list($searchyear = "") {
+		$searchyear = absint($searchyear);
+		parent::sdpvs_number_of_posts_per_author($searchyear);
+		$posts_per_dom .= '<h2>' . esc_html__('Post Volumes per Author', 'post-volume-stats') . '</h2>';
+		$i=0;
+		while ( array_key_exists($i, $this -> author_array) ) {
+			if (!$this -> author_array[$i]['volume']) {
+				$this -> author_array[$i]['volume'] = 0;
+			}
+			$posts_per_dom .= sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> author_array[$i]['name'], $this -> author_array[$i]['volume']) . '<br />';
+			$i++;
+		}
+		return $posts_per_dom;
+	}
 
 }
 ?>
