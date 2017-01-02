@@ -15,7 +15,7 @@ class sdpvsBarChart extends sdpvsArrays {
 	/**
 	 * DISPLAY DATA IN A BAR CHART
 	 */
-	public function sdpvs_draw_bar_chart_svg($which = "", $searchyear = "", $subpage = "", $public = "") {
+	public function sdpvs_draw_bar_chart_svg($which = "", $searchyear = "", $searchauthor = "", $subpage = "", $public = "") {
 		$searchyear = absint($searchyear);
 		$years_total = 0;
 		$number_of_years = 0;
@@ -30,7 +30,7 @@ class sdpvsBarChart extends sdpvsArrays {
 		$weekend_color = "#ff9900";
 
 		if ("year" == $which) {
-			parent::sdpvs_number_of_posts_per_year();
+			parent::sdpvs_number_of_posts_per_year($searchauthor);
 			$chart_array = $this -> year_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = $this -> first_val + 1;
@@ -41,7 +41,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo '<h2>' . esc_html__('Posts per Year', 'post-volume-stats') . '</h2>';
 			}
 		} elseif ("dayofweek" == $which) {
-			parent::sdpvs_number_of_posts_per_dayofweek($searchyear);
+			parent::sdpvs_number_of_posts_per_dayofweek($searchyear,$searchauthor);
 			$chart_array = $this -> dow_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 7;
@@ -52,7 +52,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo '<h2>' . esc_html__('Posts per Day of the Week', 'post-volume-stats') . '</h2>';
 			}
 		} elseif ("hour" == $which) {
-			parent::sdpvs_number_of_posts_per_hour($searchyear);
+			parent::sdpvs_number_of_posts_per_hour($searchyear,$searchauthor);
 			$chart_array = $this -> hour_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 24;
@@ -63,7 +63,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo '<h2>' . esc_html__('Posts per Hour', 'post-volume-stats') . '</h2>';
 			}
 		} elseif ("month" == $which) {
-			parent::sdpvs_number_of_posts_per_month($searchyear);
+			parent::sdpvs_number_of_posts_per_month($searchyear,$searchauthor);
 			$chart_array = $this -> month_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 12;
@@ -74,7 +74,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo '<h2>' . esc_html__('Posts per Month', 'post-volume-stats') . '</h2>';
 			}
 		} elseif ("dayofmonth" == $which) {
-			parent::sdpvs_number_of_posts_per_dayofmonth($searchyear);
+			parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor);
 			$chart_array = $this -> dom_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 31;
@@ -85,7 +85,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo '<h2>' . esc_html__('Posts per Day of the Month', 'post-volume-stats') . '</h2>';
 			}
 		} elseif ("author" == $which) {
-			parent::sdpvs_number_of_posts_per_author($searchyear);
+			parent::sdpvs_number_of_posts_per_author($searchyear,$searchauthor);
 			$chart_array = $this -> author_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = $this -> total_bars;
@@ -163,6 +163,9 @@ class sdpvsBarChart extends sdpvsArrays {
 				if ($chart_array[$i]['name'] == $searchyear and "year" == $which) {
 					$color = $highlight_color;
 					$set_explicit_color = "background-color: $color;";
+				}elseif ($chart_array[$i]['id'] == $searchauthor and "author" == $which) {
+					$color = $highlight_color;
+					$set_explicit_color = "background-color: $color;";
 				}elseif ( ($chart_array[$i]['name'] == "Saturday" or $chart_array[$i]['name'] == "Sunday") and "dayofweek" == $which) {
 					$color = $weekend_color;
 					$set_explicit_color = "background-color: $color;";
@@ -202,6 +205,36 @@ class sdpvsBarChart extends sdpvsArrays {
 						echo "<a xlink:title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\"><path fill-opacity=\"0.5\" d=\"M$x_start $y_start v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"$color\" class=\"sdpvs_bar\"></path></a>";
 					}
 
+				} elseif ( "author" == $which) {
+					if ($chart_array[$i]['id'] == $searchauthor) {
+						$author_form_value = "";
+					} else {
+						$author_form_value = $chart_array[$i]['id'];
+					}
+					$legend = $chart_array[$i]['name'];
+					if (strlen($legend) * 7 < $bar_width) {
+						$legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
+						$legend_y = $y_start + 17;
+						echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">" . sprintf(esc_html__('%s', 'my-text-domain'), $legend) . "</text>";
+					}
+					$form_y_offset = $y_start - $bar_height;
+					$form_x_offset = $x_start - $bar_width;
+					$slug = SDPVS__PLUGIN_FOLDER;
+
+					if ("y" != $public) {
+						echo "<path fill-opacity=\"0.5\" d=\"M$x_start $y_start v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"white\"></path>";
+						echo "<foreignObject x=\"$form_x_offset\" y=\"$form_y_offset\" width=\"$bar_width\" height=\"$bar_height\">";
+						echo "<form action=\"options.php\" method=\"post\" class=\"sdpvs_year_form\" style=\"border:0; margin:0;padding:0;\">";
+						settings_fields('sdpvs_author_option');
+						// echo "<input type=\"hidden\" name=\"_wp_http_referer\" value=\"/wp-admin/admin.php?page=$slug\">";
+						echo " <input type=\"hidden\" name=\"sdpvs_author_option[author_number]\" id=\"author-number\" value=\"$author_form_value\">
+						<input type=\"submit\" style=\"height: " . $bar_height . "px; width: " . $bar_width . "px; $set_explicit_color\" title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\" class=\"sdpvs_year_bar\">
+          				</form>
+  						</foreignObject>";
+					} else {
+						echo "<a xlink:title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\"><path fill-opacity=\"0.5\" d=\"M$x_start $y_start v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"$color\" class=\"sdpvs_bar\"></path></a>";
+					}
+
 				} else {
 					echo "<a xlink:title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\"><path fill-opacity=\"0.5\" d=\"M$x_start $y_start v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"$color\" class=\"sdpvs_bar\"></path></a>";
 				}
@@ -221,7 +254,7 @@ class sdpvsBarChart extends sdpvsArrays {
 	/**
 	 * BIG TAG / CATEGORY GRAPH
 	 */
-	public function sdpvs_posts_per_cat_tag_graph($type = "", $select_array = "", $colorlist) {
+	public function sdpvs_posts_per_cat_tag_graph($type = "", $select_array = "", $searchauthor="", $colorlist) {
 		$years_total = 0;
 		$number_of_years = 0;
 		$highest_val = 0;
@@ -376,7 +409,8 @@ class sdpvsBarChart extends sdpvsArrays {
 	/**
 	 * BIG LINE-ONLY GRAPH
 	 */
-	public function sdpvs_comparison_line_graph($type = "", $select_array = "", $colorlist, $public = "") {
+	public function sdpvs_comparison_line_graph($type = "", $select_array = "", $searchauthor="", $colorlist, $public = "") {
+		$searchauthor = absint($searchauthor);
 		$years_total = 0;
 		$number_of_years = 0;
 		$highest_val = 0;
@@ -396,7 +430,7 @@ class sdpvsBarChart extends sdpvsArrays {
 		}
 
 		// All this just gets the number of years
-		parent::sdpvs_number_of_posts_per_year();
+		parent::sdpvs_number_of_posts_per_year($searchauthor);
 		$chart_array = $this -> year_array;
 		parent::find_highest_first_and_total($chart_array);
 		$bars_total = $this -> first_val + 1;
@@ -507,7 +541,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				for ($i = 0; $i <= $this -> first_val; $i++) {
 					$searchyear = absint($chart_array[$i]['name']);
 					// Get slug, name and volume
-					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear);
+					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear, $searchauthor);
 					$x_start = $svgwidth - ($i * $bar_width);
 
 					$point_height = intval($graphheight * ($item['volume'] / $this -> highest_val2));

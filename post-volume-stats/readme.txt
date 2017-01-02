@@ -15,8 +15,8 @@ Shows stats for the volume of posts per year, month, day-of-the-month, day-of-th
 
 This plugin looks at the volume of posts in each category and tag, and also the volume 
 of posts per year, month, day-of-the-month, day-of-the-week, hour and author. It works better the more posts 
-you have, and if you use categories and tags. You can now specify a year to look at the post volume stats for
-that year. The bar charts can be added to a sidebar with Post Volume Stats widget. The category and tag lists and line graphs 
+you have, and if you use categories and tags. You can now specify a year and/or an author to just look at the post volume stats for
+that year/author. The bar charts can be added to a sidebar with Post Volume Stats widget. The category and tag lists and line graphs 
 can be exported to a new post.
 
 Please let me know if you like this plugin by leaving a review or [contacting me](http://www.shortdark.net/contact-me/).
@@ -47,8 +47,18 @@ Here are the latest screenshots...
 5. The export button adds the HTML list and line graph into a new blog post.
 6. The results of exporting the line graph and list into a new post.
 7. Shows the widget in the "live preview" area of the admin.
+8. Settings page.
 
 == Changelog ==
+
+= 3.0.28 =
+
+* Updated description and POT file.
+
+= 3.0.27 =
+
+* You can now click a bar of the "Authors" barchart to filter the stats to that author.
+* Settings page: turn off authors bar chart, turn off rainbow lists and week starts on.
 
 = 3.0.26 =
 

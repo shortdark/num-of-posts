@@ -21,11 +21,20 @@ abstract class sdpvsArrays {
 	 * GET DETAILS FOR ONE CATEGORY / TAG
 	 */
 
-	protected function sdpvs_get_one_item_info($term_id = "", $taxonomy_type = "", $searchyear = "") {
+	protected function sdpvs_get_one_item_info($term_id = "", $taxonomy_type = "", $searchyear = "", $searchauthor = "") {
 		$term_id = absint($term_id);
+		$searchyear = absint($searchyear);
+		$searchauthor = absint($searchauthor);
+		global $wpdb;
+		if (0 < $searchyear) {
+			$extra = " AND $wpdb->posts.post_date LIKE '$searchyear%' ";
+		}
+		if("" != $searchauthor){
+			$extra .= " AND $wpdb->posts.post_author = '$searchauthor' ";
+		}
 		if (0 < $term_id and ('category' == $taxonomy_type or 'post_tag' == $taxonomy_type)) {
-			global $wpdb;
-			if ("" == $searchyear) {
+			
+			if ("" == $searchyear and "" == $searchauthor) {
 				$count = $wpdb -> get_var($wpdb -> prepare("SELECT count FROM $wpdb->term_taxonomy WHERE taxonomy = %s AND term_id = %d ", $taxonomy_type, $term_id));
 				$iteminfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $term_id));
 				$one_item_array['name'] = $iteminfo -> name;
@@ -39,7 +48,7 @@ abstract class sdpvsArrays {
 					INNER JOIN $wpdb->term_relationships 
 					ON $wpdb->posts.post_status = 'publish' 
 					AND $wpdb->posts.post_type = 'post' 
-					AND $wpdb->posts.post_date LIKE '$searchyear%' 	
+					$extra
 					AND $wpdb->term_relationships.object_id = $wpdb->posts.ID 
 					AND $wpdb->term_relationships.term_taxonomy_id = $tax_id
 				");
@@ -57,9 +66,17 @@ abstract class sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER CATEGORY
 	 */
-	protected function sdpvs_post_category_volumes($searchyear = "") {
+	protected function sdpvs_post_category_volumes($searchyear = "", $searchauthor = "") {
 		global $wpdb;
-		if ("" == $searchyear) {
+		$searchyear = absint($searchyear);
+		$searchauthor = absint($searchauthor);
+		if (0 < $searchyear) {
+			$extra = " AND $wpdb->posts.post_date LIKE '$searchyear%' ";
+		}
+		if("" != $searchauthor){
+			$extra .= " AND $wpdb->posts.post_author = '$searchauthor' ";
+		}
+		if ("" == $searchyear and "" == $searchauthor) {
 			$cats = $wpdb -> get_results("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = 'category' ORDER BY count DESC ");
 			$c = 0;
 			foreach ($cats as $category) {
@@ -84,7 +101,7 @@ abstract class sdpvsArrays {
 					INNER JOIN $wpdb->term_relationships 
 					ON $wpdb->posts.post_status = 'publish' 
 					AND $wpdb->posts.post_type = 'post' 
-					AND $wpdb->posts.post_date LIKE '$searchyear%' 	
+					$extra
 					AND $wpdb->term_relationships.object_id = $wpdb->posts.ID 
 					AND $wpdb->term_relationships.term_taxonomy_id = $category->term_taxonomy_id
 				");
@@ -124,9 +141,18 @@ abstract class sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER TAG
 	 */
-	protected function sdpvs_post_tag_volumes($searchyear = "") {
+	protected function sdpvs_post_tag_volumes($searchyear = "", $searchauthor = "") {
 		global $wpdb;
-		if ("" == $searchyear) {
+		$searchyear = absint($searchyear);
+		$searchauthor = absint($searchauthor);
+		if (0 < $searchyear) {
+			$extra = " AND $wpdb->posts.post_date LIKE '$searchyear%' ";
+		}
+		if("" != $searchauthor){
+			$extra .= " AND $wpdb->posts.post_author = '$searchauthor' ";
+		}
+		
+		if ("" == $searchyear and "" == $searchauthor) {
 			$taglist = $wpdb -> get_results("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = 'post_tag' ORDER BY count DESC ");
 			$t = 0;
 			foreach ($taglist as $tag) {
@@ -150,7 +176,7 @@ abstract class sdpvsArrays {
 					INNER JOIN $wpdb->term_relationships 
 					ON $wpdb->posts.post_status = 'publish' 
 					AND $wpdb->posts.post_type = 'post' 
-					AND $wpdb->posts.post_date LIKE '$searchyear%' 	
+					$extra 
 					AND $wpdb->term_relationships.object_id = $wpdb->posts.ID 
 					AND $wpdb->term_relationships.term_taxonomy_id = $tag->term_taxonomy_id
 				");
@@ -188,12 +214,16 @@ abstract class sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER YEAR
 	 */
-	protected function sdpvs_number_of_posts_per_year() {
+	protected function sdpvs_number_of_posts_per_year($searchauthor = "") {
 		$currentyear = date('Y');
+		$searchauthor = absint($searchauthor);
+		if("" != $searchauthor){
+			$extra = " AND post_author = '$searchauthor' ";
+		}
 		global $wpdb;
 		for ($i = 0; $i <= 30; $i++) {
 			$searchyear = $currentyear - $i;
-			$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '$searchyear%' ");
+			$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '$searchyear%' $extra ");
 			if (0 > $found_posts or !$found_posts or "" == $found_posts) {
 				$found_posts = 0;
 			}
@@ -207,26 +237,48 @@ abstract class sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER DAY-OF-WEEK
 	 */
-	protected function sdpvs_number_of_posts_per_dayofweek($searchyear = "") {
+	protected function sdpvs_number_of_posts_per_dayofweek($searchyear = "", $searchauthor = "") {
+		$genoptions = get_option('sdpvs_general_settings');
+		$startweek = filter_var ( $genoptions['startweekon'], FILTER_SANITIZE_STRING);
 		$searchyear = absint($searchyear);
-		$days_of_week = array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
-		for ($w = 0; $w <= 6; $w++) {
-			$this -> dow_array[$w]['name'] = $days_of_week[$w];
-			$this -> dow_array[$w]['volume'] = 0;
-		}
-		global $wpdb;
+		$searchauthor = absint($searchauthor);
 		if (0 < $searchyear) {
-			$myblogitems = $wpdb -> get_results("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '$searchyear%' ");
-		} else {
-			$myblogitems = $wpdb -> get_results("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' ");
+			$extra = " AND post_date LIKE '$searchyear%' ";
 		}
+		if("" != $searchauthor){
+			$extra .= " AND post_author = '$searchauthor' ";
+		}
+		if("sunday" == $startweek or !$startweek){
+			$days_of_week = array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
+			for ($w = 0; $w <= 6; $w++) {
+				$this -> dow_array[$w]['name'] = $days_of_week[$w];
+				$this -> dow_array[$w]['volume'] = 0;
+			}
+			$weekletter = "w";
+		}else{
+			$days_of_week = array("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday","Sunday");
+			for ($w = 0; $w <= 6; $w++) {
+				$this -> dow_array[$w]['name'] = $days_of_week[$w];
+				$this -> dow_array[$w]['volume'] = 0;
+			}
+			$weekletter = "N";
+		}
+		
+		global $wpdb;
+		$myblogitems = $wpdb -> get_results("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' $extra ");
 		foreach ($myblogitems as $dowpost) {
 			$year = substr($dowpost -> post_date, 0, 4);
 			$month = substr($dowpost -> post_date, 5, 2);
 			$day = substr($dowpost -> post_date, 8, 2);
 			$tempdate = mktime(0, 0, 0, $month, $day, $year);
-			$d = date("w", $tempdate);
-			$this -> dow_array[$d]['volume']++;
+			$d = date($weekletter, $tempdate);
+			if("w" == $weekletter){
+				$this -> dow_array[$d]['volume']++;
+			}else{
+				$g = $d-1;
+				$this -> dow_array[$g]['volume']++;
+			}
+			
 		}
 		$wpdb -> flush();
 		return;
@@ -235,16 +287,19 @@ abstract class sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER HOUR
 	 */
-	protected function sdpvs_number_of_posts_per_hour($searchyear = "") {
+	protected function sdpvs_number_of_posts_per_hour($searchyear = "", $searchauthor = "") {
 		$searchyear = absint($searchyear);
+		$searchauthor = absint($searchauthor);
+		if (0 < $searchyear) {
+			$extra = " AND post_date LIKE '$searchyear%' ";
+		}
+		if("" != $searchauthor){
+			$extra .= " AND post_author = '$searchauthor' ";
+		}
 		global $wpdb;
 		for ($i = 0; $i <= 23; $i++) {
 			$searchhour = sprintf("%02s", $i);
-			if (0 < $searchyear) {
-				$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '% $searchhour:%' AND post_date LIKE '$searchyear%' ");
-			} else {
-				$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '% $searchhour:%' ");
-			}
+			$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '% $searchhour:%' $extra ");
 			if (0 > $found_posts or !$found_posts or "" == $found_posts) {
 				$found_posts = 0;
 			}
@@ -259,9 +314,16 @@ abstract class sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER MONTH
 	 */
-	protected function sdpvs_number_of_posts_per_month($searchyear = "") {
+	protected function sdpvs_number_of_posts_per_month($searchyear = "", $searchauthor = "") {
 		$months_of_year = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 		$searchyear = absint($searchyear);
+		$searchauthor = absint($searchauthor);
+		if (0 < $searchyear) {
+			$extra = " AND post_date LIKE '$searchyear%' ";
+		}
+		if("" != $searchauthor){
+			$extra .= " AND post_author = '$searchauthor' ";
+		}
 		for ($w = 0; $w < 12; $w++) {
 			$this -> month_array[$w]['name'] = $months_of_year[$w];
 			$this -> month_array[$w]['volume'] = 0;
@@ -270,12 +332,7 @@ abstract class sdpvsArrays {
 		for ($i = 0; $i < 12; $i++) {
 			$j = $i + 1;
 			$searchmonth = sprintf("%02s", $j);
-			if (0 < $searchyear) {
-				$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '%-$searchmonth-%' AND post_date LIKE '$searchyear%' ");
-			} else {
-				$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '%-$searchmonth-%' ");
-			}
-
+			$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '%-$searchmonth-%' $extra ");
 			if (0 > $found_posts or !$found_posts or "" == $found_posts) {
 				$found_posts = 0;
 			}
@@ -288,17 +345,23 @@ abstract class sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER DAY-OF-THE-MONTH
 	 */
-	protected function sdpvs_number_of_posts_per_dayofmonth($searchyear = "") {
+	protected function sdpvs_number_of_posts_per_dayofmonth($searchyear = "", $searchauthor = "") {
 		$searchyear = absint($searchyear);
+		$searchauthor = absint($searchauthor);
+		
+		if (0 < $searchyear) {
+			$extra = " AND post_date LIKE '$searchyear%' ";
+		}
+		if("" != $searchauthor){
+			$extra .= " AND post_author = '$searchauthor' ";
+		}
 		global $wpdb;
 		for ($i = 0; $i < 31; $i++) {
 			$j = $i + 1;
 			$searchday = sprintf("%02s", $j);
-			if (0 < $searchyear) {
-				$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '%-$searchday %' AND post_date LIKE '$searchyear%' ");
-			} else {
-				$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '%-$searchday %' ");
-			}
+			
+			
+			$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '%-$searchday %' $extra ");
 
 			if (0 > $found_posts or !$found_posts or "" == $found_posts) {
 				$found_posts = 0;
