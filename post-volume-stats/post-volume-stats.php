@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.0.28
+ * @version 3.0.29
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.0.28
+ * Version: 3.0.29
  * Author URI: http://www.shortdark.net/
  */
 
@@ -163,34 +163,24 @@ function sdpvs_tag_page() {
 	return;
 }
 
-// Settings page
-function sdpvs_settings_page() {
+
+	
+	
+// Custom page
+function sdpvs_custom_page() {
 	if (is_admin()) {
 
 		// Start the timer
 		$time_start = microtime(true);
 
 		// Create an instance of the required class
+		$sdpvs_sub = new sdpvsSubPages();
+		
+		$genoptions = get_option('sdpvs_general_settings');
+		$customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
 
-		// Content goes here
-		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Settings', 'post-volume-stats') . '</h1>';
-		
-		
-		echo "<form action='" . esc_url(admin_url('options.php')) . "' method='POST'>";
-		settings_fields( 'sdpvs_general_option' );
-		
-		//echo '<h2 class="sdpvs">' . esc_html__('Week starts on', 'post-volume-stats') . '</h2>';
-		//echo "<div style='display: block; padding: 5px;'><label><input type=\"radio\" name=\"startweekon\" value=\"sunday\">Sunday (default)</label><br><label><input type=\"radio\" name=\"startweekon\" value=\"monday\">Monday</label></div>";
-		do_settings_sections( SDPVS__PLUGIN_FOLDER );
-		
-		
-//		echo '<h2 class="sdpvs">' . esc_html__('Rainbow-colored lists', 'post-volume-stats') . '</h2>';
-//		echo '<p>' . esc_html__('This is the color of the text lists. Rainbow color means the text is the same color as the line of the line graph.', 'post-volume-stats') . '</p>';
-//		echo "<div style='display: block; padding: 5px;'><label><input type=\"radio\" name=\"rainbow\" value=\"on\">On (default)</label><br><label><input type=\"radio\" name=\"rainbow\" value=\"off\">Off</label></div>";
-		
-//		echo "<div style='display: block; padding: 5px;'><input type='submit' name='all' class='button-primary' value='" . esc_html__('Save Settings') . "'></div>";
-		submit_button('Save');
-		echo "</form>";
+		// Call the method
+		$sdpvs_sub -> sdpvs_combined_page_content($customvalue);
 
 		$link = "https://wordpress.org/plugins/post-volume-stats/";
 		$linkdesc = "Post Volume Stats plugin page";
@@ -209,11 +199,56 @@ function sdpvs_settings_page() {
 	return;
 }
 
+	
+	
+
+// Settings page
+function sdpvs_settings_page() {
+	if (is_admin()) {
+
+		// Start the timer
+		$time_start = microtime(true);
+
+		// Create an instance of the required class
+
+		// Content goes here
+		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Settings', 'post-volume-stats') . '</h1>';
+		
+		
+		echo "<form action='" . esc_url(admin_url('options.php')) . "' method='POST'>";
+		settings_fields( 'sdpvs_general_option' );
+		do_settings_sections( SDPVS__PLUGIN_FOLDER );
+		submit_button('Save');
+		echo "</form>";
+
+		$link = "https://wordpress.org/plugins/post-volume-stats/";
+		$linkdesc = "Post Volume Stats plugin page";
+		echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
+		
+		// DIV for loading
+		echo "<div id='sdpvs_loading'>";
+		echo "</div>";
+
+		// Stop the timer
+		$time_end = microtime(true);
+		$elapsed_time = sprintf("%.5f", $time_end - $time_start);
+		echo "<p>" . esc_html__("Script time elapsed: " . $elapsed_time . " seconds", 'post-volume-stats') . "</p>";
+
+	}
+	return;
+}
+
 // Register a custom menu page in the admin.
 function sdpvs_register_custom_page_in_menu() {
+	$genoptions = get_option('sdpvs_general_settings');
+	$customoff = filter_var ( $genoptions['customoff'], FILTER_SANITIZE_STRING);
 	add_menu_page(esc_html__('Post Volume Stats', 'post-volume-stats'), esc_html__('Post Volume Stats', 'post-volume-stats'), 'manage_options', dirname(__FILE__), 'sdpvs_post_volume_stats_assembled', plugins_url('images/post-volume-stats-16x16.png', __FILE__), 1000);
 	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Categories', 'post-volume-stats'), esc_html__('Categories', 'post-volume-stats'), 'read', 'post-volume-stats-categories', 'sdpvs_category_page');
 	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Tags', 'post-volume-stats'), esc_html__('Tags', 'post-volume-stats'), 'read', 'post-volume-stats-tags', 'sdpvs_tag_page');
+	if("yes" == $customoff){
+		$customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
+		add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: ' . $customvalue, 'post-volume-stats'), $customvalue, 'read', 'post-volume-stats-' . $customvalue, 'sdpvs_custom_page');
+	}
 	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Settings', 'post-volume-stats'), esc_html__('Settings', 'post-volume-stats'), 'manage_options', 'post-volume-stats-settings', 'sdpvs_settings_page');
 }
 
@@ -266,6 +301,8 @@ function sdpvs_register_general_settings() {
     add_settings_field( 'startweekon', 'Start Week On', 'field_one_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
 	add_settings_field( 'rainbow', 'Rainbow Lists', 'field_two_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
 	add_settings_field( 'authoroff', 'Number of Contributors', 'field_three_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
+	add_settings_field( 'customoff', 'Display Custom Taxonomy stats', 'field_four_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
+	add_settings_field( 'customvalue', 'Select a Taxonomy to view', 'field_five_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
 }
 
 add_action('admin_init', 'sdpvs_register_general_settings');
@@ -273,7 +310,11 @@ add_action('admin_init', 'sdpvs_register_general_settings');
 function field_one_callback() {
 	$genoptions = get_option('sdpvs_general_settings');
 	$startweek = filter_var ( $genoptions['startweekon'], FILTER_SANITIZE_STRING);
-    echo "<div style='display: block; padding: 5px;'>";
+	
+	// This gives the integer the user has for their blog, 0=sunday, 1=monday, etc
+	$blogstartweek = get_option( 'start_of_week' );
+    
+	echo "<div style='display: block; padding: 5px;'>";
 	if("sunday" == $startweek or !$startweek){
 		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[startweekon]\" value=\"sunday\" checked=\"checked\">Sunday (default)</label><br>";
 		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[startweekon]\" value=\"monday\">Monday</label>";
@@ -310,6 +351,50 @@ function field_three_callback() {
 		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[authoroff]\" value=\"multiple\">More than one (default)</label><br>";
 		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[authoroff]\" value=\"one\" checked=\"checked\">One</label>";
 	}
+	
+	echo "</div>";
+}
+
+function field_four_callback() {
+	$genoptions = get_option('sdpvs_general_settings');
+	$customoff = filter_var ( $genoptions['customoff'], FILTER_SANITIZE_STRING);
+    echo "<div style='display: block; padding: 5px;'>";
+	if("no" == $customoff or !$customoff){
+		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[customoff]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
+		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[customoff]\" value=\"yes\">Yes</label>";
+	}else{
+		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[customoff]\" value=\"no\">No (default)</label><br>";
+		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[customoff]\" value=\"yes\" checked=\"checked\">Yes</label>";
+	}
+	
+	echo "</div>";
+}
+
+function field_five_callback() {
+	$genoptions = get_option('sdpvs_general_settings');
+	$customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
+    echo "<div style='display: block; padding: 5px;'>";
+	echo  "<select name=\"sdpvs_general_settings[customvalue]\">";
+	// Custom Taxonomies
+	$args = array(
+		'public'   => true,
+		'_builtin' => false
+	); 
+		$taxonomies = get_taxonomies( $args ); 
+		foreach ( $taxonomies as $taxonomy ) {
+			if("category" != $taxonomy and "post_tag" != $taxonomy){
+				
+				if($taxonomy == $customvalue){
+					echo  "<option name=\"sdpvs_general_settings[customvalue]\" value=\"$taxonomy\" selected=\"selected\">$taxonomy</option>";
+				}else{
+					echo  "<option name=\"sdpvs_general_settings[customvalue]\" value=\"$taxonomy\">$taxonomy</option>";
+				}
+				
+			}
+			
+			
+		}
+	echo  "</select>";
 	
 	echo "</div>";
 }
@@ -355,6 +440,7 @@ function sdpvs_load_all_admin_scripts() {
 	$whichdata = "";
 	$whichcats = "";
 	$whichtags = "";
+	$whichcustom = "";
 
 	//Here we create a javascript object variable called "sdpvs_vars". We can access any variable in the array using sdpvs_vars.name_of_sub_variable
 	wp_localize_script('sdpvs_loader', 'sdpvs_vars', array(
@@ -366,6 +452,8 @@ function sdpvs_load_all_admin_scripts() {
 	'whichcats' => $whichcats,
 	//To use this variable in javascript use "sdpvs_vars.whichtags"
 	'whichtags' => $whichtags,
+	//To use this variable in javascript use "sdpvs_vars.whichcustom"
+	'whichcustom' => $whichcustom,
 	// nonce...
 	'ajax_nonce' => wp_create_nonce('num-of-posts'), ));
 
@@ -456,6 +544,27 @@ function sdpvs_tags_lists() {
 }
 
 add_action('wp_ajax_sdpvs_select_tags', 'sdpvs_tags_lists');
+
+function sdpvs_custom_lists() {
+	// Security check
+	check_ajax_referer('num-of-posts', 'security');
+	
+	$genoptions = get_option('sdpvs_general_settings');
+	$customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
+	
+	$sdpvs_sub = new sdpvsSubPages();
+
+	// Extract the variables from serialized string
+	$gotit = filter_var($_POST['whichcustom'], FILTER_SANITIZE_STRING);
+	preg_match_all('/=([0-9]*)/', $gotit, $matches);
+
+	echo $sdpvs_sub -> update_ajax_lists($customvalue, $matches);
+
+	// Always die() AJAX
+	die();
+}
+
+add_action('wp_ajax_sdpvs_select_custom', 'sdpvs_custom_lists');
 
 function sdpvs_remove_admin_notice() {
 	// Security check

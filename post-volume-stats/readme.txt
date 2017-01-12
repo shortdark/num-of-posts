@@ -2,22 +2,22 @@
 === Post Volume Stats ===
 Contributors: shortdark
 Donate link: http://www.shortdark.net/wordpress-plugin/
-Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget, author
+Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget, author, taxonomy
 Requires at least: 3.5
-Tested up to: 4.7
+Tested up to: 4.7.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Shows stats for the volume of posts per year, month, day-of-the-month, day-of-the-week, hour-of-the-day, author, categories and tags.
+Shows stats for the volume of posts per year, month, day-of-the-month, day-of-the-week, hour-of-the-day, author, categories, tags and custom taxonomy.
 
 == Description ==
 
 This plugin looks at the volume of posts in each category and tag, and also the volume 
 of posts per year, month, day-of-the-month, day-of-the-week, hour and author. It works better the more posts 
 you have, and if you use categories and tags. You can now specify a year and/or an author to just look at the post volume stats for
-that year/author. The bar charts can be added to a sidebar with Post Volume Stats widget. The category and tag lists and line graphs 
-can be exported to a new post.
+that year/author. The bar charts can be added to a sidebar with Post Volume Stats widget. Lists and line graphs 
+can be exported to a new post to show the change in category, tag and custom taxonomy posts over the years.
 
 Please let me know if you like this plugin by leaving a review or [contacting me](http://www.shortdark.net/contact-me/).
 
@@ -47,9 +47,14 @@ Here are the latest screenshots...
 5. The export button adds the HTML list and line graph into a new blog post.
 6. The results of exporting the line graph and list into a new post.
 7. Shows the widget in the "live preview" area of the admin.
-8. Settings page.
+8. Settings page allows customization and enables the custom taxonomy page to be added.
 
 == Changelog ==
+
+= 3.0.29 =
+
+* Custom taxonomy page added (must be selected on the Settings page).
+* Updated description and POT file.
 
 = 3.0.28 =
 

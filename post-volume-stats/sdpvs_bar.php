@@ -266,10 +266,10 @@ class sdpvsBarChart extends sdpvsArrays {
 		$graph_color = "blue";
 		$highlight_color = "red";
 
-		if ("category" == $type) {
-			$taxonomy_type = 'category';
-		} elseif ("tag" == $type) {
+		if ("tag" == $type) {
 			$taxonomy_type = 'post_tag';
+		}else{
+			$taxonomy_type = $type;
 		}
 
 		parent::sdpvs_number_of_posts_per_year();
@@ -365,7 +365,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				} else {
 					$color = "#000";
 				}
-				$term_id = $select_array[1][$x];
+				$term_id = absint($select_array[1][$x]);
 
 				for ($i = 0; $i <= $this -> first_val; $i++) {
 					$searchyear = absint($chart_array[$i]['name']);
@@ -389,11 +389,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				}
 				echo $line_graph;
 
-				if ("category" == $type) {
-					$link = get_category_link($term_id);
-				} elseif ("tag" == $type) {
-					$link = get_tag_link($term_id);
-				}
+				$link = get_termlink($term_id);
 
 				$selectable .= '<li>' . sprintf(wp_kses(__('<a href="%1$s">%2$s</a>: %3$d posts', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($link), $item['name'], $item['volume']) . '</li>';
 
@@ -423,10 +419,10 @@ class sdpvsBarChart extends sdpvsArrays {
 		$graph_color = "blue";
 		$highlight_color = "red";
 
-		if ("category" == $type) {
-			$taxonomy_type = 'category';
-		} elseif ("tag" == $type) {
+		if ("tag" == $type) {
 			$taxonomy_type = 'post_tag';
+		}else{
+			$taxonomy_type = $type;
 		}
 
 		// All this just gets the number of years
@@ -443,7 +439,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				for ($i = 0; $i <= $this -> first_val; $i++) {
 					$searchyear = absint($chart_array[$i]['name']);
 					// Get slug, name and volume
-					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear);
+					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear,$searchauthor);
 					if (!$this -> highest_val2 or $this -> highest_val2 < $item['volume']) {
 						$this -> highest_val2 = $item['volume'];
 					}
@@ -523,18 +519,11 @@ class sdpvsBarChart extends sdpvsArrays {
 					$color = "#000";
 				}
 
-				$term_id = $select_array[1][$x];
+				$term_id = absint($select_array[1][$x]);
 
 				if ("y" == $public) {
-					$item_id = $pie_array[$c]['id'];
-					if ("category" == $type) {
-						$link = get_category_link($term_id);
-						$link_part = "category_name";
-					} elseif ("tag" == $type) {
-						$link = get_tag_link($term_id);
-						$link_part = "tag";
-					}
-					
+//					$item_id = $pie_array[$c]['id'];
+					$link = get_term_link( $term_id );
 				}
 				
 
@@ -563,6 +552,8 @@ class sdpvsBarChart extends sdpvsArrays {
 							$link_part = "category_name";
 						} elseif ("tag" == $type) {
 							$link_part = "tag";
+						}else{
+							$link_part = $taxonomy_type;
 						}
 						$link = admin_url("edit.php?$link_part=" . $item['slug']);
 					}
@@ -570,13 +561,6 @@ class sdpvsBarChart extends sdpvsArrays {
 					$this -> svg_output_string .= "<a href=\"$link\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:title=\"{$item['name']}, {$item['volume']} posts out of {$chart_array[$i]['volume']}\"><circle cx=\"$x_start\" cy=\"$y_start\" r=\"3\" stroke=\"$color\" stroke-width=\"0\" fill=\"$color\" /></a>";
 				}
 				$this -> svg_output_string .= $line_graph;
-
-				if ("category" == $type) {
-					$link = get_category_link($term_id);
-				} elseif ("tag" == $type) {
-					$link = get_tag_link($term_id);
-				}
-
 			}
 			$x++;
 		}

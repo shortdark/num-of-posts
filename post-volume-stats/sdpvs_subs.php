@@ -24,6 +24,10 @@ class sdpvsSubPages {
 		} elseif ("tag" == $type) {
 			$typetitle = "Tag";
 			$typetitleplural = "Tags";
+		}else{
+			$terms = get_term_by('name', $type);
+			$typetitle = $type;
+			$typetitleplural = $type;
 		}
 
 		echo '<h1 class="sdpvs">' . sprintf(esc_html__('Post Volume Stats: %s', 'post-volume-stats'), $typetitleplural) . '</h1>';

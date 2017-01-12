@@ -32,7 +32,7 @@ abstract class sdpvsArrays {
 		if("" != $searchauthor){
 			$extra .= " AND $wpdb->posts.post_author = '$searchauthor' ";
 		}
-		if (0 < $term_id and ('category' == $taxonomy_type or 'post_tag' == $taxonomy_type)) {
+		if (0 < $term_id and "" != $taxonomy_type ) {
 			
 			if ("" == $searchyear and "" == $searchauthor) {
 				$count = $wpdb -> get_var($wpdb -> prepare("SELECT count FROM $wpdb->term_taxonomy WHERE taxonomy = %s AND term_id = %d ", $taxonomy_type, $term_id));
@@ -62,6 +62,82 @@ abstract class sdpvsArrays {
 		}
 		return;
 	}
+	
+	/*
+	 * NUMBER OF POSTS PER TAXONOMY TYPE (Tags, Categories, Custom)
+	 */
+	protected function sdpvs_post_taxonomy_type_volumes($tax_type = "", $searchyear = "", $searchauthor = "") {
+		global $wpdb;
+		$searchyear = absint($searchyear);
+		$searchauthor = absint($searchauthor);
+		if (0 < $searchyear) {
+			$extra = " AND $wpdb->posts.post_date LIKE '$searchyear%' ";
+		}
+		if("" != $searchauthor){
+			$extra .= " AND $wpdb->posts.post_author = '$searchauthor' ";
+		}
+		if ("" == $searchyear and "" == $searchauthor) {
+			$tax_results = $wpdb -> get_results($wpdb -> prepare("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = %s ORDER BY count DESC ", $tax_type));
+			$c = 0;
+			foreach ($tax_results as $tax_item) {
+				$taxinfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $tax_item -> term_id));
+				$this -> tax_type_array[$c]['id'] = $tax_item -> term_id;
+				$this -> tax_type_array[$c]['name'] = $taxinfo -> name;
+				$this -> tax_type_array[$c]['slug'] = $taxinfo -> slug;
+				$this -> tax_type_array[$c]['volume'] = $tax_item -> count;
+				$this -> tax_type_array[$c]['angle'] = 0;
+				$c++;
+			}
+		} else {
+			$tax_results = $wpdb -> get_results("SELECT term_id, term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy = '$tax_type' ORDER BY term_id DESC ");
+			$c = 0;
+			$highestval = 0;
+			// if ($tax_results) {
+			foreach ($tax_results as $tax_item) {
+				$posts = 0;
+				$posts = $wpdb -> get_var("
+					SELECT COUNT(*)
+					FROM $wpdb->posts 
+					INNER JOIN $wpdb->term_relationships 
+					ON $wpdb->posts.post_status = 'publish' 
+					AND $wpdb->posts.post_type = 'post' 
+					$extra
+					AND $wpdb->term_relationships.object_id = $wpdb->posts.ID 
+					AND $wpdb->term_relationships.term_taxonomy_id = $tax_item->term_taxonomy_id
+				");
+				if (0 < $posts) {
+					$cat_array[$c]['id'] = $tax_item -> term_id;
+					$cat_array[$c]['volume'] = $posts;
+					if ($highestval < $posts) {
+						$highestval = $posts;
+					}
+					$c++;
+				}
+			}
+			// }
+			$d = 0;
+			for ($i = $highestval; $i > 0; $i--) {
+				$c = 0;
+				while (array_key_exists($c, $cat_array)) {
+					if ($i == $cat_array[$c]['volume'] and 0 < $cat_array[$c]['id']) {
+						$temp = $cat_array[$c]['id'];
+						$taxinfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $temp));
+						$this -> tax_type_array[$d]['id'] = $temp;
+						$this -> tax_type_array[$d]['name'] = $taxinfo -> name;
+						$this -> tax_type_array[$d]['slug'] = $taxinfo -> slug;
+						$this -> tax_type_array[$d]['volume'] = $cat_array[$c]['volume'];
+						$this -> tax_type_array[$d]['angle'] = 0;
+						$d++;
+					}
+					$c++;
+				}
+			}
+		}
+
+		$wpdb -> flush();
+		return;
+	}
+	
 
 	/*
 	 * NUMBER OF POSTS PER CATEGORY

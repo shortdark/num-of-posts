@@ -68,6 +68,28 @@ jQuery(document).ready(function($) {
 	});
 	
 	
+	$(".sdpvs_customselect").submit(function(e) {
+		$("#sdpvs_loading").show();
+		$(".sdpvs_preview").attr('disabled', true);
+
+		// Serialize the form data
+		var sdpvs_checkboxdata = $(this).serialize();
+
+		var data = {
+			action : "sdpvs_select_custom",
+			whichcustom : sdpvs_checkboxdata,
+			security : sdpvs_vars.ajax_nonce,
+		};
+
+		$.post(ajaxurl, data, function(response) {
+			$('#sdpvs_ajax_lists').html(response);
+			$("#sdpvs_loading").hide();
+			$(".sdpvs_preview").attr('disabled', false);
+		});
+		return false;
+	});
+	
+	
 
 	$(".sdpvs_form").submit(function(e) {
 		$("#sdpvs_loading").show();

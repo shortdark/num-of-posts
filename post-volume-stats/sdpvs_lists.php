@@ -44,7 +44,7 @@ class sdpvsTextLists extends sdpvsArrays {
 	/*
 	 * NUMBER OF POSTS PER CATEGORY / TAG TEXT
 	 */
-	public function sdpvs_posts_per_cat_tag_list($type, $searchyear = "", $searchauthor = "", $list_type = "admin", $select_array = "", $colorlist) {
+	public function sdpvs_posts_per_cat_tag_list($type, $searchyear = "", $searchauthor = "", $list_type = "admin", $select_array = "", $colorlist="") {
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
 		if ("category" == $type) {
@@ -59,6 +59,12 @@ class sdpvsTextLists extends sdpvsArrays {
 			$form_name = 'sdpvs_tagselect';
 			$taxonomy_type = 'post_tag';
 			$whichlist = 'tag';
+		}else{
+			$typetitle = $type;
+			$typetitleplural = $type;
+			$form_name = 'sdpvs_customselect';
+			$taxonomy_type = $type;
+			$whichlist = $type;
 		}
 		$genoptions = get_option('sdpvs_general_settings');
 		$listcolors = filter_var ( $genoptions['rainbow'], FILTER_SANITIZE_STRING);
@@ -114,13 +120,11 @@ class sdpvsTextLists extends sdpvsArrays {
 
 		if ("" == $select_array and ("admin" == $list_type or "subpage" == $list_type)) {
 			// Only grab all data when everything is required
-			if ("category" == $type) {
-				parent::sdpvs_post_category_volumes($searchyear,$searchauthor);
-				$universal_array = $this -> category_array;
-			} elseif ("tag" == $type) {
-				parent::sdpvs_post_tag_volumes($searchyear,$searchauthor);
-				$universal_array = $this -> tag_array;
-			}
+			parent::sdpvs_post_taxonomy_type_volumes($taxonomy_type, $searchyear, $searchauthor);
+			$universal_array = $this -> tax_type_array;
+				
+			//	var_dump($tax_array_name);
+				
 			if ("subpage" == $list_type) {
 				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export to a post then click the \'Show Preview\' button. On mobile devices you may have to scroll down as the results may be at the bottom of the page.', 'post-volume-stats'), $typetitleplural) . '</p>';
 
@@ -136,6 +140,8 @@ class sdpvsTextLists extends sdpvsArrays {
 						$link = admin_url('edit.php?category_name=' . $universal_array[$c]['slug']);
 					} elseif ("tag" == $type) {
 						$link = admin_url('edit.php?tag=' . $universal_array[$c]['slug']);
+					}else{
+						$link = admin_url('edit.php?' . $type . '=' . $universal_array[$c]['slug']);
 					}
 
 					if ("admin" == $list_type) {
@@ -159,17 +165,13 @@ class sdpvsTextLists extends sdpvsArrays {
 
 			while ($select_array[1][$x]) {
 				if (0 < $select_array[1][$x]) {
-					$term_id = $select_array[1][$x];
+					$term_id = abs($select_array[1][$x]);
 
 					// Get slug, name and volume
 					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear,$searchauthor);
-
-					if ("category" == $type) {
-						$link = get_category_link($term_id);
-					} elseif ("tag" == $type) {
-						$link = get_tag_link($term_id);
-					}
-
+					
+					$link = get_term_link( $term_id );
+					
 					if (10 > $x and "off" != $listcolors) {
 						$color = $colorlist[$x];
 					} else {
