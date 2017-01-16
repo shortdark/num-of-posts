@@ -44,13 +44,17 @@ Here are the latest screenshots...
 1. Shows the main page of "Post Volume Stats".
 2. Shows the draggable AJAX data lists, and highlighted bar of a bar chart.
 3. You can view the stats for each year individually. This shows the same blog with stats for one year selected.
-4. The "Category" and "Tag" pages allow the user to export the data into an HTML list and a line graph.
+4. The "Category", "Tag" and "Custom Taxonomy" pages allow the user to filter results and export the data into an HTML list and a line graph.
 5. The export button adds the HTML list and line graph into a new blog post.
 6. The results of exporting the line graph and list into a new post.
 7. Shows the widget in the "live preview" area of the admin.
-8. Settings page allows customization and enables the custom taxonomy page to be added.
+8. Settings page allows customization.
 
 == Changelog ==
+
+= 3.1.02 =
+
+* Bug fixes on words per post.
 
 = 3.1.01 =
 

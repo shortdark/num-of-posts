@@ -384,6 +384,9 @@ abstract class sdpvsArrays {
 				}else{
 					$i = absint( $word_count / 50 );
 				}
+				if(15 < $i){
+					$i = 15;
+				}
 				$this -> list_array[$i]['volume'] ++;
 			}
 		}
