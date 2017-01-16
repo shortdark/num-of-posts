@@ -252,6 +252,17 @@ class sdpvsBarChart extends sdpvsArrays {
 					echo "<a xlink:title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\"><path fill-opacity=\"0.5\" d=\"M$x_start $y_start v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"$color\" class=\"sdpvs_bar\"></path></a>";
 				}
 
+			}else{
+				// Label the year even if there are no posts
+				if ("year" == $which) {
+					$x_start = $svgwidth - ($i * $bar_width);
+					$legend = $chart_array[$i]['name'];
+					if (strlen($legend) * 7 < $bar_width) {
+						$legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
+						$legend_y = $y_start + 17;
+						echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
+					}
+				}
 			}
 
 		}

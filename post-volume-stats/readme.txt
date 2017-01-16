@@ -17,7 +17,8 @@ This plugin looks at the volume of posts in each category and tag, and also the 
 of posts per year, month, day-of-the-month, day-of-the-week, hour and author. It works better the more posts 
 you have, and if you use categories and tags. You can now specify a year and/or an author to just look at the post volume stats for
 that year/author. The bar charts can be added to a sidebar with Post Volume Stats widget. Lists and line graphs 
-can be exported to a new post to show the change in category, tag and custom taxonomy posts over the years.
+can be exported to a new post to show the change in category, tag and custom taxonomy posts over the years. The latest features
+are "words per post" stats and the "compare years" button allows all the data to be copy/pasted into a spreadsheet.
 
 Please let me know if you like this plugin by leaving a review or [contacting me](http://www.shortdark.net/contact-me/).
 
@@ -51,9 +52,13 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 3.1.01 =
+
+* Minor bug fixes on the author and years bar charts.
+
 = 3.1.00 =
 
-* Compare years for some bar charts - shows data for all years in one table that can be copy/pasted into a spreadsheet.
+* You can now compare years for some of the bar charts - shows data for all years in one table that can be copy/pasted into a spreadsheet.
 * Words per post bar chart added.
 * Custom Taxonomy bar chart added to the main page (must be selected on the Settings page).
 * "Authors" data is now "Authors" or higher, "Contributors" are not included in the Authors data.

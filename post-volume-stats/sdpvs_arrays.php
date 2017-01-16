@@ -297,7 +297,6 @@ abstract class sdpvsArrays {
 			$j = $i + 1;
 			$searchday = sprintf("%02s", $j);
 			
-			
 			$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '%-$searchday %' $extra ");
 
 			if (0 > $found_posts or !$found_posts or "" == $found_posts) {
@@ -316,37 +315,24 @@ abstract class sdpvsArrays {
 	protected function sdpvs_number_of_posts_per_author($searchyear = "") {
 		global $wpdb;
 		$this -> list_array = array();
-		$blogusers = $wpdb -> get_results("
-			SELECT $wpdb->users.ID , $wpdb->users.display_name 
-			FROM $wpdb->users 
-			INNER JOIN $wpdb->usermeta 
-			ON $wpdb->users.ID = $wpdb->usermeta.user_id 
-			WHERE $wpdb->usermeta.meta_key = 'wp_user_level' AND $wpdb->usermeta.meta_value > 1
-		");
+		
+		$blogusers = get_users( array( 'who'  => 'authors' ) );
 		
 		// Array of WP_User objects.
 		$a=0;
 		foreach ( $blogusers as $user ) {
-			$this -> list_array[$a]['id'] = absint($user->ID);
-			$this -> list_array[$a]['name'] = $user->display_name;
-			$this -> list_array[$a]['volume'] = 0;
-			$a++;
-		}
-		$a=0;
-		while ( array_key_exists($a, $this -> list_array) ) {
-			$post_author = $this -> list_array[$a]['id'];
+			$post_author = absint($user->ID);
 			if (0 < $searchyear) {
 				$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_author = '$post_author' AND post_date LIKE '$searchyear%' ");
 			} else {
 				$found_posts = $wpdb -> get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_author = '$post_author' ");
 			}
-
-			if (0 > $found_posts or !$found_posts or "" == $found_posts) {
-				$found_posts = 0;
+			if(1 <= $found_posts){
+				$this -> list_array[$a]['id'] = absint($user->ID);
+				$this -> list_array[$a]['name'] = $user->display_name;
+				$this -> list_array[$a]['volume'] = $found_posts;
+				$a++;
 			}
-			$this -> list_array[$a]['volume'] = $found_posts;
-			
-			$a++;
 		}
 		$wpdb -> flush();
 		
@@ -354,10 +340,9 @@ abstract class sdpvsArrays {
 			return $k['volume'] - $j['volume'];
 		}
 		
-		if(1 <= $a){
+		if(1 < $a){
 			usort($this -> list_array, 'sortByOrder');
 		}
-		
 		
 		return;
 	}
