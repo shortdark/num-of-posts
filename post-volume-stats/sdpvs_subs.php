@@ -18,6 +18,8 @@ class sdpvsSubPages {
 		$genoptions = get_option('sdpvs_general_settings');
 		$authoroff = filter_var ( $genoptions['authoroff'], FILTER_SANITIZE_STRING);
 		
+		$selected = "";
+		
 		if ("category" == $type) {
 			$typetitle = "Category";
 			$typetitleplural = "Categories";
@@ -25,9 +27,9 @@ class sdpvsSubPages {
 			$typetitle = "Tag";
 			$typetitleplural = "Tags";
 		}else{
-			$terms = get_term_by('name', $type);
-			$typetitle = $type;
-			$typetitleplural = $type;
+			$tax_labels = get_taxonomy($type);
+			$typetitle = $tax_labels->labels->singular_name;
+			$typetitleplural = $tax_labels->label;
 		}
 
 		echo '<h1 class="sdpvs">' . sprintf(esc_html__('Post Volume Stats: %s', 'post-volume-stats'), $typetitleplural) . '</h1>';

@@ -112,9 +112,40 @@ jQuery(document).ready(function($) {
 		});
 		return false;
 	});
+	
+	$(".sdpvs_compare").submit(function(e) {
+		$("#sdpvs_loading").show();
+		$(".sdpvs_load_content").attr('disabled', true);
+
+		// Serialize the form data
+		var sdpvs_buttondata = $(this).serialize();
+
+		var data = {
+			action : "sdpvs_compare_years",
+			comparedata : sdpvs_buttondata,
+			security : sdpvs_vars.ajax_nonce,
+		};
+
+		$.post(ajaxurl, data, function(response) {
+			$('#sdpvs_listcompare').html(response);
+			$("#sdpvs_listcompare").show();
+			$("#sdpvs_loading").hide();
+			$(".sdpvs_load_content").attr('disabled', false);
+		});
+		return false;
+	});
 
 	$(document).mouseup(function(e) {
 		var container = $("#sdpvs_listcontent");
+
+		// if the target of the click isn't the container nor a descendant of the container
+		if (!container.is(e.target) && container.has(e.target).length === 0) {
+			container.hide();
+		}
+	});
+	
+	$(document).mouseup(function(e) {
+		var container = $("#sdpvs_listcompare");
 
 		// if the target of the click isn't the container nor a descendant of the container
 		if (!container.is(e.target) && container.has(e.target).length === 0) {

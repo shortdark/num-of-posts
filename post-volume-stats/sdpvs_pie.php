@@ -9,16 +9,18 @@ class sdpvsPieChart extends sdpvsArrays {
 	private $total_tag_posts = 0;
 	private $newx;
 	private $newy;
-
+	
 	/*
 	 * COUNT NUMBER OF POSTS PER CATEGORY IN TOTAL, some posts might have multiple cats
 	 */
-	private function sdpvs_count_post_categories($year = "", $author = "") {
+	private function sdpvs_count_post_taxonomies($year = "", $author = "") {
+		$this -> number_of_taxonomies = "";
+		$this -> total_taxonomy_posts = "";
 		$c = 0;
-		while (array_key_exists($c, $this -> category_array)) {
-			if (0 < $this -> category_array[$c]['volume']) {
-				$this -> number_of_categories++;
-				$this -> total_category_posts += $this -> category_array[$c]['volume'];
+		while (array_key_exists($c, $this->tax_type_array)) {
+			if (0 < $this -> tax_type_array[$c]['volume']) {
+				$this -> number_of_taxonomies++;
+				$this -> total_taxonomy_posts += $this -> tax_type_array[$c]['volume'];
 			}
 			$c++;
 		}
@@ -28,51 +30,20 @@ class sdpvsPieChart extends sdpvsArrays {
 	/*
 	 * ADD THE ANGLE TO THE EXISTING CATEGORY ARRAY
 	 */
-	private function sdpvs_add_to_category_array($year = "", $author = "") {
-		parent::sdpvs_post_category_volumes($year,$author);
-		$this -> sdpvs_count_post_categories($year,$author);
+	private function sdpvs_add_to_taxonomy_array($type = "", $year = "", $author = "") {
+		$this -> tax_type_array = "";
+		parent::sdpvs_post_taxonomy_type_volumes($type, $year,$author);
+		$this -> sdpvs_count_post_taxonomies($year,$author);
 		$c = 0;
-		while (array_key_exists($c, $this -> category_array)) {
-			if (0 < $this -> category_array[$c]['volume']) {
-				$this -> category_array[$c]['angle'] = ($this -> category_array[$c]['volume'] / $this -> total_category_posts) * 360;
+		while (array_key_exists($c, $this->tax_type_array)) {
+			if (0 < $this -> tax_type_array[$c]['volume']) {
+				$this -> tax_type_array[$c]['angle'] = ($this -> tax_type_array[$c]['volume'] / $this -> total_taxonomy_posts) * 360;
 			}
 			$c++;
 		}
 		return;
 	}
-
-	/*
-	 * COUNT NUMBER OF POSTS PER TAG IN TOTAL, some posts might have multiple tags
-	 */
-	private function sdpvs_count_post_tags($year = "", $author = "") {
-		$t = 0;
-		while (array_key_exists($t, $this -> tag_array)) {
-			if (0 < $this -> tag_array[$t]['volume']) {
-				$this -> number_of_tags++;
-				$this -> total_tag_posts += $this -> tag_array[$t]['volume'];
-			}
-			$t++;
-		}
-		return;
-	}
-
-	/*
-	 * ADD THE ANGLE TO THE EXISTING TAG ARRAY
-	 */
-	private function sdpvs_add_to_tag_array($year = "", $author = "") {
-		parent::sdpvs_post_tag_volumes($year,$author);
-		$this -> sdpvs_count_post_tags($year,$author);
-
-		$t = 0;
-		while (array_key_exists($t, $this -> tag_array)) {
-			if (0 < $this -> tag_array[$t]['volume']) {
-				$this -> tag_array[$t]['angle'] = ($this -> tag_array[$t]['volume'] / $this -> total_tag_posts) * 360;
-			}
-			$t++;
-		}
-		return;
-	}
-
+	
 	/**
 	 * DISPLAY CATEGORY DATA IN A PIE CHART
 	 */
@@ -83,21 +54,31 @@ class sdpvsPieChart extends sdpvsArrays {
 		$remaining = 0;
 		$this -> newx = 0;
 		$this -> newy = 0;
+		$this -> tax_type_array = array();
 
 		if ("category" == $type) {
-			$this -> sdpvs_add_to_category_array($year,$author);
-			$pie_array = $this -> category_array;
-			$total_volume = $this -> total_category_posts;
-			$number_of_containers = $this -> number_of_categories;
+			$this -> sdpvs_add_to_taxonomy_array($type,$year,$author);
+			$pie_array = $this -> tax_type_array;
+			$total_volume = $this -> total_taxonomy_posts;
+			$number_of_containers = $this -> number_of_taxonomies;
 			$pie_svg = '<h2>' . esc_html__("Categories", 'post-volume-stats') . '</h2>';
 			$link_part = "category_name";
 		} elseif ("tag" == $type) {
-			$this -> sdpvs_add_to_tag_array($year,$author);
-			$total_volume = $this -> total_tag_posts;
-			$pie_array = $this -> tag_array;
-			$number_of_containers = $this -> number_of_tags;
+			$wp_type_name = "post_tag";
+			$this -> sdpvs_add_to_taxonomy_array($wp_type_name,$year,$author);
+			$total_volume = $this -> total_taxonomy_posts;
+			$pie_array = $this -> tax_type_array;
+			$number_of_containers = $this -> number_of_taxonomies;
 			$pie_svg = '<h2>' . esc_html__("Tags", 'post-volume-stats') . '</h2>';
-			$link_part = "tag";
+			$link_part = $type;
+		}else{
+			$this -> sdpvs_add_to_taxonomy_array($type,$year,$author);
+			$total_volume = $this -> total_taxonomy_posts;
+			$pie_array = $this -> tax_type_array;
+			$number_of_containers = $this -> number_of_taxonomies;
+			$tax_labels = get_taxonomy($type);
+			$pie_svg = '<h2>' . esc_html__($tax_labels->label, 'post-volume-stats') . '</h2>';
+			$link_part = $type;
 		}
 
 		$pie_svg .= "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" class=\"sdpvs_pie\"><circle cx=\"$radius\" cy=\"$radius\" r=\"$radius\" stroke=\"black\" stroke-width=\"1\" />\n";
@@ -113,22 +94,6 @@ class sdpvsPieChart extends sdpvsArrays {
 					$large = $this -> sdpvs_is_it_a_large_angle($testangle_orig, $prev_angle);
 					$startingline = $this -> sdpvs_draw_starting_line($prev_angle, $this -> newx, $this -> newy);
 					$this -> sdpvs_get_absolute_coordinates_from_angle($quadrant, $radius, $testangle);
-					
-					/*
-					if (90 > $number_of_containers) {
-											$opacity = $pie_array[$c]['angle'] / 180;
-										} elseif (1000 > $number_of_containers) {
-											$opacity = $pie_array[$c]['angle'] / 30;
-										} else {
-											$opacity = $pie_array[$c]['angle'] / 15;
-										}
-					
-										if (1 < $opacity) {
-											$opacity = 1;
-										}
-										$opacity = sprintf("%.1f", $opacity);
-										$color = "rgba(255,0,0,$opacity)";*/
-					
 					
 					// Change the hue instead
 					if(0==$c){
@@ -150,9 +115,6 @@ class sdpvsPieChart extends sdpvsArrays {
 					}else{
 						$link = admin_url("edit.php?$link_part=" . $pie_array[$c]['slug']);
 					}
-
-					
-
 					if (360 == $pie_array[$c]['angle']) {
 						// If only one category exists make sure there is a green solid circle
 						$pie_svg .= "<a href='$link' xlink:title=\"{$pie_array[$c]['name']}, {$pie_array[$c]['volume']} posts\"><circle class=\"sdpvs_segment\" cx='100' cy='100' r='100' fill='red'/></a>\n";

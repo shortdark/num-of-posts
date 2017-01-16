@@ -3,24 +3,44 @@
 defined('ABSPATH') or die('No script kiddies please!');
 
 class sdpvsTextLists extends sdpvsArrays {
+	
+	/*
+	 * NUMBER OF POSTS PER AUTHOR
+	 */
+	public function sdpvs_posts_per_author_list($searchyear = "", $searchauthor = "") {
+		$searchyear = absint($searchyear);
+		$searchauthor = absint($searchauthor);
+		parent::sdpvs_number_of_posts_per_author($searchyear,$searchauthor);
+		$this -> list_string = '<h2>' . esc_html__('Post Volumes per Author', 'post-volume-stats') . '</h2>';
+		$i=0;
+		while ( array_key_exists($i, $this -> list_array) ) {
+			if (!$this -> list_array[$i]['volume']) {
+				$this -> list_array[$i]['volume'] = 0;
+			}
+			$this -> list_string .= sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> list_array[$i]['name'], $this -> list_array[$i]['volume']) . '<br />';
+			$i++;
+		}
+		return $this -> list_string;
+	}
+	
 	/*
 	 * NUMBER OF POSTS PER YEAR TEXT
 	 */
 	public function sdpvs_posts_per_year_list($searchauthor = "") {
 		$searchauthor = absint($searchauthor);
 		parent::sdpvs_number_of_posts_per_year($searchauthor);
-		parent::find_highest_first_and_total($this -> year_array);
+		parent::find_highest_first_and_total($this -> list_array);
 		$number_of_years = $this -> first_val + 1;
-		$posts_per_year = '<h2>' . esc_html__('Post Volumes per Year', 'post-volume-stats') . '</h2>';
-		$posts_per_year .= '<p>' . sprintf(esc_html__('%d posts over the past %d years.', 'post-volume-stats'), $this -> total_volume_of_posts, $number_of_years) . '</p>';
-		$i = 0;
-		while ($this -> year_array[$i]['name']) {
-			if (0 < $this -> year_array[$i]['volume']) {
-				$posts_per_year .= "{$this->year_array[$i]['name']}: {$this->year_array[$i]['volume']} posts<br>\n";
-			}
-			$i++;
+		$this -> list_string = '<h2>' . esc_html__('Post Volumes per Year', 'post-volume-stats') . '</h2>';
+		$this -> list_string .= '<p>' . sprintf(esc_html__('%d posts over the past %d years.', 'post-volume-stats'), $this -> total_volume_of_posts, $number_of_years) . '</p>';
+		$i = $this -> first_val;
+		while ($this -> list_array[$i]['name']) {
+			//if (0 < $this -> list_array[$i]['volume']) {
+				$this -> list_string .= "{$this->list_array[$i]['name']}: {$this->list_array[$i]['volume']} posts<br>\n";
+			//}
+			$i--;
 		}
-		return $posts_per_year;
+		return $this -> list_string;
 	}
 
 	/*
@@ -47,24 +67,24 @@ class sdpvsTextLists extends sdpvsArrays {
 	public function sdpvs_posts_per_cat_tag_list($type, $searchyear = "", $searchauthor = "", $list_type = "admin", $select_array = "", $colorlist="") {
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
+		$title = "";
+		$posts_per_cat_tag = "";
 		if ("category" == $type) {
 			$typetitle = "Category";
 			$typetitleplural = "Categories";
 			$form_name = 'sdpvs_catselect';
 			$taxonomy_type = 'category';
-			$whichlist = 'category';
 		} elseif ("tag" == $type) {
 			$typetitle = "Tag";
 			$typetitleplural = "Tags";
 			$form_name = 'sdpvs_tagselect';
 			$taxonomy_type = 'post_tag';
-			$whichlist = 'tag';
 		}else{
-			$typetitle = $type;
-			$typetitleplural = $type;
+			$tax_labels = get_taxonomy($type);
+			$typetitle = $tax_labels->labels->singular_name;
+			$typetitleplural = $tax_labels->label;
 			$form_name = 'sdpvs_customselect';
 			$taxonomy_type = $type;
-			$whichlist = $type;
 		}
 		$genoptions = get_option('sdpvs_general_settings');
 		$listcolors = filter_var ( $genoptions['rainbow'], FILTER_SANITIZE_STRING);
@@ -77,7 +97,7 @@ class sdpvsTextLists extends sdpvsArrays {
 			// $posts_per_cat_tag = '<h3>' . esc_html__('3. Export', 'post-volume-stats') . '</h3><p>' . esc_html__('Export the list and line graph into a new post by exporting.') . '</p>';
 			$posts_per_cat_tag .= "<form action='" . esc_url(admin_url('admin-post.php')) . "' method='POST'>";
 			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"action\" value=\"export_lists\">";
-			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"whichlist\" value=\"$whichlist\">";
+			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"whichlist\" value=\"$type\">";
 			// $posts_per_cat_tag .= "<input type=\"hidden\" name=\"howmuch\" value=\"all\">";
 
 			// Make a string for the export button AJAX
@@ -95,6 +115,7 @@ class sdpvsTextLists extends sdpvsArrays {
 			$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' name='all' class='button-primary' value='" . esc_html__('Export All') . "'></div>";
 			$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' name='graph' class='button-primary' value='" . esc_html__('Export Graph') . "'></div>";
 			$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' name='list' class='button-primary' value='" . esc_html__('Export List') . "'></div>";
+//			$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' name='csv' class='button-primary' value='" . esc_html__('Export ALL Years to CSV') . "'></div>";
 			$posts_per_cat_tag .= "</form>";
 		}
 
@@ -154,7 +175,7 @@ class sdpvsTextLists extends sdpvsArrays {
 			}
 			$posts_per_cat_tag .= '</ol>';
 			if ("subpage" == $list_type) {
-				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary' value='" . esc_html__('Show HTML') . "'></div>";
+				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary sdpvs_preview' value='" . esc_html__('Show Preview') . "'></div>";
 				$posts_per_cat_tag .= "</form>";
 			}
 		} else {
@@ -210,16 +231,16 @@ class sdpvsTextLists extends sdpvsArrays {
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
 		parent::sdpvs_number_of_posts_per_dayofweek($searchyear,$searchauthor);
-		parent::find_highest_first_and_total($this -> dow_array);
-		$posts_per_dow = '<h2>' . esc_html__('Post Volumes per Day of the Week', 'post-volume-stats') . '</h2>';
-		$posts_per_dow .= "<p>Which day of the week the $this->total_volume_of_posts posts were made on.</p>";
+		parent::find_highest_first_and_total($this -> list_array);
+		$this -> list_string = '<h2>' . esc_html__('Post Volumes per Day of the Week', 'post-volume-stats') . '</h2>';
+		$this -> list_string .= "<p>Which day of the week the $this->total_volume_of_posts posts were made on.</p>";
 		for ($i = 0; $i <= 6; $i++) {
-			if (!$this -> dow_array[$i]['volume']) {
-				$this -> dow_array[$i]['volume'] = 0;
+			if (!$this -> list_array[$i]['volume']) {
+				$this -> list_array[$i]['volume'] = 0;
 			}
-			$posts_per_dow .= '<p>' . sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> dow_array[$i]['name'], $this -> dow_array[$i]['volume']) . '</p>';
+			$this -> list_string .= '<p>' . sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> list_array[$i]['name'], $this -> list_array[$i]['volume']) . '</p>';
 		}
-		return $posts_per_dow;
+		return $this -> list_string;
 	}
 
 	/*
@@ -229,13 +250,13 @@ class sdpvsTextLists extends sdpvsArrays {
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
 		parent::sdpvs_number_of_posts_per_hour($searchyear,$searchauthor);
-		parent::find_highest_first_and_total($this -> hour_array);
-		$posts_per_hour = '<h2>' . esc_html__('Post Volumes per Hour', 'post-volume-stats') . '</h2>';
-		$posts_per_hour .= "<p>Which hour of the day the $this->total_volume_of_posts posts were made on.</p>";
+		parent::find_highest_first_and_total($this -> list_array);
+		$this -> list_string = '<h2>' . esc_html__('Post Volumes per Hour', 'post-volume-stats') . '</h2>';
+		$this -> list_string .= "<p>Which hour of the day the $this->total_volume_of_posts posts were made on.</p>";
 		for ($i = 0; $i <= 23; $i++) {
-			$posts_per_hour .= '<p>' . sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> hour_array[$i]['name'], $this -> hour_array[$i]['volume']) . '</p>';
+			$this -> list_string .= '<p>' . sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> list_array[$i]['name'], $this -> list_array[$i]['volume']) . '</p>';
 		}
-		return $posts_per_hour;
+		return $this -> list_string;
 	}
 
 	/*
@@ -245,14 +266,14 @@ class sdpvsTextLists extends sdpvsArrays {
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
 		parent::sdpvs_number_of_posts_per_month($searchyear,$searchauthor);
-		$posts_per_month = '<h2>' . esc_html__('Post Volumes per Month', 'post-volume-stats') . '</h2>';
+		$this -> list_string = '<h2>' . esc_html__('Post Volumes per Month', 'post-volume-stats') . '</h2>';
 		for ($i = 0; $i < 12; $i++) {
-			if (!$this -> month_array[$i]['volume']) {
-				$this -> month_array[$i]['volume'] = 0;
+			if (!$this -> list_array[$i]['volume']) {
+				$this -> list_array[$i]['volume'] = 0;
 			}
-			$posts_per_month .= '<p>' . sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> month_array[$i]['name'], $this -> month_array[$i]['volume']) . '</p>';
+			$this -> list_string .= '<p>' . sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> list_array[$i]['name'], $this -> list_array[$i]['volume']) . '</p>';
 		}
-		return $posts_per_month;
+		return $this -> list_string;
 	}
 
 	/*
@@ -262,34 +283,135 @@ class sdpvsTextLists extends sdpvsArrays {
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
 		parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor);
-		$posts_per_dom .= '<h2>' . esc_html__('Post Volumes per Day of the Month', 'post-volume-stats') . '</h2>';
+		$this -> list_string = '<h2>' . esc_html__('Post Volumes per Day of the Month', 'post-volume-stats') . '</h2>';
 		for ($i = 0; $i < 31; $i++) {
-			if (!$this -> dom_array[$i]['volume']) {
-				$this -> dom_array[$i]['volume'] = 0;
+			if (!$this -> list_array[$i]['volume']) {
+				$this -> list_array[$i]['volume'] = 0;
 			}
-			$posts_per_dom .= sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> dom_array[$i]['name'], $this -> dom_array[$i]['volume']) . '<br />';
+			$this -> list_string .= sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> list_array[$i]['name'], $this -> list_array[$i]['volume']) . '<br />';
 		}
-		return $posts_per_dom;
+		return $this -> list_string;
 	}
 	
+	
+	
 	/*
-	 * NUMBER OF POSTS PER AUTHOR
+	 * NUMBER OF WORDS PER POST
 	 */
-	public function sdpvs_posts_per_author_list($searchyear = "", $searchauthor = "") {
+	public function sdpvs_words_per_post_list($searchyear = "", $searchauthor = "") {
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
-		parent::sdpvs_number_of_posts_per_author($searchyear,$searchauthor);
-		$posts_per_dom .= '<h2>' . esc_html__('Post Volumes per Author', 'post-volume-stats') . '</h2>';
+		parent::sdpvs_number_of_words_per_post($searchyear,$searchauthor);
+		$this -> list_string = '<h2>' . esc_html__('Words per Post', 'post-volume-stats') . '</h2>';
 		$i=0;
-		while ( array_key_exists($i, $this -> author_array) ) {
-			if (!$this -> author_array[$i]['volume']) {
-				$this -> author_array[$i]['volume'] = 0;
+		while ( array_key_exists($i, $this -> list_array) ) {
+			if (!$this -> list_array[$i]['volume']) {
+				$this -> list_array[$i]['volume'] = 0;
 			}
-			$posts_per_dom .= sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> author_array[$i]['name'], $this -> author_array[$i]['volume']) . '<br />';
+			$this -> list_string .= sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> list_array[$i]['name'], $this -> list_array[$i]['volume']) . '<br />';
+			
 			$i++;
 		}
-		return $posts_per_dom;
+		return $this -> list_string;
 	}
+	
+	
+	/**
+	 * COMPILE YEARS MATRIX
+	 */
+	public function sdpvs_compile_years_matrix($type = "", $firstval="", $searchauthor="") {
+		$firstval = absint($firstval);
+		parent::sdpvs_number_of_posts_per_year($searchauthor);
+		$chart_array = $this -> list_array;
+		
+		for ($i = $firstval; $i >= 0; $i--) {
+			$searchyear = absint($chart_array[$i]['name']);
+			if ("hour" == $type) {
+				parent::sdpvs_number_of_posts_per_hour($searchyear,$searchauthor);
+			} elseif ("dayofweek" == $type) {
+				parent::sdpvs_number_of_posts_per_dayofweek($searchyear,$searchauthor);
+			} elseif ("month" == $type) {
+				parent::sdpvs_number_of_posts_per_month($searchyear,$searchauthor);
+			} elseif ("dayofmonth" == $type) {
+				parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor);
+			} elseif("words" == $type){
+				parent::sdpvs_number_of_words_per_post($searchyear,$searchauthor);
+			}
+			$a=0;
+			while ( array_key_exists($a, $this -> list_array) ) {
+				if(0 == $i){
+					$this -> year_matrix[$a]['label'] = $this -> list_array[$a]['name'];
+				}
+				$this -> year_matrix[$a][$i] = $this -> list_array[$a]['volume'];
+				$a++;
+			}
+		}
+		return;
+	}
+	
+	
+	/**
+	 * COMPARE YEARS
+	 */
+	 
+	 public function sdpvs_compare_years_rows($type = "", $searchauthor="") {
+		$searchauthor = absint($searchauthor);
+		$years_total = 0;
+		$number_of_years = 0;
+		
+		// All this just gets the number of years
+		parent::sdpvs_number_of_posts_per_year($searchauthor);
+		$chart_array = $this -> list_array;
+		parent::find_highest_first_and_total($chart_array);
+		
+		$this -> sdpvs_compile_years_matrix($type, $this->first_val, $searchauthor);
+		
+		if ("hour" == $type) {
+			$this -> output_compare_list .= '<h2>' . esc_html__('Posts per Hour', 'post-volume-stats') . '</h2>';
+		} elseif ("dayofweek" == $type) {
+			$this -> output_compare_list .= '<h2>' . esc_html__('Posts per Day of the week', 'post-volume-stats') . '</h2>';
+		} elseif ("month" == $type) {
+			$this -> output_compare_list .= '<h2>' . esc_html__('Posts per Month', 'post-volume-stats') . '</h2>';
+		} elseif ("dayofmonth" == $type) {
+			$this -> output_compare_list .= '<h2>' . esc_html__('Posts per Day of the Month', 'post-volume-stats') . '</h2>';
+		} elseif("words" == $type){
+			$this -> output_compare_list .= '<h2>' . esc_html__('Words per Post', 'post-volume-stats') . '</h2>';
+		}
+		
+		$this -> output_compare_list .= "<table>";
+		$this -> output_compare_list .= "<tr>";
+		$this -> output_compare_list .= "<td>&nbsp;</td>";
+		for ($i = $this -> first_val; $i >= 0; $i--) {
+			$searchyear = absint($chart_array[$i]['name']);
+			$this -> output_compare_list .= "<td><strong>$searchyear</strong></td>";
+		}
+		$this -> output_compare_list .= "<td><strong>" . esc_html__('Total', 'post-volume-stats') . "</strong></td>";
+		$this -> output_compare_list .= "</tr>";
+		$a=0;
+		while ( array_key_exists($a, $this -> list_array) ) {
+			$count_total=0;
+			$this -> output_compare_list .= "<tr>";
+			$this -> output_compare_list .= '<td nobr>' . sprintf(esc_html__('%s', 'post-volume-stats'), $this -> year_matrix[$a]['label']) . '</td>';
+			for ($i = $this -> first_val; $i >= 0; $i--) {
+				$this -> output_compare_list .= "<td>{$this->year_matrix[$a][$i]}</td>";
+				$count_total += $this->year_matrix[$a][$i];
+			}
+			$this -> output_compare_list .= "<td>$count_total</td>";
+			$this -> output_compare_list .= "</tr>";
+			$a++;
+		}
+		$this -> output_compare_list .= "</table>";
+		
+		return $this -> output_compare_list;
+	}
+	 
+	 
+	 
+	
+	
+	
+	
+	
 
 }
 ?>

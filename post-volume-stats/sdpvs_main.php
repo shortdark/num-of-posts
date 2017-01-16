@@ -11,13 +11,18 @@ class sdpvsMainContent {
 		$sdpvs_bar = new sdpvsBarChart();
 		$sdpvs_pie = new sdpvsPieChart();
 
-		$years = $sdpvs_info -> sdpvs_how_many_years_of_posts();
+//		$years = $sdpvs_info -> sdpvs_how_many_years_of_posts();
+		
 		$options = get_option('sdpvs_year_option');
 		$selected = absint($options['year_number']);
+		
 		$authoroptions = get_option('sdpvs_author_option');
 		$author = absint($authoroptions['author_number']);
+		
 		$genoptions = get_option('sdpvs_general_settings');
 		$authoroff = filter_var ( $genoptions['authoroff'], FILTER_SANITIZE_STRING);
+		$customoff = filter_var ( $genoptions['customoff'], FILTER_SANITIZE_STRING);
+		$customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
 		
 		if("" != $author){
 			$user = get_user_by( 'id', $author );
@@ -68,6 +73,11 @@ class sdpvsMainContent {
 		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('hour', $selected, $author, 'n');
 		echo "</div>";
 		
+		// words per post bar chart
+		echo "<div class='sdpvs_col'>";
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('words', $selected, $author, 'n');
+		echo "</div>";
+		
 		// posts per category pie chart
 		echo "<div class='sdpvs_col'>";
 		echo $sdpvs_pie -> sdpvs_draw_pie_svg('category', $selected, $author, 'n');
@@ -77,7 +87,13 @@ class sdpvsMainContent {
 		echo "<div class='sdpvs_col'>";
 		echo $sdpvs_pie -> sdpvs_draw_pie_svg('tag', $selected, $author, 'n');
 		echo "</div>";
-
+		
+		if( "yes" == $customoff and "" != $customvalue ){
+			// posts per custom taxonomy pie chart
+			echo "<div class='sdpvs_col'>";
+			echo $sdpvs_pie -> sdpvs_draw_pie_svg($customvalue, $selected, $author, 'n');
+			echo "</div>";
+		}
 		return;
 	}
 

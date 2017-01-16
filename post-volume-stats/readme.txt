@@ -51,10 +51,19 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 3.1.00 =
+
+* Compare years for some bar charts - shows data for all years in one table that can be copy/pasted into a spreadsheet.
+* Words per post bar chart added.
+* Custom Taxonomy bar chart added to the main page (must be selected on the Settings page).
+* "Authors" data is now "Authors" or higher, "Contributors" are not included in the Authors data.
+* Optional link in the Admin Toolbar, activated on the Settings page.
+* Version number added to page footers.
+* Bug fixing and streamlining.
+
 = 3.0.29 =
 
 * Custom taxonomy page added (must be selected on the Settings page).
-* Updated description and POT file.
 
 = 3.0.28 =
 

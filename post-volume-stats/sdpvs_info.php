@@ -61,19 +61,8 @@ class sdpvsInfo extends sdpvsArrays {
 		echo '<p>' . sprintf(esc_html__('That is %.1f weeks, so that would be %.1f posts per week or a blog post every %.3f weeks.', 'post-volume-stats'), $numberofweeks, $posts_per_week, $weeks_per_post) . '</p>';
 		echo '<p>' . sprintf(esc_html__('Over roughly %.1f months there are %.1f posts per month.', 'post-volume-stats'), $numberofmonths, $posts_per_month) . '</p>';
 		echo '<p>' . sprintf(esc_html__('Taking the number of years as %.3f years, there are %.1f posts per year. Or, from %d to %d is %d years, which would be %.1f posts per year.', 'post-volume-stats'), $numberofyears, $posts_per_year, $startyear, $endyear, $numberofcalendaryears, $posts_per_year_2 ) . '</p>';
-		echo '<p><em>' . esc_html__('These stats are from the date of the first post up to today\'s date.', 'post-volume-stats') . '</em></p>';
+		echo '<p><em>' . esc_html__('(The summary stats are from the date of the first post up to today\'s date)', 'post-volume-stats') . '</em></p>';
 		
-		// Array of WP_User objects.
-/*		
-		blogusers = get_users( array( 'who'  => 'authors' ) );
-		echo '<p>Users: ';
-		foreach ( $blogusers as $user ) {
-			$userid = abs($user->ID);
-			$link = admin_url("edit.php?author=" . $userid);
-			echo sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a> ', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $user->display_name);
-		}
-		echo '</p>';
-*/
 		
 		$link = "https://wordpress.org/plugins/post-volume-stats/";
 		$linkdesc = "Post Volume Stats plugin page";
@@ -82,17 +71,6 @@ class sdpvsInfo extends sdpvsArrays {
 		echo '<p>Thank you for installing Post Volume Stats. If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
 		
 		return;
-	}
-
-	/*
-	 * GET THE NUMBER OF YEARS FOR THE SETTINGS PAGE
-	 */
-	public function sdpvs_how_many_years_of_posts() {
-		parent::sdpvs_number_of_posts_per_year();
-		$chart_array = $this -> year_array;
-		parent::find_highest_first_and_total($chart_array);
-		$bars_total = $this -> first_val;
-		return $bars_total;
 	}
 
 }
