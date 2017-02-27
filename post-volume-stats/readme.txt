@@ -1,7 +1,7 @@
 
 === Post Volume Stats ===
 Contributors: shortdark
-Donate link: http://www.shortdark.net/wordpress-plugin/
+Donate link: https://www.paypal.me/shortdark
 Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget, author, taxonomy
 Requires at least: 3.5
 Tested up to: 4.7.1
@@ -51,6 +51,23 @@ Here are the latest screenshots...
 8. Settings page allows customization.
 
 == Changelog ==
+
+= 3.1.06 =
+
+* Security fix made beta CSV download stop working, so this is a different fix.
+
+= 3.1.05 =
+
+* Security fix on beta CSV downloads.
+
+= 3.1.04 =
+
+* Updated PVS version number on the pages.
+
+= 3.1.03 =
+
+* "Words per post" should give a better distribution of the posts.
+* Beta for CSV export added.
 
 = 3.1.02 =
 

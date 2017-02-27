@@ -134,7 +134,7 @@ jQuery(document).ready(function($) {
 		});
 		return false;
 	});
-
+	
 	$(document).mouseup(function(e) {
 		var container = $("#sdpvs_listcontent");
 

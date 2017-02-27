@@ -43,6 +43,7 @@ function sdpvs_register_general_settings() {
 	add_settings_field( 'customoff', 'Display Custom Taxonomy stats', 'sdpvs_field_four_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
 	add_settings_field( 'customvalue', 'Select a Taxonomy to view', 'sdpvs_field_five_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
 	add_settings_field( 'admintool', 'Put a link to Post Volume Stats in the Admin Toolbar', 'sdpvs_field_six_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
+	add_settings_field( 'exportcsv', 'BETA - allow export of CSV (this may conflict with other plugins, especially security plugins so this is a test feature)', 'sdpvs_field_seven_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
 }
 
 add_action('admin_init', 'sdpvs_register_general_settings');
@@ -162,6 +163,21 @@ function sdpvs_field_six_callback() {
 		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[admintool]\" value=\"no\">No (default)</label><br>";
 		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[admintool]\" value=\"yes\" checked=\"checked\">Yes</label>";
 	}
+	echo "</div>";
+}
+
+function sdpvs_field_seven_callback() {
+	$genoptions = get_option('sdpvs_general_settings');
+	$exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
+    echo "<div style='display: block; padding: 5px;'>";
+	if("no" == $exportcsv or !$exportcsv){
+		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[exportcsv]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
+		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[exportcsv]\" value=\"yes\">Yes</label>";
+	}else{
+		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[exportcsv]\" value=\"no\">No (default)</label><br>";
+		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[exportcsv]\" value=\"yes\" checked=\"checked\">Yes</label>";
+	}
+	echo "<p>This will only work if your admin directory is still called \"wp-admin\", it will not work if you have re-named it. The CSV output will be comma separated! Some security plugins block the ability for you to download files like this so please bear that in mind if this does not work for you. This is just a test!</p>";
 	echo "</div>";
 }
 

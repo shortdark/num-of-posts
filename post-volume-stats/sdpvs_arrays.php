@@ -356,6 +356,88 @@ abstract class sdpvsArrays {
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
 		$this -> list_array = array();
+		$chart_iterations = 20;
+		$maxvalue = 0;
+		
+		if("" != $searchauthor){
+			$extra = " AND post_author = '$searchauthor' ";
+		}
+		
+		$total_posts = $wpdb -> get_results("SELECT post_content FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' $extra ");
+		if ($total_posts) {
+			foreach ($total_posts as $post_item) {
+				$temp_content = filter_var ( $post_item -> post_content , FILTER_SANITIZE_STRING);
+				$word_count = str_word_count( strip_tags( $temp_content ), 0, '123456789&;#' );
+				if($maxvalue < $word_count){
+					$maxvalue = $word_count;
+				}
+			}
+			
+			if(0 < $maxvalue){
+				$vol_per_bar = ceil($maxvalue / $chart_iterations);
+				// Make the iterations even, i.e. multiples of 10
+				if(0!= $vol_per_bar % 10){
+					while(0!= $vol_per_bar % 10){
+						$vol_per_bar++;
+					}
+				}
+			}
+			
+			for($h=0;$h<$chart_iterations;$h++){
+				$lower = $h * $vol_per_bar;
+				if( $chart_iterations > $h ){
+					$upper = ($h * $vol_per_bar) + $vol_per_bar-1;
+					$this -> list_array[$h]['name'] = "$lower - $upper words";
+				}else{
+					$this -> list_array[$h]['name'] = "$lower+ words";
+				}
+				$this -> list_array[$h]['volume'] = 0;
+			}
+		}
+		
+		if (0 < $searchyear) {
+			$extra .= " AND post_date LIKE '$searchyear%' ";
+		}
+		
+		$found_posts = $wpdb -> get_results("SELECT post_content FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' $extra ");
+		if ($found_posts) {
+			foreach ($found_posts as $post_item) {
+				$temp_content = filter_var ( $post_item -> post_content , FILTER_SANITIZE_STRING);
+				$word_count = str_word_count( strip_tags( $temp_content ), 0, '123456789&;#' );
+				$temp_array[] = $word_count;
+			}
+		}
+		$wpdb -> flush();
+		
+		if($temp_array){
+			natsort($temp_array);
+			
+			foreach($temp_array as $word_count){
+				if( 0 == $word_count % $vol_per_bar ){
+					$i = absint( $word_count / $vol_per_bar ) -1;
+				}else{
+					$i = absint( $word_count / $vol_per_bar );
+				}
+				if($chart_iterations <= $i){
+					$i = $chart_iterations;
+				}
+				$this -> list_array[$i]['volume'] ++;
+			}
+
+		}
+		
+		
+		
+		
+		return;
+	}
+	
+	protected function sdpvs_number_of_words_per_post_orig($searchyear = "", $searchauthor = "") {
+		global $wpdb;
+		$extra="";
+		$searchyear = absint($searchyear);
+		$searchauthor = absint($searchauthor);
+		$this -> list_array = array();
 
 			for($h=0;$h<=15;$h++){
 				$lower = $h * 50;

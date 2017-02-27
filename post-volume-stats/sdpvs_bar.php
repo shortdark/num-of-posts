@@ -29,6 +29,9 @@ class sdpvsBarChart extends sdpvsArrays {
 		$graph_color = "blue";
 		$highlight_color = "red";
 		$weekend_color = "#ff9900";
+		
+		$genoptions = get_option('sdpvs_general_settings');
+		$exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
 
 		if ("year" == $which) {
 			parent::sdpvs_number_of_posts_per_year($searchauthor);
@@ -272,6 +275,11 @@ class sdpvsBarChart extends sdpvsArrays {
 			echo "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form></p>";
 			if("words" == $which or "hour" == $which or "dayofweek" == $which or "month" == $which or "dayofmonth" == $which){
 				echo "<form class='sdpvs_compare' action='' method='POST'><input type='hidden' name='comparedata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Compare Years'></form></p>";
+				if("yes"==$exportcsv){
+					$sdpvs_csv_download_url = admin_url("/download-csv/$which.csv");
+					echo "<form class='sdpvs_export' action=\"$sdpvs_csv_download_url\" method='POST'><input type='submit' class='button-primary' value='Export CSV'></form></p>";
+				}
+				
 			}
 		}
 

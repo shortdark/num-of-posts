@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.1.02
+ * @version 3.1.06
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.1.02
+ * Version: 3.1.06
  * Author URI: http://www.shortdark.net/
  */
 
@@ -36,7 +36,7 @@ if (!function_exists('add_action')) {
 
 define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SDPVS__PLUGIN_FOLDER', 'post-volume-stats');
-define('SDPVS__VERSION_NUMBER', '3.1.02');
+define('SDPVS__VERSION_NUMBER', '3.1.06');
 
 /******************
  ** SETUP THE PAGE
@@ -240,7 +240,7 @@ function sdpvs_settings_page() {
 		$time_end = microtime(true);
 		$elapsed_time = sprintf("%.5f", $time_end - $time_start);
 		echo '<p>' . sprintf(esc_html__('Post Volume Stats Version %s, Script time elapsed: %f seconds', 'post-volume-stats'), SDPVS__VERSION_NUMBER, $elapsed_time) . '</p>';
-
+		echo '<a href="/download-csv/data.csv">test</a>';
 	}
 	return;
 }
@@ -415,10 +415,6 @@ function sdpvs_compare_data_over_years() {
 
 add_action('wp_ajax_sdpvs_compare_years', 'sdpvs_compare_data_over_years');
 
-
-
-
-
 function sdpvs_cats_lists() {
 	// Security check
 	check_ajax_referer('num-of-posts', 'security');
@@ -555,73 +551,62 @@ function sdpvs_admin_export_lists() {
 	}
 	
 	if("csv" == $howmuch){
-				$upload_dir = wp_upload_dir();
-		$path_to_csv_uploads = $upload_dir['basedir'];
-		// var_dump($upload_dir);
-		// echo $path_to_csv_uploads;
-
-		// create a file pointer connected to the output stream
-		
-		$dir_path = $path_to_csv_uploads . "/csv/";
-		$file_name = "test.txt";
-		
-		$file_path = $dir_path . $file_name;
-		
-		// okay, let's see about getting credentials
-		$url = wp_nonce_url('themes.php?page=otto','otto-theme-options');
-		if (false === ($creds = request_filesystem_credentials($url, $method, false, false, $form_fields) ) ) {
-			// if we get here, then we don't have credentials yet,
-			// but have just produced a form for the user to fill in,
-			// so stop processing for now
-			return true; // stop the normal page form from displaying
-		}
-
-
-		// now we have some credentials, try to get the wp_filesystem running
-		if ( ! WP_Filesystem($creds) ) {
-			// our credentials were no good, ask the user for them again
-			request_filesystem_credentials($url, $method, true, false, $form_fields);
-			return true;
-		}
-		
-		 
-		// by this point, the $wp_filesystem global should be working, so let's use it to create a file
-		global $wp_filesystem;
-		if ( ! $wp_filesystem->put_contents( $file_path, 'Test file contents', FS_CHMOD_FILE) ) {
-			echo 'error saving file!';
-		}
-		
-		
-		
-		/*
-		
-		if (!$output = fopen($file_path, 'w+') ){
-			echo "Cannot open $file_path!";
-			exit;
-		}
-		
-			$csv .= '"what",';
-			$csv .= '"is",';
-			$csv .= '"your",';
-			$csv .= '"name",';
-			$csv .= PHP_EOL;
-			$csv .= '"hello",';
-			$csv .= '"my",';
-			$csv .= '"name",';
-			$csv .= '"is",';
-			$csv .= PHP_EOL;
 			
-			if( fwrite($output, $csv) === FALSE ){
-				echo "Cannot write to $file_path!";
-				exit;
-			}
-//			fseek($output, 0); 
-			fclose($output);*/
+			// The CSV download of tags/categories/custom might go here!
+			
 	}
 	
 }
 
 add_action('admin_post_export_lists', 'sdpvs_admin_export_lists');
+
+
+
+/*****************
+ ** CSV DOWNLOAD...
+ *****************/
+ 
+function add_endpoint() {
+    add_rewrite_endpoint( 'download-csv', EP_NONE );
+}
+add_action( 'init', 'add_endpoint' );
+
+function sdpvs_download_redirect() {
+	$genoptions = get_option('sdpvs_general_settings');
+	$exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
+	if("yes"==$exportcsv and is_user_logged_in() ){
+		
+		if ($_SERVER['REQUEST_URI']== "/wp-admin/download-csv/words.csv" )  {
+			$answer = "words";
+		}elseif($_SERVER['REQUEST_URI']== "/wp-admin/download-csv/hour.csv" ){
+			$answer = "hour";
+		}elseif($_SERVER['REQUEST_URI']== "/wp-admin/download-csv/dayofweek.csv" ){
+			$answer = "dayofweek";
+		}elseif($_SERVER['REQUEST_URI']== "/wp-admin/download-csv/month.csv" ){
+			$answer = "month";
+		}elseif($_SERVER['REQUEST_URI']== "/wp-admin/download-csv/dayofmonth.csv" ){
+			$answer = "dayofmonth";
+		}else{
+			return;
+		}
+		// create an instance of the list class
+		$sdpvs_lists = new sdpvsTextLists();
+		$csv = $sdpvs_lists -> sdpvs_create_csv_output($answer, $searchauthor);
+		$length = strlen($csv);
+		
+		// Download the file.
+		ob_clean(); //clear buffer
+		header('Content-Disposition: attachment; filename="' . $answer . '.csv"');
+		header("Content-Type: application/force-download",true,200);
+		header("Content-Length: " . $length);
+		header("Pragma: no-cache");
+		header("Expires: 0");
+		header("Connection: close");
+		echo $csv;
+		exit();
+	}
+}
+add_action( 'template_redirect', 'sdpvs_download_redirect' );
 
 /*****************
  ** ADMIN NOTICE...
@@ -630,6 +615,9 @@ add_action('admin_post_export_lists', 'sdpvs_admin_export_lists');
 add_action('admin_notices', 'sdpvs_check_activation_notice');
 function sdpvs_check_activation_notice() {
 	if (!get_transient('sdpvs-admin-notice-004')) {
+		# When a new admin notice is added, make sure to change "sdpvs-admin-notice-004" to the next number.
+		# Also, remember to update the AJAX to remove the notice with the new number.
+		
 		$sdpvs_link = admin_url('admin.php?page=' . SDPVS__PLUGIN_FOLDER);
 		echo '<div id="sdpvs-notice" class="notice notice-info is-dismissible"><p class="sdpvs"><strong>' . sprintf(wp_kses(__('NEW to <a href="%1$s">Post Volume Stats</a>: Compare tags and categories in line graphs.', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($sdpvs_link)) . '</strong></p></div>';
 	}

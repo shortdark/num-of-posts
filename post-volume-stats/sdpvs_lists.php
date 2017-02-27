@@ -406,7 +406,52 @@ class sdpvsTextLists extends sdpvsArrays {
 	}
 	 
 	 
-	 
+	public function sdpvs_create_csv_output($type = "", $searchauthor="") {
+		$searchauthor = absint($searchauthor);
+		$years_total = 0;
+		$number_of_years = 0;
+		
+		// All this just gets the number of years
+		parent::sdpvs_number_of_posts_per_year($searchauthor);
+		$chart_array = $this -> list_array;
+		parent::find_highest_first_and_total($chart_array);
+		
+		$this -> sdpvs_compile_years_matrix($type, $this->first_val, $searchauthor);
+		if("words"==$type){
+			$this -> output_compare_list = "Words per Post,";
+		}elseif("hour"==$type){
+			$this -> output_compare_list = "Hours of the Day,";
+		}elseif("dayofweek"==$type){
+			$this -> output_compare_list = "Days of the Week,";
+		}elseif("month"==$type){
+			$this -> output_compare_list = "Months,";
+		}elseif("dayofmonth"==$type){
+			$this -> output_compare_list = "Days of the Month,";
+		}
+		
+			
+		for ($i = $this -> first_val; $i >= 0; $i--) {
+			$searchyear = absint($chart_array[$i]['name']);
+			$this -> output_compare_list .= "$searchyear,";
+		}
+		$this -> output_compare_list .= "Total,";
+		$this -> output_compare_list .= PHP_EOL;
+		$a=0;
+		while ( array_key_exists($a, $this -> list_array) ) {
+			$count_total=0;
+
+			$this -> output_compare_list .=  sprintf(esc_html__('%s', 'post-volume-stats'), $this -> year_matrix[$a]['label']) . ',';
+			for ($i = $this -> first_val; $i >= 0; $i--) {
+				$this -> output_compare_list .= "{$this->year_matrix[$a][$i]},";
+				$count_total += $this->year_matrix[$a][$i];
+			}
+			$this -> output_compare_list .= "$count_total,";
+			$this -> output_compare_list .= PHP_EOL;
+			$a++;
+		}
+		
+		return $this -> output_compare_list;
+	}
 	
 	
 	
