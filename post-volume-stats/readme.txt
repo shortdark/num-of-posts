@@ -37,7 +37,7 @@ plugins screen directly.
 Here are the latest screenshots...
 
 1. Shows the main page of "Post Volume Stats".
-2. Shows the draggable AJAX data lists, and highlighted bar of a bar chart.
+2. Shows the "compare years" chart, which is a preview of the CSV download.
 3. You can view the stats for each year individually. This shows the same blog with stats for one year selected.
 4. The "Category", "Tag" and "Custom Taxonomy" pages allow the user to filter results and export the data into an HTML list and a line graph.
 5. The export button adds the HTML list and line graph into a new blog post.

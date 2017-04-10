@@ -619,21 +619,24 @@ function sdpvs_download_redirect() {
 				}
 		}
 
-		// create an instance of the list class
-		$sdpvs_lists = new sdpvsTextLists();
-		$csv = $sdpvs_lists -> sdpvs_create_csv_output($answer, $searchauthor);
-		$length = strlen($csv);
+		if($answer){
+			// create an instance of the list class
+			$sdpvs_lists = new sdpvsTextLists();
+			$csv = $sdpvs_lists -> sdpvs_create_csv_output($answer, $searchauthor);
+			$length = strlen($csv);
 
-		// Download the file.
-		ob_clean(); //clear buffer
-		header('Content-Disposition: attachment; filename="' . $answer . '.csv"');
-		header("Content-Type: application/force-download",true,200);
-		header("Content-Length: " . $length);
-		header("Pragma: no-cache");
-		header("Expires: 0");
-		header("Connection: close");
-		echo $csv;
-		exit();
+			// Download the file.
+			ob_clean(); //clear buffer
+			header('Content-Disposition: attachment; filename="' . $answer . '.csv"');
+			header("Content-Type: application/force-download",true,200);
+			header("Content-Length: " . $length);
+			header("Pragma: no-cache");
+			header("Expires: 0");
+			header("Connection: close");
+			echo $csv;
+			exit();
+		}
+
 	}
 }
 add_action( 'template_redirect', 'sdpvs_download_redirect' );
