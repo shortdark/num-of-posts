@@ -43,7 +43,7 @@ function sdpvs_register_general_settings() {
 	add_settings_field( 'customoff', 'Display Custom Taxonomy stats', 'sdpvs_field_four_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
 	add_settings_field( 'customvalue', 'Select a Taxonomy to view', 'sdpvs_field_five_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
 	add_settings_field( 'admintool', 'Put a link to Post Volume Stats in the Admin Toolbar', 'sdpvs_field_six_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
-	add_settings_field( 'exportcsv', 'BETA - allow export of CSV (this may conflict with other plugins, especially security plugins so this is a test feature)', 'sdpvs_field_seven_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
+	add_settings_field( 'exportcsv', 'BETA - allow export of CSV', 'sdpvs_field_seven_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
 }
 
 add_action('admin_init', 'sdpvs_register_general_settings');
@@ -128,6 +128,7 @@ function sdpvs_field_five_callback() {
 //	var_dump($count_taxes);
 	if( 1 < $count_taxes ){
 		echo  "<select name=\"sdpvs_general_settings[customvalue]\">";
+		echo  "<option name=\"sdpvs_general_settings[customvalue]\" value=\"_all_taxonomies\">Display All</option>";
 		foreach ( $all_taxes as $taxonomy ) {
 			if("category" != $taxonomy and "post_tag" != $taxonomy){
 				$tax_labels = get_taxonomy($taxonomy);
@@ -136,10 +137,10 @@ function sdpvs_field_five_callback() {
 				}elseif( $taxonomy and "" != $taxonomy ){
 					echo  "<option name=\"sdpvs_general_settings[customvalue]\" value=\"$taxonomy\">$tax_labels->label</option>";
 				}
-				
 			}
 		}
 		echo  "</select>";
+		echo "<p>Selecting \"Display All\" may cause the stats to load more slowly, especially if you have a lot of posts and/or a lot of custom taxonomies.</p>";
 	}elseif( 1 == $count_taxes ){
 		$short_tax = array_values($all_taxes);
 		echo 'Only one custom taxonomy found: ' . $short_tax[0];
@@ -177,7 +178,7 @@ function sdpvs_field_seven_callback() {
 		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[exportcsv]\" value=\"no\">No (default)</label><br>";
 		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[exportcsv]\" value=\"yes\" checked=\"checked\">Yes</label>";
 	}
-	echo "<p>This will only work if your admin directory is still called \"wp-admin\", it will not work if you have re-named it. The CSV output will be comma separated! Some security plugins block the ability for you to download files like this so please bear that in mind if this does not work for you. This is just a test!</p>";
+	echo "<p>This will only work if your admin directory is still called \"wp-admin\", it will not work if you have re-named it. The CSV output will be comma separated! Some security plugins block the ability for you to download files like this so please bear that in mind if this does not work for you.</p>";
 	echo "</div>";
 }
 

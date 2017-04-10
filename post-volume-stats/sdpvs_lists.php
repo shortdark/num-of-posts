@@ -3,7 +3,7 @@
 defined('ABSPATH') or die('No script kiddies please!');
 
 class sdpvsTextLists extends sdpvsArrays {
-	
+
 	/*
 	 * NUMBER OF POSTS PER AUTHOR
 	 */
@@ -22,7 +22,7 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 		return $this -> list_string;
 	}
-	
+
 	/*
 	 * NUMBER OF POSTS PER YEAR TEXT
 	 */
@@ -74,17 +74,20 @@ class sdpvsTextLists extends sdpvsArrays {
 			$typetitleplural = "Categories";
 			$form_name = 'sdpvs_catselect';
 			$taxonomy_type = 'category';
+			$logical_starter = 0;
 		} elseif ("tag" == $type) {
 			$typetitle = "Tag";
 			$typetitleplural = "Tags";
 			$form_name = 'sdpvs_tagselect';
 			$taxonomy_type = 'post_tag';
+			$logical_starter = 0;
 		}else{
 			$tax_labels = get_taxonomy($type);
 			$typetitle = $tax_labels->labels->singular_name;
 			$typetitleplural = $tax_labels->label;
 			$form_name = 'sdpvs_customselect';
 			$taxonomy_type = $type;
+			$logical_starter = 1;
 		}
 		$genoptions = get_option('sdpvs_general_settings');
 		$listcolors = filter_var ( $genoptions['rainbow'], FILTER_SANITIZE_STRING);
@@ -98,10 +101,13 @@ class sdpvsTextLists extends sdpvsArrays {
 			$posts_per_cat_tag .= "<form action='" . esc_url(admin_url('admin-post.php')) . "' method='POST'>";
 			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"action\" value=\"export_lists\">";
 			$posts_per_cat_tag .= "<input type=\"hidden\" name=\"whichlist\" value=\"$type\">";
-			// $posts_per_cat_tag .= "<input type=\"hidden\" name=\"howmuch\" value=\"all\">";
+			if("category" != $type and "tag" != $type){
+				$posts_per_cat_tag .= "<input type=\"hidden\" name=\"customname\" value=\"$type\">";
+			}
+
 
 			// Make a string for the export button AJAX
-			$x = 0;
+			$x = $logical_starter;
 			while ($select_array[1][$x]) {
 				if (0 < $select_array[1][$x]) {
 					if (0 != $x) {
@@ -143,13 +149,16 @@ class sdpvsTextLists extends sdpvsArrays {
 			// Only grab all data when everything is required
 			parent::sdpvs_post_taxonomy_type_volumes($taxonomy_type, $searchyear, $searchauthor);
 			$universal_array = $this -> tax_type_array;
-				
+
 			//	var_dump($tax_array_name);
-				
+
 			if ("subpage" == $list_type) {
 				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export to a post then click the \'Show Preview\' button. On mobile devices you may have to scroll down as the results may be at the bottom of the page.', 'post-volume-stats'), $typetitleplural) . '</p>';
 
 				$posts_per_cat_tag .= "<form class='$form_name' action='' method='POST'>";
+				if("category" != $type and "tag" != $type){
+					$posts_per_cat_tag .= "<input type=\"hidden\" name=\"customname\" value=\"$type\">";
+				}
 				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary sdpvs_preview' value='" . esc_html__('Show Preview') . "'></div>";
 				$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><a id='select-all'>" . esc_html__('Select All') . "</a> / <a id='deselect-all'>" . esc_html__('Deselect All') . "</a></div>";
 			}
@@ -182,7 +191,7 @@ class sdpvsTextLists extends sdpvsArrays {
 
 			$selectable .= "<ol>";
 
-			$x = 0;
+			$x = $logical_starter;
 
 			while ($select_array[1][$x]) {
 				if (0 < $select_array[1][$x]) {
@@ -190,9 +199,9 @@ class sdpvsTextLists extends sdpvsArrays {
 
 					// Get slug, name and volume
 					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear,$searchauthor);
-					
+
 					$link = get_term_link( $term_id );
-					
+
 					if (10 > $x and "off" != $listcolors) {
 						$color = $colorlist[$x];
 					} else {
@@ -292,9 +301,9 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 		return $this -> list_string;
 	}
-	
-	
-	
+
+
+
 	/*
 	 * NUMBER OF WORDS PER POST
 	 */
@@ -309,21 +318,57 @@ class sdpvsTextLists extends sdpvsArrays {
 				$this -> list_array[$i]['volume'] = 0;
 			}
 			$this -> list_string .= sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> list_array[$i]['name'], $this -> list_array[$i]['volume']) . '<br />';
-			
+
 			$i++;
 		}
 		return $this -> list_string;
 	}
-	
-	
+
+
+
+
+
+	/**
+	 * COMPILE YEARS MATRIX
+	 */
+	public function sdpvs_test_years_matrix_4_tax($type = "", $firstval="", $searchauthor="") {
+		$firstval = absint($firstval);
+		parent::sdpvs_number_of_posts_per_year($searchauthor);
+		$chart_array = $this -> list_array;
+
+		for ($i = $firstval; $i >= 0; $i--) {
+			$searchyear = absint($chart_array[$i]['name']);
+			parent::sdpvs_post_tax_type_vols_structured($type,$searchyear,$searchauthor);
+
+			$a=0;
+			while ( array_key_exists($a, $this -> list_array) ) {
+				if(0 == $i){
+					$this -> year_matrix[$a]['label'] = $this -> list_array[$a]['name'];
+				}
+				$this -> year_matrix[$a][$i] = $this -> list_array[$a]['volume'];
+				$a++;
+			}
+		}
+		return;
+	}
+
+
+
+
+
+
+
 	/**
 	 * COMPILE YEARS MATRIX
 	 */
 	public function sdpvs_compile_years_matrix($type = "", $firstval="", $searchauthor="") {
+		if("tag" == $type){
+			$type = "post_tag";
+		}
 		$firstval = absint($firstval);
 		parent::sdpvs_number_of_posts_per_year($searchauthor);
 		$chart_array = $this -> list_array;
-		
+
 		for ($i = $firstval; $i >= 0; $i--) {
 			$searchyear = absint($chart_array[$i]['name']);
 			if ("hour" == $type) {
@@ -336,7 +381,10 @@ class sdpvsTextLists extends sdpvsArrays {
 				parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor);
 			} elseif("words" == $type){
 				parent::sdpvs_number_of_words_per_post($searchyear,$searchauthor);
+			}else{
+				parent::sdpvs_post_tax_type_vols_structured($type,$searchyear,$searchauthor);
 			}
+
 			$a=0;
 			while ( array_key_exists($a, $this -> list_array) ) {
 				if(0 == $i){
@@ -346,26 +394,27 @@ class sdpvsTextLists extends sdpvsArrays {
 				$a++;
 			}
 		}
+
 		return;
 	}
-	
-	
+
+
 	/**
 	 * COMPARE YEARS
 	 */
-	 
+
 	 public function sdpvs_compare_years_rows($type = "", $searchauthor="") {
 		$searchauthor = absint($searchauthor);
 		$years_total = 0;
 		$number_of_years = 0;
-		
+
 		// All this just gets the number of years
 		parent::sdpvs_number_of_posts_per_year($searchauthor);
 		$chart_array = $this -> list_array;
 		parent::find_highest_first_and_total($chart_array);
-		
+
 		$this -> sdpvs_compile_years_matrix($type, $this->first_val, $searchauthor);
-		
+
 		if ("hour" == $type) {
 			$this -> output_compare_list .= '<h2>' . esc_html__('Posts per Hour', 'post-volume-stats') . '</h2>';
 		} elseif ("dayofweek" == $type) {
@@ -376,8 +425,10 @@ class sdpvsTextLists extends sdpvsArrays {
 			$this -> output_compare_list .= '<h2>' . esc_html__('Posts per Day of the Month', 'post-volume-stats') . '</h2>';
 		} elseif("words" == $type){
 			$this -> output_compare_list .= '<h2>' . esc_html__('Words per Post', 'post-volume-stats') . '</h2>';
+		}else{
+			$this -> output_compare_list .= '<h2>' . sprintf(esc_html__('Posts per Taxonomy: %s', 'post-volume-stats'), $type) . '</h2>';
 		}
-		
+
 		$this -> output_compare_list .= "<table>";
 		$this -> output_compare_list .= "<tr>";
 		$this -> output_compare_list .= "<td>&nbsp;</td>";
@@ -401,21 +452,21 @@ class sdpvsTextLists extends sdpvsArrays {
 			$a++;
 		}
 		$this -> output_compare_list .= "</table>";
-		
+
 		return $this -> output_compare_list;
 	}
-	 
-	 
+
+
 	public function sdpvs_create_csv_output($type = "", $searchauthor="") {
 		$searchauthor = absint($searchauthor);
 		$years_total = 0;
 		$number_of_years = 0;
-		
+
 		// All this just gets the number of years
 		parent::sdpvs_number_of_posts_per_year($searchauthor);
 		$chart_array = $this -> list_array;
 		parent::find_highest_first_and_total($chart_array);
-		
+
 		$this -> sdpvs_compile_years_matrix($type, $this->first_val, $searchauthor);
 		if("words"==$type){
 			$this -> output_compare_list = "Words per Post,";
@@ -427,9 +478,15 @@ class sdpvsTextLists extends sdpvsArrays {
 			$this -> output_compare_list = "Months,";
 		}elseif("dayofmonth"==$type){
 			$this -> output_compare_list = "Days of the Month,";
+		}elseif("category"==$type){
+			$this -> output_compare_list = "Categories,";
+		}elseif("tag"==$type){
+			$this -> output_compare_list = "Tags,";
+		}else{
+			$this -> output_compare_list = $type.",";
 		}
-		
-			
+
+
 		for ($i = $this -> first_val; $i >= 0; $i--) {
 			$searchyear = absint($chart_array[$i]['name']);
 			$this -> output_compare_list .= "$searchyear,";
@@ -449,14 +506,14 @@ class sdpvsTextLists extends sdpvsArrays {
 			$this -> output_compare_list .= PHP_EOL;
 			$a++;
 		}
-		
+
 		return $this -> output_compare_list;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 
 }
 ?>

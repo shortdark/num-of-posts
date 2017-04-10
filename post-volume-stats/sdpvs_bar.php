@@ -15,7 +15,7 @@ class sdpvsBarChart extends sdpvsArrays {
 	/**
 	 * DISPLAY DATA IN A BAR CHART
 	 */
-	public function sdpvs_draw_bar_chart_svg($which = "", $searchyear = "", $searchauthor = "", $subpage = "", $public = "") {
+	public function sdpvs_draw_bar_chart_svg($which = "", $searchyear = "", $searchauthor = "", $subpage = "", $public = "", $text_color="black") {
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
 		$years_total = 0;
@@ -29,7 +29,7 @@ class sdpvsBarChart extends sdpvsArrays {
 		$graph_color = "blue";
 		$highlight_color = "red";
 		$weekend_color = "#ff9900";
-		
+				
 		$genoptions = get_option('sdpvs_general_settings');
 		$exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
 
@@ -135,7 +135,7 @@ class sdpvsBarChart extends sdpvsArrays {
 		$svgheight = $graphheight + $graphtop + $graphbottom;
 
 		echo "<svg width=\"" . $svgwidth . "px\" height=\"" . $svgheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" class=\"sdpvs_bar\">\n";
-		echo "<path stroke=\"black\" stroke-width=\"1\" d=\"M$graphleft $graphtop v $graphheight\"></path>";
+		echo "<path stroke=\"$text_color\" stroke-width=\"1\" d=\"M$graphleft $graphtop v $graphheight\"></path>";
 
 		$number_per_increment = ceil($this -> highest_val / 5);
 		// If an increment is a strange number, like 39, round it up or down to 40 or 35.
@@ -159,13 +159,13 @@ class sdpvsBarChart extends sdpvsArrays {
 			if ($graphtop <= $depth) {
 				$value = $j * $number_per_increment;
 				if (0 == $j) {
-					echo "<path stroke=\"black\" stroke-width=\"1\" d=\"M$graphleft $depth h $graphwidth\"></path>";
+					echo "<path stroke=\"$text_color\" stroke-width=\"1\" d=\"M$graphleft $depth h $graphwidth\"></path>";
 				} else {
-					echo "<path stroke=\"black\" stroke-width=\"0.2\" d=\"M$graphleft $depth h $graphwidth\"></path>";
+					echo "<path stroke=\"$text_color\" stroke-width=\"0.2\" d=\"M$graphleft $depth h $graphwidth\"></path>";
 				}
 				$text_x = $graphleft - (strlen($value) * 7) - 5;
 				$text_y = $depth + 4;
-				echo "<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">$value</text>";
+				echo "<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">$value</text>";
 			}
 		}
 		$y_start = $graphheight + $graphtop;
@@ -201,7 +201,7 @@ class sdpvsBarChart extends sdpvsArrays {
 					if (strlen($legend) * 7 < $bar_width) {
 						$legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
 						$legend_y = $y_start + 17;
-						echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
+						echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
 					}
 					$form_y_offset = $y_start - $bar_height;
 					$form_x_offset = $x_start - $bar_width;
@@ -231,7 +231,7 @@ class sdpvsBarChart extends sdpvsArrays {
 					if (strlen($legend) * 7 < $bar_width) {
 						$legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
 						$legend_y = $y_start + 17;
-						echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">" . sprintf(esc_html__('%s', 'my-text-domain'), $legend) . "</text>";
+						echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">" . sprintf(esc_html__('%s', 'my-text-domain'), $legend) . "</text>";
 					}
 					$form_y_offset = $y_start - $bar_height;
 					$form_x_offset = $x_start - $bar_width;
@@ -263,7 +263,7 @@ class sdpvsBarChart extends sdpvsArrays {
 					if (strlen($legend) * 7 < $bar_width) {
 						$legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
 						$legend_y = $y_start + 17;
-						echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
+						echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
 					}
 				}
 			}
@@ -309,6 +309,11 @@ class sdpvsBarChart extends sdpvsArrays {
 		}else{
 			$taxonomy_type = $type;
 		}
+		if("tag" != $type and "category" != $type){
+			$logical_starter = 1;
+		}else{
+			$logical_starter = 0;
+		}
 
 		// All this just gets the number of years
 		parent::sdpvs_number_of_posts_per_year($searchauthor);
@@ -317,7 +322,7 @@ class sdpvsBarChart extends sdpvsArrays {
 		$bars_total = $this -> first_val + 1;
 		$order = "desc";
 
-		$x = 0;
+		$x = $logical_starter;
 		while ($select_array[1][$x]) {
 			if (0 < $select_array[1][$x]) {
 				$term_id = $select_array[1][$x];
@@ -348,7 +353,7 @@ class sdpvsBarChart extends sdpvsArrays {
 		$svgheight = $graphheight + $graphtop + $graphbottom;
 
 		$this -> svg_output_string = "<svg width=\"" . $svgwidth . "px\" height=\"" . $svgheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" class=\"sdpvs_bar\">\n";
-		$this -> svg_output_string .= "<path stroke=\"black\" stroke-width=\"1\" d=\"M$graphleft $graphtop v $graphheight\"></path>";
+		$this -> svg_output_string .= "<path stroke=\"$text_color\" stroke-width=\"1\" d=\"M$graphleft $graphtop v $graphheight\"></path>";
 
 		$number_per_increment = ceil($this -> highest_val2 / 5);
 		// If an increment is a strange number, like 39, round it up or down to 40 or 35.
@@ -372,13 +377,13 @@ class sdpvsBarChart extends sdpvsArrays {
 			if ($graphtop <= $depth) {
 				$value = $j * $number_per_increment;
 				if (0 == $j) {
-					$this -> svg_output_string .= "<path stroke=\"black\" stroke-width=\"1\" d=\"M$graphleft $depth h $graphwidth\"></path>";
+					$this -> svg_output_string .= "<path stroke=\"$text_color\" stroke-width=\"1\" d=\"M$graphleft $depth h $graphwidth\"></path>";
 				} else {
-					$this -> svg_output_string .= "<path stroke=\"black\" stroke-width=\"0.2\" d=\"M$graphleft $depth h $graphwidth\"></path>";
+					$this -> svg_output_string .= "<path stroke=\"$text_color\" stroke-width=\"0.2\" d=\"M$graphleft $depth h $graphwidth\"></path>";
 				}
 				$text_x = $graphleft - (strlen($value) * 7) - 5;
 				$text_y = $depth + 4;
-				$this -> svg_output_string .= "<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">$value</text>";
+				$this -> svg_output_string .= "<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">$value</text>";
 			}
 		}
 
@@ -390,11 +395,11 @@ class sdpvsBarChart extends sdpvsArrays {
 			if (strlen($legend) * 7 < $bar_width) {
 				$legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
 				$legend_y = $y_start + 17;
-				$this -> svg_output_string .= "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"black\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
+				$this -> svg_output_string .= "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
 			}
 		}
 
-		$x = 0;
+		$x = $logical_starter;
 		while ($select_array[1][$x]) {
 			if (0 < $select_array[1][$x]) {
 

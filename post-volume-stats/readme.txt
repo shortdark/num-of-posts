@@ -4,7 +4,7 @@ Contributors: shortdark
 Donate link: https://www.paypal.me/shortdark
 Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget, author, taxonomy
 Requires at least: 3.5
-Tested up to: 4.7.1
+Tested up to: 4.7.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,16 +13,11 @@ Shows stats for the volume of posts per year, month, day-of-the-month, day-of-th
 
 == Description ==
 
-This plugin looks at the volume of posts in each category and tag, and also the volume 
-of posts per year, month, day-of-the-month, day-of-the-week, hour and author. It works better the more posts 
-you have, and if you use categories and tags. You can now specify a year and/or an author to just look at the post volume stats for
-that year/author. The bar charts can be added to a sidebar with Post Volume Stats widget. Lists and line graphs 
-can be exported to a new post to show the change in category, tag and custom taxonomy posts over the years. The latest features
-are "words per post" stats and the "compare years" button allows all the data to be copy/pasted into a spreadsheet.
+This plugin looks at the volume of posts in each category, tag, the volume of posts per year, month, day-of-the-month, day-of-the-week, hour, author and number of words-per-post. You can specify a year and/or an author to just look at the post volume stats for that year/author. The bar charts can be added to a sidebar with Post Volume Stats widget. Lists and line graphs can be exported to a new post to show the change in category, tag and custom taxonomy posts over the years. You can also now export the data into a CSV spreadsheet.
 
-Please let me know if you like this plugin by leaving a review or [contacting me](http://www.shortdark.net/contact-me/).
+Please let me know if you like this plugin by [leaving a review](https://wordpress.org/plugins/post-volume-stats/).
 
-Go to the [Shortdark Wordpress plugin page](http://www.shortdark.net/wordpress-plugin/) for more information.
+Go to the [Post Volume Stats website](https://www.postvolumestats.com/) for more information.
 
 = Translations =
 
@@ -32,7 +27,7 @@ You can translate Post Volume Stats on [__translate.wordpress.org__](https://tra
 
 This section describes how to install the plugin and get it working.
 
-1. Upload the plugin folder to the `/wp-content/plugins/` directory, or install the plugin through the WordPress 
+1. Upload the plugin folder to the `/wp-content/plugins/` directory, or install the plugin through the WordPress
 plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. The menu item "Post Volume Stats" should now be in your admin menu and the "Post Volume Stats" widget should also be available to use.
@@ -51,6 +46,17 @@ Here are the latest screenshots...
 8. Settings page allows customization.
 
 == Changelog ==
+
+= 3.1.08 =
+
+* Added CSV downloads to category, tag and custom taxonomies.
+
+= 3.1.07 =
+
+* Multiple custom taxonomies are now able to be shown at the same time.
+* Trimmed empty columns from the end of "words per post".
+* Fixed "year" bug on the widget.
+* Added option to have white text on the widget.
 
 = 3.1.06 =
 
@@ -323,5 +329,3 @@ Here are the latest screenshots...
 
 * Started changing to OOP.
 * Tags added.
-
-

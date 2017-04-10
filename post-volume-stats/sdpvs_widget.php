@@ -25,6 +25,7 @@ class SDPVS_Widget extends WP_Widget {
 		// outputs the content of the widget
 		$title = apply_filters('widget_title', $instance['title']);
    		$textarea = $instance['textarea'];
+   		$label_color = esc_attr( $instance['label_color'] );
 		$checkbox1 = esc_attr( $instance['checkbox1'] );
 		$checkbox2 = esc_attr( $instance['checkbox2'] );
 		$checkbox3 = esc_attr( $instance['checkbox3'] );
@@ -51,31 +52,31 @@ class SDPVS_Widget extends WP_Widget {
    			if( 'year' == $checkbox1 ) {
 				// year bar chart
 				echo "<div class='sdpvs_col'>";
-				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('year','','n','y');
+				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('year','','','n','y',$label_color);
 				echo "</div>";
    			}
    			if('month' == $checkbox2){
    				// month bar chart
    				echo "<div class='sdpvs_col'>";
-   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('month', '','n','y');
+   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('month','','','n','y',$label_color);
 				echo "</div>";
    			}
 			if('dayofmonth' == $checkbox3){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
-   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('dayofmonth', '','n','y');
+   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('dayofmonth','','','n','y',$label_color);
 				echo "</div>";
    			}
    			if('dayofweek' == $checkbox4){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
-   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('dayofweek', '','n','y');
+   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('dayofweek','','','n','y',$label_color);
 				echo "</div>";
    			}
 			if('hour' == $checkbox5){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
-   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('hour', '','n','y');
+   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('hour','','','n','y',$label_color);
 				echo "</div>";
    			}
 			
@@ -86,13 +87,13 @@ class SDPVS_Widget extends WP_Widget {
 			if('category' == $checkbox6){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
-   				echo $sdpvs_pie -> sdpvs_draw_pie_svg('category', '', 'n', 'y');
+   				echo $sdpvs_pie -> sdpvs_draw_pie_svg('category','','', 'n', 'y');
 				echo "</div>";
    			}
 			if('tag' == $checkbox7){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
-   				echo $sdpvs_pie -> sdpvs_draw_pie_svg('tag', '', 'n', 'y');
+   				echo $sdpvs_pie -> sdpvs_draw_pie_svg('tag','','', 'n', 'y');
 				echo "</div>";
    			}
 		}
@@ -113,6 +114,7 @@ class SDPVS_Widget extends WP_Widget {
 		if( $instance) {
 		     $title = esc_attr($instance['title']);
 		     $textarea = esc_textarea($instance['textarea']);
+		     $label_color = esc_attr($instance['label_color']);
 			 $checkbox1 = esc_attr( $instance['checkbox1'] );
 			 $checkbox2 = esc_attr( $instance['checkbox2'] );
 			 $checkbox3 = esc_attr( $instance['checkbox3'] );
@@ -123,6 +125,7 @@ class SDPVS_Widget extends WP_Widget {
 		} else {
 		     $title = '';
 		     $textarea = '';
+		     $label_color='';
 			 $checkbox1 = '';
 			 $checkbox2 = '';
 			 $checkbox3 = '';
@@ -140,6 +143,10 @@ class SDPVS_Widget extends WP_Widget {
 		<p>
 		<label for="<?php echo esc_attr($this -> get_field_id('textarea')); ?>"><?php esc_html_e('Description', 'post-volume-stats'); ?></label>
 		<textarea class="widefat" id="<?php echo esc_attr($this -> get_field_id('textarea')); ?>" name="<?php echo esc_attr($this -> get_field_name('textarea')); ?>"><?php echo esc_html($textarea); ?></textarea>
+		</p>
+		<p>
+		<input id="<?php echo esc_attr($this -> get_field_id('label_color')); ?>" name="<?php echo esc_attr($this -> get_field_name('label_color')); ?>" type="checkbox" value="white" <?php checked('white', $label_color); ?> />
+		<label for="<?php echo esc_attr($this -> get_field_id('label_color')); ?>"><?php esc_html_e('White Text (for dark backgrounds)', 'post-volume-stats'); ?></label>
 		</p>
 		<p>
 		<?php esc_html_e('Select charts to display:', 'post-volume-stats'); ?>
@@ -187,6 +194,7 @@ class SDPVS_Widget extends WP_Widget {
 			// Fields
 			$instance['title'] = strip_tags($new_instance['title']);
 			$instance['textarea'] = strip_tags($new_instance['textarea']);
+			$instance['label_color'] = strip_tags($new_instance['label_color']);
 			$instance['checkbox1'] = strip_tags($new_instance['checkbox1']);
 			$instance['checkbox2'] = strip_tags($new_instance['checkbox2']);
 			$instance['checkbox3'] = strip_tags($new_instance['checkbox3']);

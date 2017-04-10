@@ -1,15 +1,15 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.1.06
+ * @version 3.1.08
  */
 /*
  * Plugin Name: Post Volume Stats
- * Plugin URI: https://github.com/shortdark/num-of-posts
+ * Plugin URI: https://www.postvolumestats.com/
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.1.06
+ * Version: 3.1.08
  * Author URI: http://www.shortdark.net/
  */
 
@@ -36,7 +36,7 @@ if (!function_exists('add_action')) {
 
 define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SDPVS__PLUGIN_FOLDER', 'post-volume-stats');
-define('SDPVS__VERSION_NUMBER', '3.1.06');
+define('SDPVS__VERSION_NUMBER', '3.1.08');
 
 /******************
  ** SETUP THE PAGE
@@ -95,7 +95,7 @@ function sdpvs_post_volume_stats_assembled() {
 		// Div for ajax list box
 		echo "<div id='sdpvs_listcontent'>";
 		echo "</div>";
-		
+
 		// Div for ajax list box
 		echo "<div id='sdpvs_listcompare'>";
 		echo "</div>";
@@ -126,7 +126,7 @@ function sdpvs_category_page() {
 		$link = "https://wordpress.org/plugins/post-volume-stats/";
 		$linkdesc = "Post Volume Stats plugin page";
 		echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
-		
+
 		// DIV for loading
 		echo "<div id='sdpvs_loading'>";
 		echo "</div>";
@@ -156,7 +156,7 @@ function sdpvs_tag_page() {
 		$link = "https://wordpress.org/plugins/post-volume-stats/";
 		$linkdesc = "Post Volume Stats plugin page";
 		echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
-		
+
 		// DIV for loading
 		echo "<div id='sdpvs_loading'>";
 		echo "</div>";
@@ -170,9 +170,6 @@ function sdpvs_tag_page() {
 	return;
 }
 
-
-	
-	
 // Custom page
 function sdpvs_custom_page() {
 	if (is_admin()) {
@@ -182,9 +179,14 @@ function sdpvs_custom_page() {
 
 		// Create an instance of the required class
 		$sdpvs_sub = new sdpvsSubPages();
-		
+
 		$genoptions = get_option('sdpvs_general_settings');
-		$customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
+		// $customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
+
+		$sdpvs_page_value = filter_var ( $_SERVER['QUERY_STRING'], FILTER_SANITIZE_STRING);
+		$customvalue = substr($sdpvs_page_value,23);
+
+		#echo "<h1>Page: " . $_POST['page'] . " .. " . $customvalue . "</h1>";
 
 		// Call the method
 		$sdpvs_sub -> sdpvs_combined_page_content($customvalue);
@@ -192,7 +194,7 @@ function sdpvs_custom_page() {
 		$link = "https://wordpress.org/plugins/post-volume-stats/";
 		$linkdesc = "Post Volume Stats plugin page";
 		echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
-		
+
 		// DIV for loading
 		echo "<div id='sdpvs_loading'>";
 		echo "</div>";
@@ -206,8 +208,8 @@ function sdpvs_custom_page() {
 	return;
 }
 
-	
-	
+
+
 
 // Settings page
 function sdpvs_settings_page() {
@@ -220,8 +222,8 @@ function sdpvs_settings_page() {
 
 		// Content goes here
 		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Settings', 'post-volume-stats') . '</h1>';
-		
-		
+
+
 		echo "<form action='" . esc_url(admin_url('options.php')) . "' method='POST'>";
 		settings_fields( 'sdpvs_general_option' );
 		do_settings_sections( SDPVS__PLUGIN_FOLDER );
@@ -231,7 +233,7 @@ function sdpvs_settings_page() {
 		$link = "https://wordpress.org/plugins/post-volume-stats/";
 		$linkdesc = "Post Volume Stats plugin page";
 		echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
-		
+
 		// DIV for loading
 		echo "<div id='sdpvs_loading'>";
 		echo "</div>";
@@ -254,7 +256,23 @@ function sdpvs_register_custom_page_in_menu() {
 	add_menu_page(esc_html__('Post Volume Stats', 'post-volume-stats'), esc_html__('Post Volume Stats', 'post-volume-stats'), 'manage_options', dirname(__FILE__), 'sdpvs_post_volume_stats_assembled', plugins_url('images/post-volume-stats-16x16.png', __FILE__), 1000);
 	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Categories', 'post-volume-stats'), esc_html__('Categories', 'post-volume-stats'), 'read', 'post-volume-stats-categories', 'sdpvs_category_page');
 	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Tags', 'post-volume-stats'), esc_html__('Tags', 'post-volume-stats'), 'read', 'post-volume-stats-tags', 'sdpvs_tag_page');
-	if( "yes" == $customoff and "" != $customvalue ){
+	if( "yes" == $customoff and "_all_taxonomies" == $customvalue ){
+		// Custom Taxonomies
+		$args = array(
+			'public'   => true,
+			'_builtin' => false
+		);
+		$all_taxes = get_taxonomies( $args );
+		$count_taxes = count( $all_taxes );
+		if( 1 < $count_taxes ){
+			foreach ( $all_taxes as $taxonomy ) {
+				if("category" != $taxonomy and "post_tag" != $taxonomy){
+					$tax_labels = get_taxonomy($taxonomy);
+					add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $tax_labels->name, 'sdpvs_custom_page');
+				}
+			}
+		}
+	}elseif( "yes" == $customoff and "" != $customvalue ){
 		$customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
 		$tax_labels = get_taxonomy($customvalue);
 		add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $customvalue, 'sdpvs_custom_page');
@@ -282,10 +300,10 @@ add_action('init', 'sdpvs_load_textdomain');
 // Add Toolbar Menus
 function sdpvs_custom_toolbar() {
 	global $wp_admin_bar;
-	
+
 	$genoptions = get_option('sdpvs_general_settings');
 	$admintool = filter_var ( $genoptions['admintool'], FILTER_SANITIZE_STRING);
-	
+
 	if("yes" == $admintool){
 		$url = admin_url("admin.php?page=" . SDPVS__PLUGIN_FOLDER);
 		$args = array(
@@ -403,7 +421,7 @@ function sdpvs_compare_data_over_years() {
 	$gotit = filter_var($_POST['comparedata'], FILTER_SANITIZE_STRING);
 	$after_equals = strpos($gotit, "=") + 1;
 	$answer = substr($gotit, $after_equals);
-	
+
 	$authoroptions = get_option('sdpvs_author_option');
 	$searchauthor = absint($authoroptions['author_number']);
 
@@ -454,15 +472,20 @@ add_action('wp_ajax_sdpvs_select_tags', 'sdpvs_tags_lists');
 function sdpvs_custom_lists() {
 	// Security check
 	check_ajax_referer('num-of-posts', 'security');
-	
+
 	$genoptions = get_option('sdpvs_general_settings');
 	$customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
-	
+
 	$sdpvs_sub = new sdpvsSubPages();
 
 	// Extract the variables from serialized string
 	$gotit = filter_var($_POST['whichcustom'], FILTER_SANITIZE_STRING);
 	preg_match_all('/=([0-9]*)/', $gotit, $matches);
+
+	if("_all_taxonomies" == $customvalue){
+		preg_match('/customname=([0-9a-zA-Z\-_]*)&/', $gotit, $filtertype);
+		$customvalue = $filtertype[1];
+	}
 
 	echo $sdpvs_sub -> update_ajax_lists($customvalue, $matches);
 
@@ -501,7 +524,7 @@ function sdpvs_admin_export_lists() {
 	$searchyear = absint($year['year_number']);
 	$authoroptions = get_option('sdpvs_author_option');
 	$searchauthor = absint($authoroptions['author_number']);
-	
+
 	$whichlist = filter_var($_POST['whichlist'], FILTER_SANITIZE_STRING);
 	// $howmuch = filter_var($_POST['howmuch'], FILTER_SANITIZE_STRING);
 
@@ -512,7 +535,7 @@ function sdpvs_admin_export_lists() {
 	} elseif (isset($_POST['list'])) {
 		$howmuch = "list";
 	}
-	
+
 	if("" != $searchauthor){
 		$user = get_user_by( 'id', $searchauthor );
 		$extradesc = ": $user->display_name";
@@ -536,26 +559,20 @@ function sdpvs_admin_export_lists() {
 	if ("all" == $howmuch or "list" == $howmuch) {
 		$post_content .= $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($whichlist, $searchyear, $searchauthor, 'export', $matches, $color);
 	}
-	
+
 	if ("all" == $howmuch or "graph" == $howmuch or "list" == $howmuch) {
 		$post_content .= '<p class="alignright">Stats presented with ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
 		$my_post = array('post_title' => $title, 'post_content' => $post_content, 'post_status' => 'draft');
 		// Insert the post into the database and get the post ID.
 		$post_id = wp_insert_post($my_post, $wp_error);
-		
+
 		$url = admin_url("post.php?post=$post_id&action=edit");
-		
+
 		if (wp_redirect($url)) {
 			exit ;
 		}
 	}
-	
-	if("csv" == $howmuch){
-			
-			// The CSV download of tags/categories/custom might go here!
-			
-	}
-	
+
 }
 
 add_action('admin_post_export_lists', 'sdpvs_admin_export_lists');
@@ -565,7 +582,7 @@ add_action('admin_post_export_lists', 'sdpvs_admin_export_lists');
 /*****************
  ** CSV DOWNLOAD...
  *****************/
- 
+
 function add_endpoint() {
     add_rewrite_endpoint( 'download-csv', EP_NONE );
 }
@@ -575,25 +592,38 @@ function sdpvs_download_redirect() {
 	$genoptions = get_option('sdpvs_general_settings');
 	$exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
 	if("yes"==$exportcsv and is_user_logged_in() ){
-		
-		if ($_SERVER['REQUEST_URI']== "/wp-admin/download-csv/words.csv" )  {
-			$answer = "words";
-		}elseif($_SERVER['REQUEST_URI']== "/wp-admin/download-csv/hour.csv" ){
-			$answer = "hour";
-		}elseif($_SERVER['REQUEST_URI']== "/wp-admin/download-csv/dayofweek.csv" ){
-			$answer = "dayofweek";
-		}elseif($_SERVER['REQUEST_URI']== "/wp-admin/download-csv/month.csv" ){
-			$answer = "month";
-		}elseif($_SERVER['REQUEST_URI']== "/wp-admin/download-csv/dayofmonth.csv" ){
-			$answer = "dayofmonth";
-		}else{
-			return;
+
+		$searchstring = $_SERVER['REQUEST_URI'];
+		$pattern = "/\/wp-admin\/download-csv\/([0-9a-zA-Z-]+)\.csv/";
+		preg_match($pattern, $searchstring, $matches);
+		$answer = $matches[1];
+
+		if("words"!=$answer and "hour"!=$answer and "dayofweek"!=$answer and "month"!=$answer and "dayofmonth"!=$answer and "tag"!=$answer and ""!=$answer){
+				#check that the taxonomy exists
+				$foundit = 0;
+				$args = array(
+					'public'   => true,
+					'_builtin' => false
+				);
+				$all_taxes = get_taxonomies( $args );
+				foreach ( $all_taxes as $taxonomy ) {
+					if("category" != $taxonomy and "post_tag" != $taxonomy){
+						$tax_labels = get_taxonomy($taxonomy);
+						if($taxonomy == $answer or $tax_labels->label == $answer or $tax_labels->name == $answer){
+							$foundit = 1;
+						}
+					}
+				}
+				if(0 == $foundit){
+					return;
+				}
 		}
+
 		// create an instance of the list class
 		$sdpvs_lists = new sdpvsTextLists();
 		$csv = $sdpvs_lists -> sdpvs_create_csv_output($answer, $searchauthor);
 		$length = strlen($csv);
-		
+
 		// Download the file.
 		ob_clean(); //clear buffer
 		header('Content-Disposition: attachment; filename="' . $answer . '.csv"');
@@ -617,7 +647,7 @@ function sdpvs_check_activation_notice() {
 	if (!get_transient('sdpvs-admin-notice-004')) {
 		# When a new admin notice is added, make sure to change "sdpvs-admin-notice-004" to the next number.
 		# Also, remember to update the AJAX to remove the notice with the new number.
-		
+
 		$sdpvs_link = admin_url('admin.php?page=' . SDPVS__PLUGIN_FOLDER);
 		echo '<div id="sdpvs-notice" class="notice notice-info is-dismissible"><p class="sdpvs"><strong>' . sprintf(wp_kses(__('NEW to <a href="%1$s">Post Volume Stats</a>: Compare tags and categories in line graphs.', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($sdpvs_link)) . '</strong></p></div>';
 	}

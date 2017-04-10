@@ -9,7 +9,7 @@ class sdpvsPieChart extends sdpvsArrays {
 	private $total_tag_posts = 0;
 	private $newx;
 	private $newy;
-	
+
 	/*
 	 * COUNT NUMBER OF POSTS PER CATEGORY IN TOTAL, some posts might have multiple cats
 	 */
@@ -43,7 +43,7 @@ class sdpvsPieChart extends sdpvsArrays {
 		}
 		return;
 	}
-	
+
 	/**
 	 * DISPLAY CATEGORY DATA IN A PIE CHART
 	 */
@@ -55,6 +55,9 @@ class sdpvsPieChart extends sdpvsArrays {
 		$this -> newx = 0;
 		$this -> newy = 0;
 		$this -> tax_type_array = array();
+
+		$genoptions = get_option('sdpvs_general_settings');
+		$exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
 
 		if ("category" == $type) {
 			$this -> sdpvs_add_to_taxonomy_array($type,$year,$author);
@@ -94,17 +97,17 @@ class sdpvsPieChart extends sdpvsArrays {
 					$large = $this -> sdpvs_is_it_a_large_angle($testangle_orig, $prev_angle);
 					$startingline = $this -> sdpvs_draw_starting_line($prev_angle, $this -> newx, $this -> newy);
 					$this -> sdpvs_get_absolute_coordinates_from_angle($quadrant, $radius, $testangle);
-					
+
 					// Change the hue instead
 					if(0==$c){
 						$largest_angle = $pie_array[$c]['angle'];
 					}
-					
+
 					$hue = 240 - intval($pie_array[$c]['angle']*240 / $largest_angle);
 					$color = "hsl($hue, 70%, 65%)";
 
 					$display_angle_as = sprintf("%.1f", $pie_array[$c]['angle']);
-					
+
 					if("y"==$public){
 						$item_id = $pie_array[$c]['id'];
 						if ("category" == $type) {
@@ -128,7 +131,19 @@ class sdpvsPieChart extends sdpvsArrays {
 		$pie_svg .= "</svg>\n";
 
 		if ("n" == $subpage and "y"!=$public) {
-			$pie_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$type'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form></p>";
+			$pie_svg .= "<p>";
+			$pie_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$type'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form>";
+			$pie_svg .= "</p>";
+			$pie_svg .= "<p>";
+			$pie_svg .= "<form class='sdpvs_compare' action='' method='POST'><input type='hidden' name='comparedata' value='$type'><input type='submit' class='button-primary sdpvs_load_content' value='Compare Years'></form>";
+			$pie_svg .= "</p>";
+				if("yes"==$exportcsv){
+					$sdpvs_csv_download_url = admin_url("/download-csv/$type.csv");
+					$pie_svg .= "<p>";
+					$pie_svg .= "<form class='sdpvs_export' action=\"$sdpvs_csv_download_url\" method='POST'><input type='submit' class='button-primary' value='Export CSV'></form>";
+					$pie_svg .= "</p>";
+				}
+
 		}
 
 		return $pie_svg;
