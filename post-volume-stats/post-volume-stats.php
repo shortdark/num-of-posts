@@ -598,7 +598,7 @@ function sdpvs_download_redirect() {
 		preg_match($pattern, $searchstring, $matches);
 		$answer = $matches[1];
 
-		if("words"!=$answer and "hour"!=$answer and "dayofweek"!=$answer and "month"!=$answer and "dayofmonth"!=$answer and "tag"!=$answer and ""!=$answer){
+		if("words"!=$answer and "hour"!=$answer and "dayofweek"!=$answer and "month"!=$answer and "dayofmonth"!=$answer and "tag"!=$answer and "category"!=$answer){
 				#check that the taxonomy exists
 				$foundit = 0;
 				$args = array(
