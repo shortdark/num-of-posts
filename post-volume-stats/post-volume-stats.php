@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.1.08
+ * @version 3.1.10
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.1.08
+ * Version: 3.1.10
  * Author URI: http://www.shortdark.net/
  */
 
@@ -36,7 +36,7 @@ if (!function_exists('add_action')) {
 
 define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SDPVS__PLUGIN_FOLDER', 'post-volume-stats');
-define('SDPVS__VERSION_NUMBER', '3.1.08');
+define('SDPVS__VERSION_NUMBER', '3.1.10');
 
 /******************
  ** SETUP THE PAGE
@@ -75,8 +75,6 @@ function sdpvs_post_volume_stats_assembled() {
 
 		// Create an instance of the required class
 		$sdpvs_info = new sdpvsInfo();
-
-		// Call the method
 		$sdpvs_content = new sdpvsMainContent();
 
 		// Admin notices can be used once they're properly dimissable
@@ -218,15 +216,12 @@ function sdpvs_settings_page() {
 		// Start the timer
 		$time_start = microtime(true);
 
-		// Create an instance of the required class
-
 		// Content goes here
 		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Settings', 'post-volume-stats') . '</h1>';
 
-
 		echo "<form action='" . esc_url(admin_url('options.php')) . "' method='POST'>";
 		settings_fields( 'sdpvs_general_option' );
-		do_settings_sections( SDPVS__PLUGIN_FOLDER );
+		do_settings_sections( 'post-volume-stats-settings' );
 		submit_button('Save');
 		echo "</form>";
 
@@ -234,15 +229,42 @@ function sdpvs_settings_page() {
 		$linkdesc = "Post Volume Stats plugin page";
 		echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
 
-		// DIV for loading
-		echo "<div id='sdpvs_loading'>";
-		echo "</div>";
+		// Stop the timer
+		$time_end = microtime(true);
+		$elapsed_time = sprintf("%.5f", $time_end - $time_start);
+		echo '<p>' . sprintf(esc_html__('Post Volume Stats Version %s, Script time elapsed: %f seconds', 'post-volume-stats'), SDPVS__VERSION_NUMBER, $elapsed_time) . '</p>';
+	}
+	return;
+}
+
+// Settings page
+function sdpvs_date_range_select_page() {
+	if (is_admin()) {
+
+		// Start the timer
+		$time_start = microtime(true);
+
+		// Content goes here
+		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Date Range Select', 'post-volume-stats') . '</h1>';
+
+		echo "<p>On this page you can select the year that you wishe to study. It is an alternative to clicking the bars of the \"Year\" bar chart. To view all years together select the blank option at the top.</p>";
+
+		echo "<p>Eventually, this page will also enable you to be able to select a date range for the stats. For example, September 2016 to September 2017.</p>";
+
+		echo "<form action='" . esc_url(admin_url('options.php')) . "' method='POST'>";
+		settings_fields( 'sdpvs_year_option' );
+		do_settings_sections( 'post-volume-stats-daterange' );
+		submit_button('Save');
+		echo "</form>";
+
+		$link = "https://wordpress.org/plugins/post-volume-stats/";
+		$linkdesc = "Post Volume Stats plugin page";
+		echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
 
 		// Stop the timer
 		$time_end = microtime(true);
 		$elapsed_time = sprintf("%.5f", $time_end - $time_start);
 		echo '<p>' . sprintf(esc_html__('Post Volume Stats Version %s, Script time elapsed: %f seconds', 'post-volume-stats'), SDPVS__VERSION_NUMBER, $elapsed_time) . '</p>';
-		echo '<a href="/download-csv/data.csv">test</a>';
 	}
 	return;
 }
@@ -277,6 +299,7 @@ function sdpvs_register_custom_page_in_menu() {
 		$tax_labels = get_taxonomy($customvalue);
 		add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $customvalue, 'sdpvs_custom_page');
 	}
+	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Date Range', 'post-volume-stats'), esc_html__('Date Range', 'post-volume-stats'), 'manage_options', 'post-volume-stats-daterange', 'sdpvs_date_range_select_page');
 	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Settings', 'post-volume-stats'), esc_html__('Settings', 'post-volume-stats'), 'manage_options', 'post-volume-stats-settings', 'sdpvs_settings_page');
 }
 

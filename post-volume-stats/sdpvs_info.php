@@ -73,5 +73,18 @@ class sdpvsInfo extends sdpvsArrays {
 		return;
 	}
 
+
+	public function sdpvs_first_year($searchauthor="") {
+		parent::sdpvs_number_of_posts_per_year($searchauthor);
+		$i=0;
+		while($this -> list_array[$i]['name']){
+			if(0 < $this -> list_array[$i]['volume']){
+				$first_year = $this -> list_array[$i]['name'];
+			}
+			$i++;
+		}
+		return $first_year;
+	}
+
 }
 ?>

@@ -11,17 +11,18 @@ defined('ABSPATH') or die('No script kiddies please!');
  */
 function sdpvs_register_settings() {
 	register_setting('sdpvs_year_option', // settings section
-	'sdpvs_year_option', // setting name
-	'sdpvs_sanitize');
+	'sdpvs_year_option' // setting name
+	);
+	add_settings_section( 'sdpvs_year_option', 'Year', 'sdpvs_sanitize', 'post-volume-stats-daterange' );
 	add_settings_field('year_number', // ID
-	'Year Number', // Title
-	'', SDPVS__PLUGIN_FOLDER);
-	add_settings_field('author_number', // ID
-	'Author Number', // Title
-	'', SDPVS__PLUGIN_FOLDER);
+	'Select a Year', // Title
+	'sdpvs_year_field_callback', 'post-volume-stats-daterange', 'sdpvs_year_option');
+	// add_settings_field('author_number', // ID
+	// 'Author Number', // Title
+	// '', SDPVS__PLUGIN_FOLDER);
 }
-
 add_action('admin_init', 'sdpvs_register_settings');
+
 
 function sdpvs_register_author_settings() {
 	register_setting('sdpvs_author_option', // settings section
@@ -31,22 +32,57 @@ function sdpvs_register_author_settings() {
 	'Author Number', // Title
 	'', SDPVS__PLUGIN_FOLDER);
 }
-
 add_action('admin_init', 'sdpvs_register_author_settings');
+
 
 function sdpvs_register_general_settings() {
 	register_setting( 'sdpvs_general_option', 'sdpvs_general_settings' );
-    add_settings_section( 'sdpvs_general_settings', 'General Settings', 'sdpvs_sanitize_general', SDPVS__PLUGIN_FOLDER );
-    add_settings_field( 'startweekon', 'Start Week On', 'sdpvs_field_one_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
-	add_settings_field( 'rainbow', 'Rainbow Lists', 'sdpvs_field_two_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
-	add_settings_field( 'authoroff', 'Number of Users (Author and above) who Create Posts', 'sdpvs_field_three_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
-	add_settings_field( 'customoff', 'Display Custom Taxonomy stats', 'sdpvs_field_four_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
-	add_settings_field( 'customvalue', 'Select a Taxonomy to view', 'sdpvs_field_five_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
-	add_settings_field( 'admintool', 'Put a link to Post Volume Stats in the Admin Toolbar', 'sdpvs_field_six_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
-	add_settings_field( 'exportcsv', 'BETA - allow export of CSV', 'sdpvs_field_seven_callback', SDPVS__PLUGIN_FOLDER, 'sdpvs_general_settings' );
+    add_settings_section( 'sdpvs_general_settings', 'General Settings', 'sdpvs_sanitize_general', 'post-volume-stats-settings' );
+    add_settings_field( 'startweekon', 'Start Week On', 'sdpvs_field_one_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
+	add_settings_field( 'rainbow', 'Rainbow Lists', 'sdpvs_field_two_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
+	add_settings_field( 'authoroff', 'Number of Users (Author and above) who Create Posts', 'sdpvs_field_three_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
+	add_settings_field( 'customoff', 'Display Custom Taxonomy stats', 'sdpvs_field_four_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
+	add_settings_field( 'customvalue', 'Select a Taxonomy to view', 'sdpvs_field_five_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
+	add_settings_field( 'admintool', 'Put a link to Post Volume Stats in the Admin Toolbar', 'sdpvs_field_six_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
+	add_settings_field( 'exportcsv', 'Allow export of CSV', 'sdpvs_field_seven_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
+	
 }
 
 add_action('admin_init', 'sdpvs_register_general_settings');
+
+
+
+function sdpvs_year_field_callback() {
+	$options = get_option('sdpvs_year_option');
+	$selected = absint($options['year_number'], FILTER_SANITIZE_STRING);
+
+	$authoroptions = get_option('sdpvs_author_option');
+	$author = absint($authoroptions['author_number']);
+
+	// Create an instance of the required class
+	$sdpvs_info = new sdpvsInfo();
+	$first_year = $sdpvs_info -> sdpvs_first_year($author);
+
+	echo "<div style='display: block; padding: 5px;'>";
+
+	echo "<label><select name=\"sdpvs_year_option[year_number]\" id=\"year-number\">";
+	if("" == $selected){
+		echo "<option value=\"\" selected=\"selected\"></option>";
+	}else{
+		echo "<option value=\"\"></option>";
+	}
+	for($i=2017;$i>=$first_year;$i--){
+		if($i == $selected){
+			echo "<option value=\"$i\" selected=\"selected\">$i</option>";
+		}else{
+			echo "<option value=\"$i\">$i</option>";
+		}
+		
+	}
+	echo "</select></label><br>";
+	echo "</div>";
+}
+
 
 function sdpvs_field_one_callback() {
 	$genoptions = get_option('sdpvs_general_settings');
@@ -178,9 +214,14 @@ function sdpvs_field_seven_callback() {
 		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[exportcsv]\" value=\"no\">No (default)</label><br>";
 		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[exportcsv]\" value=\"yes\" checked=\"checked\">Yes</label>";
 	}
-	echo "<p>This will only work if your admin directory is still called \"wp-admin\", it will not work if you have re-named it. The CSV output will be comma separated! Some security plugins block the ability for you to download files like this so please bear that in mind if this does not work for you.</p>";
+	echo "<p>This will only work if your admin directory is still called \"wp-admin\", it will not work if you have re-named it. The CSV output will be comma separated! Some security plugins block the ability for you to download files like this so please bear that in mind if this does not work for you. Please leave feedback at the <a href=\"https://wordpress.org/plugins/post-volume-stats/\" target=\"_blank\">PVS WordPress Plugin page</a>.</p>";
 	echo "</div>";
 }
+
+
+
+
+
 
 
 /**

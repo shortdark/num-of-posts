@@ -18,20 +18,27 @@ abstract class sdpvsArrays {
 	 * GET DETAILS FOR ONE CATEGORY / TAG
 	 */
 
-	protected function sdpvs_get_one_item_info($term_id = "", $taxonomy_type = "", $searchyear = "", $searchauthor = "") {
+	protected function sdpvs_get_one_item_info($term_id = "", $taxonomy_type = "", $searchyear = "", $searchauthor = "", $start_date = "", $end_date = "") {
 		global $wpdb;
 		$extra = "";
 		$term_id = absint($term_id);
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
+		$start_date = absint($start_date);
+		$end_date = absint($end_date);
 		if (0 < $searchyear) {
 			$extra = " AND $wpdb->posts.post_date LIKE '$searchyear%' ";
+		}
+		if("" != $start_date and "" != $end_date ){
+			$extra = " AND $wpdb->posts.post_date >= '$start_date' ";
+			$extra .= " AND $wpdb->posts.post_date <= '$end_date' ";
 		}
 		if("" != $searchauthor){
 			$extra .= " AND $wpdb->posts.post_author = '$searchauthor' ";
 		}
+
 		if (0 < $term_id and "" != $taxonomy_type ) {
-			if ("" == $searchyear and "" == $searchauthor) {
+			if ("" == $searchyear and "" == $searchauthor and "" == $start_date) {
 				$count = $wpdb -> get_var($wpdb -> prepare("SELECT count FROM $wpdb->term_taxonomy WHERE taxonomy = %s AND term_id = %d ", $taxonomy_type, $term_id));
 				$iteminfo = $wpdb -> get_row($wpdb -> prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $term_id));
 				$one_item_array['name'] = $iteminfo -> name;

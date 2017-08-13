@@ -353,7 +353,7 @@ class sdpvsBarChart extends sdpvsArrays {
 		$svgheight = $graphheight + $graphtop + $graphbottom;
 
 		$this -> svg_output_string = "<svg width=\"" . $svgwidth . "px\" height=\"" . $svgheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" class=\"sdpvs_bar\">\n";
-		$this -> svg_output_string .= "<path stroke=\"$text_color\" stroke-width=\"1\" d=\"M$graphleft $graphtop v $graphheight\"></path>";
+		$this -> svg_output_string .= "<path stroke=\"#000\" stroke-width=\"1\" d=\"M$graphleft $graphtop v $graphheight\"></path>";
 
 		$number_per_increment = ceil($this -> highest_val2 / 5);
 		// If an increment is a strange number, like 39, round it up or down to 40 or 35.
@@ -377,13 +377,13 @@ class sdpvsBarChart extends sdpvsArrays {
 			if ($graphtop <= $depth) {
 				$value = $j * $number_per_increment;
 				if (0 == $j) {
-					$this -> svg_output_string .= "<path stroke=\"$text_color\" stroke-width=\"1\" d=\"M$graphleft $depth h $graphwidth\"></path>";
+					$this -> svg_output_string .= "<path stroke=\"#000\" stroke-width=\"1\" d=\"M$graphleft $depth h $graphwidth\"></path>";
 				} else {
-					$this -> svg_output_string .= "<path stroke=\"$text_color\" stroke-width=\"0.2\" d=\"M$graphleft $depth h $graphwidth\"></path>";
+					$this -> svg_output_string .= "<path stroke=\"#000\" stroke-width=\"0.2\" d=\"M$graphleft $depth h $graphwidth\"></path>";
 				}
 				$text_x = $graphleft - (strlen($value) * 7) - 5;
 				$text_y = $depth + 4;
-				$this -> svg_output_string .= "<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">$value</text>";
+				$this -> svg_output_string .= "<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"#000\">$value</text>";
 			}
 		}
 

@@ -4,7 +4,7 @@ Contributors: shortdark
 Donate link: https://www.paypal.me/shortdark
 Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget, author, taxonomy
 Requires at least: 3.5
-Tested up to: 4.7.3
+Tested up to: 4.8.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -46,6 +46,15 @@ Here are the latest screenshots...
 8. Settings page allows customization.
 
 == Changelog ==
+
+= 3.1.10 =
+
+* Fixed with line graph axes (tags, categories and custom taxonomy).
+* Added "Date Range" page.
+
+= 3.1.09 =
+
+* Problems related to the version number.
 
 = 3.1.08 =
 
