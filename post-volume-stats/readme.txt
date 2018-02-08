@@ -47,11 +47,17 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 3.1.12 =
+
+* Tidied Date Range page. 
+* Added explanation to Date Range: this page is experimental, please use the year select on the other pages.
+
 = 3.1.11 =
 
 * Added "Days Between Posts" to the main page.
 * Fixed bug where sometimes the volume of posts can be a non integer.
 * Added link to the Settings page from the main WordPress Plugins page.
+* More Date Range fields added (beta).
 
 = 3.1.10 =
 

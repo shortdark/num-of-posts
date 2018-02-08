@@ -63,7 +63,7 @@ function sdpvs_startdate_field_callback() {
 
 	echo "<div style='display: block; padding: 5px;'>";
 
-	echo "<label>$earliest_date <input name=\"sdpvs_year_option[start_date]\" id=\"start-date\" value=\"$selected\">";
+	echo "<label>YYYY-MM-DD <input name=\"sdpvs_year_option[start_date]\" id=\"start-date\" value=\"$selected\">";
 	
 	echo "</label><br>";
 	echo "</div>";
@@ -75,7 +75,7 @@ function sdpvs_enddate_field_callback() {
 
 	echo "<div style='display: block; padding: 5px;'>";
 
-	echo "<label><input name=\"sdpvs_year_option[end_date]\" id=\"end-date\" value=\"$selected\">";
+	echo "<label>YYYY-MM-DD <input name=\"sdpvs_year_option[end_date]\" id=\"end-date\" value=\"$selected\">";
 	
 	echo "</label><br>";
 	echo "</div>";

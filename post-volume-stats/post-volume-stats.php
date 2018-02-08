@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.1.11
+ * @version 3.1.12
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.1.11
+ * Version: 3.1.12
  * Author URI: http://www.shortdark.net/
  */
 
@@ -36,7 +36,7 @@ if (!function_exists('add_action')) {
 
 define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SDPVS__PLUGIN_FOLDER', 'post-volume-stats');
-define('SDPVS__VERSION_NUMBER', '3.1.11');
+define('SDPVS__VERSION_NUMBER', '3.1.12');
 
 /******************
  ** SETUP THE PAGE
@@ -245,11 +245,9 @@ function sdpvs_date_range_select_page() {
 		$time_start = microtime(true);
 
 		// Content goes here
-		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Date Range Select', 'post-volume-stats') . '</h1>';
-
-		echo "<p>On this page you can select the year that you wishe to study. It is an alternative to clicking the bars of the \"Year\" bar chart. To view all years together select the blank option at the top.</p>";
-
-		echo "<p>Eventually, this page will also enable you to be able to select a date range for the stats. For example, September 2016 to September 2017.</p>";
+		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Date Range Select (BETA)', 'post-volume-stats') . '</h1>';
+		echo "<p>On this page you can select the year that you wish to study. It is an alternative to clicking the bars of the \"Year\" bar chart. To view all years together select the blank option at the top.</p>";
+		echo "<p>The date range does not work properly. Please use the main year select on the other pages.</p>";
 
 		echo "<form action='" . esc_url(admin_url('options.php')) . "' method='POST'>";
 		settings_fields( 'sdpvs_year_option' );
