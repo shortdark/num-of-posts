@@ -17,9 +17,12 @@ function sdpvs_register_settings() {
 	add_settings_field('year_number', // ID
 	'Select a Year', // Title
 	'sdpvs_year_field_callback', 'post-volume-stats-daterange', 'sdpvs_year_option');
-	// add_settings_field('author_number', // ID
-	// 'Author Number', // Title
-	// '', SDPVS__PLUGIN_FOLDER);
+	add_settings_field('start_date', // ID
+	'Date Range: start date', // Title
+	'sdpvs_startdate_field_callback', 'post-volume-stats-daterange', 'sdpvs_year_option');
+	add_settings_field('end_date', // ID
+	'Date Range: end date', // Title
+	'sdpvs_enddate_field_callback', 'post-volume-stats-daterange', 'sdpvs_year_option');
 }
 add_action('admin_init', 'sdpvs_register_settings');
 
@@ -50,6 +53,33 @@ function sdpvs_register_general_settings() {
 
 add_action('admin_init', 'sdpvs_register_general_settings');
 
+function sdpvs_startdate_field_callback() {
+	$options = get_option('sdpvs_year_option');
+	$selected = $options['start_date'];
+
+	// Create an instance of the required class
+	$sdpvs_info = new sdpvsInfo();
+	$earliest_date = $sdpvs_info -> sdpvs_earliest_date();
+
+	echo "<div style='display: block; padding: 5px;'>";
+
+	echo "<label>$earliest_date <input name=\"sdpvs_year_option[start_date]\" id=\"start-date\" value=\"$selected\">";
+	
+	echo "</label><br>";
+	echo "</div>";
+}
+
+function sdpvs_enddate_field_callback() {
+	$options = get_option('sdpvs_year_option');
+	$selected = $options['end_date'];
+
+	echo "<div style='display: block; padding: 5px;'>";
+
+	echo "<label><input name=\"sdpvs_year_option[end_date]\" id=\"end-date\" value=\"$selected\">";
+	
+	echo "</label><br>";
+	echo "</div>";
+}
 
 
 function sdpvs_year_field_callback() {
@@ -61,24 +91,30 @@ function sdpvs_year_field_callback() {
 
 	// Create an instance of the required class
 	$sdpvs_info = new sdpvsInfo();
-	$first_year = $sdpvs_info -> sdpvs_first_year($author);
+	$years = $sdpvs_info -> sdpvs_first_year($author);
 
 	echo "<div style='display: block; padding: 5px;'>";
 
 	echo "<label><select name=\"sdpvs_year_option[year_number]\" id=\"year-number\">";
+	
 	if("" == $selected){
 		echo "<option value=\"\" selected=\"selected\"></option>";
 	}else{
 		echo "<option value=\"\"></option>";
 	}
-	for($i=2017;$i>=$first_year;$i--){
-		if($i == $selected){
-			echo "<option value=\"$i\" selected=\"selected\">$i</option>";
-		}else{
-			echo "<option value=\"$i\">$i</option>";
+
+	$i=0;
+	while($years[$i]['name']){
+		if(0 < $years[$i]['volume']){
+			if($years[$i]['name'] == $selected){
+				echo "<option value=\"{$years[$i]['name']}\" selected=\"selected\">{$years[$i]['name']}</option>";
+			}else{
+				echo "<option value=\"{$years[$i]['name']}\">{$years[$i]['name']}</option>";
+			}
 		}
-		
+		$i++;
 	}
+
 	echo "</select></label><br>";
 	echo "</div>";
 }
@@ -231,6 +267,12 @@ function sdpvs_sanitize($input) {
 	$new_input = array();
 	if (isset($input['year_number'])) {
 		$new_input['year_number'] = absint($input['year_number']);
+	}
+	if (isset($input['start_date'])) {
+		$new_input['start_date'] = $input['start_date'];
+	}
+	if (isset($input['end_date'])) {
+		$new_input['end_date'] = $input['end_date'];
 	}
 	if (isset($input['author_number'])) {
 		$new_input['author_number'] = absint($input['author_number']);

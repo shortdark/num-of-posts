@@ -15,6 +15,8 @@ class sdpvsMainContent {
 
 		$options = get_option('sdpvs_year_option');
 		$selected = absint($options['year_number']);
+		$start_date = $options['start_date'];
+		$end_date = $options['end_date'];
 
 		$authoroptions = get_option('sdpvs_author_option');
 		$author = absint($authoroptions['author_number']);
@@ -34,6 +36,8 @@ class sdpvsMainContent {
 		// Plugin Description
 		if (0 < $selected) {
 			echo '<p class="sdpvs">' . sprintf(esc_html__('These are the stats for %s %s for the selected year: %d. Click a bar of the "Years" or "Authors" bar charts to change to that year or author, or click the selected year/author (red) to view the stats for all years/authors.', 'post-volume-stats'), get_bloginfo('name'), $extradesc, $selected) . '</p>';
+		}elseif($start_date){
+			echo '<p class="sdpvs">' . sprintf(esc_html__('These are the stats for %s %s for the range: %s to %s. Click a bar of the "Years" or "Authors" bar charts to change to that year or author, or click the selected year/author (red) to view the stats for all years/authors.', 'post-volume-stats'), get_bloginfo('name'), $extradesc, $start_date, $end_date) . '</p>';
 		} else {
 			echo '<p class="sdpvs">' . sprintf(esc_html__('These are the all-time stats %s for %s. Click a bar of the "Years" bar chart to change to that year. Click a bar of "Authors" to change the stats to that author-only.', 'post-volume-stats'), $extradesc, get_bloginfo('name')) . '</p>';
 		}
@@ -44,38 +48,43 @@ class sdpvsMainContent {
 		if("one" != $authoroff){
 			// posts per author bar chart
 			echo "<div class='sdpvs_col'>";
-			$sdpvs_bar -> sdpvs_draw_bar_chart_svg('author', $selected, $author, 'n');
+			$sdpvs_bar -> sdpvs_draw_bar_chart_svg('author', $selected, $author, 'n', '', '', $start_date, $end_date);
 			echo "</div>";
 		}
 
 		// year bar chart
 		echo "<div class='sdpvs_col'>";
-		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('year', $selected, $author, 'n');
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('year', $selected, $author, 'n', '', '', $start_date, $end_date);
 		echo "</div>";
 
 		// posts per month bar chart
 		echo "<div class='sdpvs_col'>";
-		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('month', $selected, $author, 'n');
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('month', $selected, $author, 'n', '', '', $start_date, $end_date);
 		echo "</div>";
 
 		// posts per day of the month bar chart
 		echo "<div class='sdpvs_col'>";
-		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('dayofmonth', $selected, $author, 'n');
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('dayofmonth', $selected, $author, 'n', '', '', $start_date, $end_date);
 		echo "</div>";
 
 		// posts per day of the week bar chart
 		echo "<div class='sdpvs_col'>";
-		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('dayofweek', $selected, $author, 'n');
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('dayofweek', $selected, $author, 'n', '', '', $start_date, $end_date);
 		echo "</div>";
 
 		// posts per hour of the day bar chart
 		echo "<div class='sdpvs_col'>";
-		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('hour', $selected, $author, 'n');
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('hour', $selected, $author, 'n', '', '', $start_date, $end_date);
 		echo "</div>";
 
 		// words per post bar chart
 		echo "<div class='sdpvs_col'>";
-		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('words', $selected, $author, 'n');
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('words', $selected, $author, 'n', '', '', $start_date, $end_date);
+		echo "</div>";
+
+		// words per post bar chart
+		echo "<div class='sdpvs_col'>";
+		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('interval', $selected, $author, 'n', '', '', $start_date, $end_date);
 		echo "</div>";
 
 		// posts per category pie chart

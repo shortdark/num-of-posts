@@ -76,15 +76,19 @@ class sdpvsInfo extends sdpvsArrays {
 
 	public function sdpvs_first_year($searchauthor="") {
 		parent::sdpvs_number_of_posts_per_year($searchauthor);
-		$i=0;
-		while($this -> list_array[$i]['name']){
-			if(0 < $this -> list_array[$i]['volume']){
-				$first_year = $this -> list_array[$i]['name'];
-			}
-			$i++;
-		}
-		return $first_year;
+		$year_array = $this -> list_array;
+		return $year_array;
 	}
+
+
+	public function sdpvs_earliest_date() {
+		parent::sdpvs_earliest_date_post();
+		$earliest_date = $this -> earliest_date;
+		return $earliest_date;
+	}
+
+
+	
 
 }
 ?>

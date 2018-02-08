@@ -233,6 +233,27 @@ class sdpvsTextLists extends sdpvsArrays {
 		return $posts_per_cat_tag;
 	}
 
+
+	/*
+	 * NUMBER OF POSTS PER MONTH TEXT
+	 */
+	public function sdpvs_interval_between_posts_list($searchyear = "", $searchauthor = "") {
+		$searchyear = absint($searchyear);
+		$searchauthor = absint($searchauthor);
+		parent::sdpvs_number_of_posts_in_order($searchyear,$searchauthor);
+		$this -> list_string = '<h2>' . esc_html__('Intervals Between Posts', 'post-volume-stats') . '</h2>';
+		$i=0;
+		while ($this -> list_array[$i]['name']) {
+			if (!$this -> list_array[$i]['volume']) {
+				$this -> list_array[$i]['volume'] = 0;
+			}
+			$this -> list_string .= '<p>' . sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this -> list_array[$i]['name'], $this -> list_array[$i]['volume']) . '</p>';
+			$i++;
+		}
+		return $this -> list_string;
+	}
+
+
 	/*
 	 * NUMBER OF POSTS PER DAY-OF-WEEK TEXT
 	 */
@@ -381,6 +402,8 @@ class sdpvsTextLists extends sdpvsArrays {
 				parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor);
 			} elseif("words" == $type){
 				parent::sdpvs_number_of_words_per_post($searchyear,$searchauthor);
+			}elseif("interval" == $type){
+				parent::sdpvs_number_of_posts_in_order($searchyear,$searchauthor);
 			}else{
 				parent::sdpvs_post_tax_type_vols_structured($type,$searchyear,$searchauthor);
 			}
@@ -425,6 +448,8 @@ class sdpvsTextLists extends sdpvsArrays {
 			$this -> output_compare_list .= '<h2>' . esc_html__('Posts per Day of the Month', 'post-volume-stats') . '</h2>';
 		} elseif("words" == $type){
 			$this -> output_compare_list .= '<h2>' . esc_html__('Words per Post', 'post-volume-stats') . '</h2>';
+		} elseif("interval" == $type){
+			$this -> output_compare_list .= '<h2>' . esc_html__('Intervals Between Posts', 'post-volume-stats') . '</h2>';
 		}else{
 			$this -> output_compare_list .= '<h2>' . sprintf(esc_html__('Posts per Taxonomy: %s', 'post-volume-stats'), $type) . '</h2>';
 		}
@@ -482,10 +507,11 @@ class sdpvsTextLists extends sdpvsArrays {
 			$this -> output_compare_list = "Categories,";
 		}elseif("tag"==$type){
 			$this -> output_compare_list = "Tags,";
+		}elseif("interval"==$type){
+			$this -> output_compare_list = "Interval,";
 		}else{
 			$this -> output_compare_list = $type.",";
 		}
-
 
 		for ($i = $this -> first_val; $i >= 0; $i--) {
 			$searchyear = absint($chart_array[$i]['name']);

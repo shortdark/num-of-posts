@@ -20,7 +20,7 @@ class sdpvsPieChart extends sdpvsArrays {
 		while (array_key_exists($c, $this->tax_type_array)) {
 			if (0 < $this -> tax_type_array[$c]['volume']) {
 				$this -> number_of_taxonomies++;
-				$this -> total_taxonomy_posts += $this -> tax_type_array[$c]['volume'];
+				$this -> total_taxonomy_posts += absint ( $this -> tax_type_array[$c]['volume'] );
 			}
 			$c++;
 		}
@@ -37,7 +37,7 @@ class sdpvsPieChart extends sdpvsArrays {
 		$c = 0;
 		while (array_key_exists($c, $this->tax_type_array)) {
 			if (0 < $this -> tax_type_array[$c]['volume']) {
-				$this -> tax_type_array[$c]['angle'] = ($this -> tax_type_array[$c]['volume'] / $this -> total_taxonomy_posts) * 360;
+				$this -> tax_type_array[$c]['angle'] = ( absint($this -> tax_type_array[$c]['volume']) / $this -> total_taxonomy_posts) * 360;
 			}
 			$c++;
 		}

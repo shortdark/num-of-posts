@@ -15,7 +15,7 @@ class sdpvsBarChart extends sdpvsArrays {
 	/**
 	 * DISPLAY DATA IN A BAR CHART
 	 */
-	public function sdpvs_draw_bar_chart_svg($which = "", $searchyear = "", $searchauthor = "", $subpage = "", $public = "", $text_color="black") {
+	public function sdpvs_draw_bar_chart_svg($which = "", $searchyear = "", $searchauthor = "", $subpage = "", $public = "", $text_color="black", $start_date = "", $end_date = "") {
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
 		$years_total = 0;
@@ -45,7 +45,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo '<h2>' . esc_html__('Posts per Year', 'post-volume-stats') . '</h2>';
 			}
 		} elseif ("dayofweek" == $which) {
-			parent::sdpvs_number_of_posts_per_dayofweek($searchyear,$searchauthor);
+			parent::sdpvs_number_of_posts_per_dayofweek($searchyear,$searchauthor, $start_date, $end_date);
 			$chart_array = $this -> list_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 7;
@@ -56,7 +56,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo '<h2>' . esc_html__('Posts per Day of the Week', 'post-volume-stats') . '</h2>';
 			}
 		} elseif ("hour" == $which) {
-			parent::sdpvs_number_of_posts_per_hour($searchyear,$searchauthor);
+			parent::sdpvs_number_of_posts_per_hour($searchyear,$searchauthor, $start_date, $end_date);
 			$chart_array = $this -> list_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 24;
@@ -67,7 +67,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo '<h2>' . esc_html__('Posts per Hour', 'post-volume-stats') . '</h2>';
 			}
 		} elseif ("month" == $which) {
-			parent::sdpvs_number_of_posts_per_month($searchyear,$searchauthor);
+			parent::sdpvs_number_of_posts_per_month($searchyear,$searchauthor, $start_date, $end_date);
 			$chart_array = $this -> list_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 12;
@@ -78,7 +78,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo '<h2>' . esc_html__('Posts per Month', 'post-volume-stats') . '</h2>';
 			}
 		} elseif ("dayofmonth" == $which) {
-			parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor);
+			parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor, $start_date, $end_date);
 			$chart_array = $this -> list_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = 31;
@@ -89,7 +89,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo '<h2>' . esc_html__('Posts per Day of the Month', 'post-volume-stats') . '</h2>';
 			}
 		} elseif ("author" == $which) {
-			parent::sdpvs_number_of_posts_per_author($searchyear);
+			parent::sdpvs_number_of_posts_per_author($searchyear, $start_date, $end_date);
 			$chart_array = $this -> list_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = $this -> total_bars;
@@ -100,7 +100,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo '<h2>' . esc_html__('Posts per Author', 'post-volume-stats') . '</h2>';
 			}
 		} elseif ("words" == $which) {
-			parent::sdpvs_number_of_words_per_post($searchyear,$searchauthor);
+			parent::sdpvs_number_of_words_per_post($searchyear,$searchauthor, $start_date, $end_date);
 			$chart_array = $this -> list_array;
 			parent::find_highest_first_and_total($chart_array);
 			$bars_total = $this -> total_bars;
@@ -110,7 +110,17 @@ class sdpvsBarChart extends sdpvsArrays {
 			} else {
 				echo '<h2>' . esc_html__('Words per Post', 'post-volume-stats') . '</h2>';
 			}
-			
+		}elseif ("interval" == $which) {
+			parent::sdpvs_number_of_posts_in_order($searchyear, $searchauthor, $start_date, $end_date);
+			$chart_array = $this -> list_array;
+			parent::find_highest_first_and_total($chart_array);
+			$bars_total = $this -> total_bars;
+			$order = "asc";
+			if ("y" != $public) {
+				echo '<h2>' . esc_html__('Days Between Posts (BETA)', 'post-volume-stats') . '</h2>';
+			} else {
+				echo '<h2>' . esc_html__('Days Between Posts', 'post-volume-stats') . '</h2>';
+			}
 		}
 		if ("year" != $which and "y" == $public) {
 			if (0 < $searchyear) {
@@ -189,7 +199,7 @@ class sdpvsBarChart extends sdpvsArrays {
 					$color = $graph_color;
 					$set_explicit_color = "";
 				}
-				$bar_height = intval($graphheight * ($chart_array[$i]['volume'] / $this -> highest_val));
+				$bar_height = intval($graphheight * ( absint($chart_array[$i]['volume']) / $this -> highest_val));
 
 				if ("year" == $which) {
 					if ($chart_array[$i]['name'] == $searchyear) {
@@ -272,8 +282,9 @@ class sdpvsBarChart extends sdpvsArrays {
 
 		echo "</svg>\n";
 		if ("n" == $subpage and "y" != $public) {
-			echo "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form></p>";
+			echo "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data!'></form></p>";
 			if("words" == $which or "hour" == $which or "dayofweek" == $which or "month" == $which or "dayofmonth" == $which){
+				# add "interval" to here onfce bug is fixed
 				echo "<form class='sdpvs_compare' action='' method='POST'><input type='hidden' name='comparedata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Compare Years'></form></p>";
 				if("yes"==$exportcsv){
 					$sdpvs_csv_download_url = admin_url("/download-csv/$which.csv");
@@ -423,7 +434,7 @@ class sdpvsBarChart extends sdpvsArrays {
 					$item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear, $searchauthor);
 					$x_start = $svgwidth - ($i * $bar_width);
 
-					$point_height = intval($graphheight * ($item['volume'] / $this -> highest_val2));
+					$point_height = intval($graphheight * ( absint($item['volume']) / absint($this -> highest_val2)));
 					$x_start = $svgwidth - ($i * $bar_width) - $bar_width / 2;
 					$y_start = $graphheight + $graphtop - $point_height;
 

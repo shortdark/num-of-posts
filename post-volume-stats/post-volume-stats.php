@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.1.10
+ * @version 3.1.11
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.1.10
+ * Version: 3.1.11
  * Author URI: http://www.shortdark.net/
  */
 
@@ -36,7 +36,7 @@ if (!function_exists('add_action')) {
 
 define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SDPVS__PLUGIN_FOLDER', 'post-volume-stats');
-define('SDPVS__VERSION_NUMBER', '3.1.10');
+define('SDPVS__VERSION_NUMBER', '3.1.11');
 
 /******************
  ** SETUP THE PAGE
@@ -269,6 +269,18 @@ function sdpvs_date_range_select_page() {
 	return;
 }
 
+add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'sdpvs_admin_plugin_settings_link' );
+function sdpvs_admin_plugin_settings_link( $links ) { 
+	$settings_link = '<a href="'. esc_url( get_admin_url(null, 'admin.php?page=post-volume-stats-settings') ) .'">'.__('Settings', 'post-volume-stats').'</a>';
+	array_unshift( $links, $settings_link ); 
+	return $links; 
+}
+add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'sdpvs_admin_plugin_pvs_link' );
+function sdpvs_admin_plugin_pvs_link( $links ) { 
+	$pvs_link = '<a href="'. esc_url( get_admin_url(null, 'admin.php?page=post-volume-stats') ) .'">'.__('Post Volume Stats', 'post-volume-stats').'</a>';
+	array_unshift( $links, $pvs_link ); 
+	return $links; 
+}
 
 // Register a custom menu page in the admin.
 function sdpvs_register_custom_page_in_menu() {
@@ -423,6 +435,8 @@ function sdpvs_process_ajax() {
 		echo $sdpvs_lists -> sdpvs_posts_per_author_list($searchyear, $searchauthor);
 	} elseif ("words" == $answer){
 		echo $sdpvs_lists -> sdpvs_words_per_post_list($searchyear, $searchauthor);
+	} elseif ("interval" == $answer){
+		echo $sdpvs_lists -> sdpvs_interval_between_posts_list($searchyear, $searchauthor);
 	} else {
 		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($answer, $searchyear, $searchauthor, 'admin', '');
 	}
@@ -621,7 +635,7 @@ function sdpvs_download_redirect() {
 		preg_match($pattern, $searchstring, $matches);
 		$answer = $matches[1];
 
-		if("words"!=$answer and "hour"!=$answer and "dayofweek"!=$answer and "month"!=$answer and "dayofmonth"!=$answer and "tag"!=$answer and "category"!=$answer){
+		if("words"!=$answer and "hour"!=$answer and "dayofweek"!=$answer and "month"!=$answer and "dayofmonth"!=$answer and "tag"!=$answer and "category"!=$answer and "interval"!=$answer){
 				#check that the taxonomy exists
 				$foundit = 0;
 				$args = array(

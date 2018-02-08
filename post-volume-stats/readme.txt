@@ -4,7 +4,7 @@ Contributors: shortdark
 Donate link: https://www.paypal.me/shortdark
 Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget, author, taxonomy
 Requires at least: 3.5
-Tested up to: 4.8.1
+Tested up to: 4.9.4
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -46,6 +46,12 @@ Here are the latest screenshots...
 8. Settings page allows customization.
 
 == Changelog ==
+
+= 3.1.11 =
+
+* Added "Days Between Posts" to the main page.
+* Fixed bug where sometimes the volume of posts can be a non integer.
+* Added link to the Settings page from the main WordPress Plugins page.
 
 = 3.1.10 =
 
