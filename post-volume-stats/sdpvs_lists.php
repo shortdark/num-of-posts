@@ -74,21 +74,24 @@ class sdpvsTextLists extends sdpvsArrays {
 			$typetitleplural = "Categories";
 			$form_name = 'sdpvs_catselect';
 			$taxonomy_type = 'category';
-			$logical_starter = 0;
 		} elseif ("tag" == $type) {
 			$typetitle = "Tag";
 			$typetitleplural = "Tags";
 			$form_name = 'sdpvs_tagselect';
 			$taxonomy_type = 'post_tag';
-			$logical_starter = 0;
 		}else{
 			$tax_labels = get_taxonomy($type);
 			$typetitle = $tax_labels->labels->singular_name;
 			$typetitleplural = $tax_labels->label;
 			$form_name = 'sdpvs_customselect';
 			$taxonomy_type = $type;
-			$logical_starter = 1;
 		}
+		if("tag" != $type and "category" != $type and "export" != $list_type){
+			$logical_starter = 1;
+		}else{
+			$logical_starter = 0;
+		}
+
 		$genoptions = get_option('sdpvs_general_settings');
 		$listcolors = filter_var ( $genoptions['rainbow'], FILTER_SANITIZE_STRING);
 
@@ -104,7 +107,6 @@ class sdpvsTextLists extends sdpvsArrays {
 			if("category" != $type and "tag" != $type){
 				$posts_per_cat_tag .= "<input type=\"hidden\" name=\"customname\" value=\"$type\">";
 			}
-
 
 			// Make a string for the export button AJAX
 			$x = $logical_starter;
@@ -150,7 +152,7 @@ class sdpvsTextLists extends sdpvsArrays {
 			parent::sdpvs_post_taxonomy_type_volumes($taxonomy_type, $searchyear, $searchauthor);
 			$universal_array = $this -> tax_type_array;
 
-			//	var_dump($tax_array_name);
+				// var_dump($tax_array_name);
 
 			if ("subpage" == $list_type) {
 				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export to a post then click the \'Show Preview\' button. On mobile devices you may have to scroll down as the results may be at the bottom of the page.', 'post-volume-stats'), $typetitleplural) . '</p>';
@@ -192,7 +194,7 @@ class sdpvsTextLists extends sdpvsArrays {
 			$selectable .= "<ol>";
 
 			$x = $logical_starter;
-
+			$y = 0;
 			while ($select_array[1][$x]) {
 				if (0 < $select_array[1][$x]) {
 					$term_id = abs($select_array[1][$x]);
@@ -202,8 +204,8 @@ class sdpvsTextLists extends sdpvsArrays {
 
 					$link = get_term_link( $term_id );
 
-					if (10 > $x and "off" != $listcolors) {
-						$color = $colorlist[$x];
+					if (10 > $y and "off" != $listcolors) {
+						$color = $colorlist[$y];
 					} else {
 						$color = "#000";
 					}
@@ -212,6 +214,7 @@ class sdpvsTextLists extends sdpvsArrays {
 
 				}
 				$x++;
+				$y++;
 			}
 
 			$selectable .= "</ol>";

@@ -47,6 +47,18 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 3.1.15 =
+
+* Fixed Custom Taxonomy page so that changing year no longer breaks the checkbox list.
+* Fixed the color issue with the Custom Taxonomy pages.
+* Fixed export bug with the Custom Taxonomy.
+
+= 3.1.14 =
+
+* Changed "Days Between Posts" to look at calendar dates only, not the time that posts were made.
+* "Date Range" must be activated in the settings.
+* Modified some wording.
+
 = 3.1.12 =
 
 * Tidied Date Range page. 

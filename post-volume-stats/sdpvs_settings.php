@@ -48,6 +48,7 @@ function sdpvs_register_general_settings() {
 	add_settings_field( 'customvalue', 'Select a Taxonomy to view', 'sdpvs_field_five_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
 	add_settings_field( 'admintool', 'Put a link to Post Volume Stats in the Admin Toolbar', 'sdpvs_field_six_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
 	add_settings_field( 'exportcsv', 'Allow export of CSV', 'sdpvs_field_seven_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
+	add_settings_field( 'showrange', 'Show Date Range (BETA)', 'sdpvs_field_callback_date_range', 'post-volume-stats-settings', 'sdpvs_general_settings' );
 	
 }
 
@@ -254,8 +255,19 @@ function sdpvs_field_seven_callback() {
 	echo "</div>";
 }
 
-
-
+function sdpvs_field_callback_date_range() {
+	$genoptions = get_option('sdpvs_general_settings');
+	$showrange = filter_var ( $genoptions['showrange'], FILTER_SANITIZE_STRING);
+    echo "<div style='display: block; padding: 5px;'>";
+	if("no" == $showrange or !$showrange){
+		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showrange]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
+		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showrange]\" value=\"yes\">Yes</label>";
+	}else{
+		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showrange]\" value=\"no\">No (default)</label><br>";
+		echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showrange]\" value=\"yes\" checked=\"checked\">Yes</label>";
+	}
+	echo "</div>";
+}
 
 
 

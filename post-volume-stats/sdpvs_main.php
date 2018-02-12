@@ -35,11 +35,11 @@ class sdpvsMainContent {
 
 		// Plugin Description
 		if (0 < $selected) {
-			echo '<p class="sdpvs">' . sprintf(esc_html__('These are the stats for %s %s for the selected year: %d. Click a bar of the "Years" or "Authors" bar charts to change to that year or author, or click the selected year/author (red) to view the stats for all years/authors.', 'post-volume-stats'), get_bloginfo('name'), $extradesc, $selected) . '</p>';
+			echo '<p class="sdpvs">' . sprintf(__('These are the stats for %s %s for the selected year: <strong>%d</strong>. Click a bar of the "Years" or "Authors" bar charts to change to that year or author, or click the selected year/author (red) to view the stats for all years/authors.', 'post-volume-stats'), get_bloginfo('name'), $extradesc, $selected) . '</p>';
 		}elseif($start_date){
-			echo '<p class="sdpvs">' . sprintf(esc_html__('These are the stats for %s %s for the range: %s to %s. Click a bar of the "Years" or "Authors" bar charts to change to that year or author, or click the selected year/author (red) to view the stats for all years/authors.', 'post-volume-stats'), get_bloginfo('name'), $extradesc, $start_date, $end_date) . '</p>';
+			echo '<p class="sdpvs">' . sprintf(__('These are the stats for %s %s for the range: <strong>%s to %s</strong>. Click a bar of the "Years" or "Authors" bar charts to change to that year or author, or click the selected year/author (red) to view the stats for all years/authors.', 'post-volume-stats'), get_bloginfo('name'), $extradesc, $start_date, $end_date) . '</p>';
 		} else {
-			echo '<p class="sdpvs">' . sprintf(esc_html__('These are the all-time stats %s for %s. Click a bar of the "Years" bar chart to change to that year. Click a bar of "Authors" to change the stats to that author-only.', 'post-volume-stats'), $extradesc, get_bloginfo('name')) . '</p>';
+			echo '<p class="sdpvs">' . sprintf(__('These are the <strong>all-time</strong> stats %s for %s. Click a bar of the "Years" bar chart to change to that year. Click a bar of "Authors" to change the stats to that author-only.', 'post-volume-stats'), $extradesc, get_bloginfo('name')) . '</p>';
 		}
 
 
@@ -89,12 +89,12 @@ class sdpvsMainContent {
 
 		// posts per category pie chart
 		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_pie -> sdpvs_draw_pie_svg('category', $selected, $author, 'n', 'n');
+		echo $sdpvs_pie -> sdpvs_draw_pie_svg('category', $selected, $author, 'n', 'n', $start_date, $end_date);
 		echo "</div>";
 
 		// posts per tag pie chart
 		echo "<div class='sdpvs_col'>";
-		echo $sdpvs_pie -> sdpvs_draw_pie_svg('tag', $selected, $author, 'n', 'n');
+		echo $sdpvs_pie -> sdpvs_draw_pie_svg('tag', $selected, $author, 'n', 'n', $start_date, $end_date);
 		echo "</div>";
 
 		if( "yes" == $customoff and "_all_taxonomies" == $customvalue ){
@@ -111,7 +111,7 @@ class sdpvsMainContent {
 						$tax_labels = get_taxonomy($taxonomy);
 						// posts per $tax_labels->name pie chart
 						echo "<div class='sdpvs_col'>";
-						echo $sdpvs_pie -> sdpvs_draw_pie_svg($tax_labels->name, $selected, $author, 'n', 'n');
+						echo $sdpvs_pie -> sdpvs_draw_pie_svg($tax_labels->name, $selected, $author, 'n', 'n', $start_date, $end_date);
 						echo "</div>";
 					}
 				}
@@ -119,7 +119,7 @@ class sdpvsMainContent {
 		}elseif( "yes" == $customoff and "" != $customvalue ){
 			// posts per custom taxonomy pie chart
 			echo "<div class='sdpvs_col'>";
-			echo $sdpvs_pie -> sdpvs_draw_pie_svg($customvalue, $selected, $author, 'n', 'n');
+			echo $sdpvs_pie -> sdpvs_draw_pie_svg($customvalue, $selected, $author, 'n', 'n', $start_date, $end_date);
 			echo "</div>";
 		}
 		return;

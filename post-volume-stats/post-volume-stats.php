@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.1.12
+ * @version 3.1.15
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.1.12
+ * Version: 3.1.15
  * Author URI: http://www.shortdark.net/
  */
 
@@ -36,7 +36,7 @@ if (!function_exists('add_action')) {
 
 define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SDPVS__PLUGIN_FOLDER', 'post-volume-stats');
-define('SDPVS__VERSION_NUMBER', '3.1.12');
+define('SDPVS__VERSION_NUMBER', '3.1.15');
 
 /******************
  ** SETUP THE PAGE
@@ -179,12 +179,10 @@ function sdpvs_custom_page() {
 		$sdpvs_sub = new sdpvsSubPages();
 
 		$genoptions = get_option('sdpvs_general_settings');
-		// $customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
-
 		$sdpvs_page_value = filter_var ( $_SERVER['QUERY_STRING'], FILTER_SANITIZE_STRING);
-		$customvalue = substr($sdpvs_page_value,23);
-
-		#echo "<h1>Page: " . $_POST['page'] . " .. " . $customvalue . "</h1>";
+		// When changing year the "&settings-updated=true" string is added to the URL!
+		preg_match('/^page=post-volume-stats-([^&]*)(&settings-updated=true)?/',$sdpvs_page_value,$matches);
+		$customvalue = $matches[1];
 
 		// Call the method
 		$sdpvs_sub -> sdpvs_combined_page_content($customvalue);
@@ -247,7 +245,7 @@ function sdpvs_date_range_select_page() {
 		// Content goes here
 		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Date Range Select (BETA)', 'post-volume-stats') . '</h1>';
 		echo "<p>On this page you can select the year that you wish to study. It is an alternative to clicking the bars of the \"Year\" bar chart. To view all years together select the blank option at the top.</p>";
-		echo "<p>The date range does not work properly. Please use the main year select on the other pages.</p>";
+		echo "<p>Only if the \"Year\" is blank will the date range (start and end) be used. If a date range is entered (with no year selected) it will be applied to the bar charts on the main page, but not the pie charts or the line graphs on the Tag/Category/Custom pages. This is a work in progress. Please use the main year select on the other pages.</p>";
 
 		echo "<form action='" . esc_url(admin_url('options.php')) . "' method='POST'>";
 		settings_fields( 'sdpvs_year_option' );
@@ -285,6 +283,7 @@ function sdpvs_register_custom_page_in_menu() {
 	$genoptions = get_option('sdpvs_general_settings');
 	$customoff = filter_var ( $genoptions['customoff'], FILTER_SANITIZE_STRING);
 	$customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
+	$showrange = filter_var ( $genoptions['showrange'], FILTER_SANITIZE_STRING);
 	add_menu_page(esc_html__('Post Volume Stats', 'post-volume-stats'), esc_html__('Post Volume Stats', 'post-volume-stats'), 'manage_options', dirname(__FILE__), 'sdpvs_post_volume_stats_assembled', plugins_url('images/post-volume-stats-16x16.png', __FILE__), 1000);
 	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Categories', 'post-volume-stats'), esc_html__('Categories', 'post-volume-stats'), 'read', 'post-volume-stats-categories', 'sdpvs_category_page');
 	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Tags', 'post-volume-stats'), esc_html__('Tags', 'post-volume-stats'), 'read', 'post-volume-stats-tags', 'sdpvs_tag_page');
@@ -309,7 +308,9 @@ function sdpvs_register_custom_page_in_menu() {
 		$tax_labels = get_taxonomy($customvalue);
 		add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $customvalue, 'sdpvs_custom_page');
 	}
-	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Date Range', 'post-volume-stats'), esc_html__('Date Range', 'post-volume-stats'), 'manage_options', 'post-volume-stats-daterange', 'sdpvs_date_range_select_page');
+	if( "yes" == $showrange ){
+		add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Date Range', 'post-volume-stats'), esc_html__('Date Range (BETA)', 'post-volume-stats'), 'manage_options', 'post-volume-stats-daterange', 'sdpvs_date_range_select_page');
+	}
 	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Settings', 'post-volume-stats'), esc_html__('Settings', 'post-volume-stats'), 'manage_options', 'post-volume-stats-settings', 'sdpvs_settings_page');
 }
 

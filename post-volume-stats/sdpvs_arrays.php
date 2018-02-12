@@ -228,7 +228,7 @@ abstract class sdpvsArrays {
 
 
 	/*
-	 * NUMBER OF POSTS IN ORDER
+	 * NUMBER OF POSTS IN ORDER, FOR "DAYS BETWEEN POSTS"
 	 */
 	protected function sdpvs_number_of_posts_in_order($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "" ) {
 		global $wpdb;
@@ -251,16 +251,16 @@ abstract class sdpvsArrays {
 		} else {*/
 			foreach ($found_posts as $ordered_post) {
 				if(!$previous_date){
-					$previous_date = $ordered_post -> post_date;
+					$previous_date = substr($ordered_post -> post_date, 0, 10);
 				}else{
-					$current_date = $ordered_post -> post_date;
+					$current_date = substr($ordered_post -> post_date, 0, 10);
 					$previous = new DateTime($previous_date);
 					$current = new DateTime($current_date);
 					$interval = $current->diff($previous);
 					$i = absint( $interval->format('%a') );
 					$this -> list_array[$i]['name'] = "$i days";
 					$this -> list_array[$i]['volume'] ++;
-					$previous_date = $ordered_post -> post_date;
+					$previous_date = substr($ordered_post -> post_date, 0, 10);
 					if(!$highest_interval or $i > $highest_interval ){
 						$highest_interval = $i;
 					}
