@@ -47,6 +47,12 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 3.1.16 =
+
+* Limited the intervals between posts to a max of 30 days (anything over that is ignored).
+* Compare years added for "Days Between Posts".
+* CSV export added for "Days Between Posts".
+
 = 3.1.15 =
 
 * Fixed Custom Taxonomy page so that changing year no longer breaks the checkbox list.

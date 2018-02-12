@@ -236,6 +236,7 @@ abstract class sdpvsArrays {
 		$currentyear = date('Y');
 		$searchauthor = absint($searchauthor);
 		$this -> list_array = array();
+		$test_array = array();
 		if (0 < $searchyear) {
 			$extra = " AND $wpdb->posts.post_date LIKE '$searchyear%' ";
 		}elseif("" != $start_date and "" != $end_date ){
@@ -246,9 +247,6 @@ abstract class sdpvsArrays {
 			$extra = " AND post_author = '$searchauthor' ";
 		}
 		$found_posts = $wpdb -> get_results("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' $extra ORDER BY post_date ASC ");
-/*		if (0 > $found_posts or !$found_posts or "" == $found_posts) {
-			$found_posts = 0;
-		} else {*/
 			foreach ($found_posts as $ordered_post) {
 				if(!$previous_date){
 					$previous_date = substr($ordered_post -> post_date, 0, 10);
@@ -258,21 +256,26 @@ abstract class sdpvsArrays {
 					$current = new DateTime($current_date);
 					$interval = $current->diff($previous);
 					$i = absint( $interval->format('%a') );
-					$this -> list_array[$i]['name'] = "$i days";
-					$this -> list_array[$i]['volume'] ++;
+					$test_array[$i]['name'] = $i;
+					$test_array[$i]['volume'] ++;
 					$previous_date = substr($ordered_post -> post_date, 0, 10);
 					if(!$highest_interval or $i > $highest_interval ){
 						$highest_interval = $i;
 					}
 				}
 			}
-		// }
 			$wpdb -> flush();
-			for($j=0;$j<$highest_interval;$j++) {
-				if(1 > $this->list_array[$j]['volume'] or !$this->list_array[$j]['volume']){
+			for($j=0;$j<=30;$j++) {
 					$this -> list_array[$j]['name'] = "$j days";
 					$this -> list_array[$j]['volume'] = 0;
-				}
+					for ($k=0; $k <= $highest_interval; $k++){
+						if( $test_array[$k]['name'] == $j){
+							if( 0 < $test_array[$k]['volume'] ){
+								$this -> list_array[$j]['volume'] = $test_array[$k]['volume'];
+							}
+							continue;
+						}
+					}
 			}
 
 		return;

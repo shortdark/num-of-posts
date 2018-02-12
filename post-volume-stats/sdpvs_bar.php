@@ -283,7 +283,7 @@ class sdpvsBarChart extends sdpvsArrays {
 		echo "</svg>\n";
 		if ("n" == $subpage and "y" != $public) {
 			echo "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form></p>";
-			if("words" == $which or "hour" == $which or "dayofweek" == $which or "month" == $which or "dayofmonth" == $which){
+			if("words" == $which or "hour" == $which or "dayofweek" == $which or "month" == $which or "dayofmonth" == $which or "interval" == $which){
 				# add "interval" to here onfce bug is fixed
 				echo "<form class='sdpvs_compare' action='' method='POST'><input type='hidden' name='comparedata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Compare Years'></form></p>";
 				if("yes"==$exportcsv){
