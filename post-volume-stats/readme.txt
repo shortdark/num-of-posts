@@ -49,12 +49,10 @@ Here are the latest screenshots...
 
 = 3.1.16 =
 
-* Limited the intervals between posts to a max of 30 days (anything over that is ignored).
+* Setting added to make max. interval between posts 30 to 80 days for "Days Between Posts". Longer intervals take longer to load in "Compare Years" table.
 * Compare years added for "Days Between Posts".
 * CSV export added for "Days Between Posts".
-
-= 3.1.15 =
-
+* "Words per Post" and "Days Between Posts" added to the widget.
 * Fixed Custom Taxonomy page so that changing year no longer breaks the checkbox list.
 * Fixed the color issue with the Custom Taxonomy pages.
 * Fixed export bug with the Custom Taxonomy.

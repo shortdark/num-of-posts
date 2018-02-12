@@ -233,6 +233,11 @@ abstract class sdpvsArrays {
 	protected function sdpvs_number_of_posts_in_order($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "" ) {
 		global $wpdb;
 		$extra="";
+		$genoptions = get_option('sdpvs_general_settings');
+		$max_interval = absint ( $genoptions['maxinterval'] );
+		if( 30 > $max_interval ){
+			$max_interval = 30;
+		}
 		$currentyear = date('Y');
 		$searchauthor = absint($searchauthor);
 		$this -> list_array = array();
@@ -256,20 +261,25 @@ abstract class sdpvsArrays {
 					$current = new DateTime($current_date);
 					$interval = $current->diff($previous);
 					$i = absint( $interval->format('%a') );
-					$test_array[$i]['name'] = $i;
-					$test_array[$i]['volume'] ++;
-					$previous_date = substr($ordered_post -> post_date, 0, 10);
-					if(!$highest_interval or $i > $highest_interval ){
-						$highest_interval = $i;
+					if($i >= $max_interval){
+						$test_array[$max_interval]['name'] = $max_interval;
+						$test_array[$max_interval]['volume'] ++;
+					}else{
+						$test_array[$i]['name'] = $i;
+						$test_array[$i]['volume'] ++;
 					}
+					$previous_date = $current_date;
 				}
 			}
 			$wpdb -> flush();
-			for($j=0;$j<=30;$j++) {
+			for($j=0;$j<=$max_interval;$j++) {
 					$this -> list_array[$j]['name'] = "$j days";
 					$this -> list_array[$j]['volume'] = 0;
-					for ($k=0; $k <= $highest_interval; $k++){
-						if( $test_array[$k]['name'] == $j){
+					if($j == $max_interval){
+						$this -> list_array[$j]['name'] = "$j+ days";
+					}
+					for ($k=0; $k <= $max_interval; $k++){
+						if( $j == $test_array[$k]['name'] ){
 							if( 0 < $test_array[$k]['volume'] ){
 								$this -> list_array[$j]['volume'] = $test_array[$k]['volume'];
 							}
@@ -277,7 +287,6 @@ abstract class sdpvsArrays {
 						}
 					}
 			}
-
 		return;
 	}
 

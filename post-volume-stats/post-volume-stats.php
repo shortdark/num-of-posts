@@ -182,7 +182,7 @@ function sdpvs_custom_page() {
 		$sdpvs_page_value = filter_var ( $_SERVER['QUERY_STRING'], FILTER_SANITIZE_STRING);
 		// When changing year the "&settings-updated=true" string is added to the URL!
 		preg_match('/^page=post-volume-stats-([^&]*)(&settings-updated=true)?/',$sdpvs_page_value,$matches);
-		$customvalue = $matches[1];
+		$customvalue = filter_var ( $matches[1], FILTER_SANITIZE_STRING);
 
 		// Call the method
 		$sdpvs_sub -> sdpvs_combined_page_content($customvalue);

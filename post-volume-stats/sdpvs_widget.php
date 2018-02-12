@@ -31,6 +31,9 @@ class SDPVS_Widget extends WP_Widget {
 		$checkbox3 = esc_attr( $instance['checkbox3'] );
 		$checkbox4 = esc_attr( $instance['checkbox4'] );
 		$checkbox5 = esc_attr( $instance['checkbox5'] );
+		$checkbox8 = esc_attr( $instance['checkbox8'] );
+		$checkbox9 = esc_attr( $instance['checkbox9'] );
+
 		$checkbox6 = esc_attr( $instance['checkbox6'] );
 		$checkbox7 = esc_attr( $instance['checkbox7'] );
 		
@@ -46,7 +49,7 @@ class SDPVS_Widget extends WP_Widget {
    		if( $textarea ) {
      		echo '<p class="wp_widget_plugin_textarea">'.$textarea.'</p>';
    		}
-		if($checkbox1 or $checkbox2 or $checkbox3 or $checkbox4 or $checkbox5){
+		if($checkbox1 or $checkbox2 or $checkbox3 or $checkbox4 or $checkbox5 or $checkbox8 or $checkbox9 ){
 			// Check if checkboxes are checked
 			$sdpvs_bar = new sdpvsBarChart();
    			if( 'year' == $checkbox1 ) {
@@ -77,6 +80,18 @@ class SDPVS_Widget extends WP_Widget {
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
    				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('hour','','','n','y',$label_color);
+				echo "</div>";
+   			}
+   			if('words' == $checkbox8){
+   				// dayofmonth bar chart
+   				echo "<div class='sdpvs_col'>";
+   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('words','','','n','y',$label_color);
+				echo "</div>";
+   			}
+   			if('interval' == $checkbox9){
+   				// dayofmonth bar chart
+   				echo "<div class='sdpvs_col'>";
+   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('interval','','','n','y',$label_color);
 				echo "</div>";
    			}
 			
@@ -120,6 +135,8 @@ class SDPVS_Widget extends WP_Widget {
 			 $checkbox3 = esc_attr( $instance['checkbox3'] );
 			 $checkbox4 = esc_attr( $instance['checkbox4'] );
 			 $checkbox5 = esc_attr( $instance['checkbox5'] );
+			 $checkbox8 = esc_attr( $instance['checkbox8'] );
+			 $checkbox9 = esc_attr( $instance['checkbox9'] );
 			 $checkbox6 = esc_attr( $instance['checkbox6'] );
 			 $checkbox7 = esc_attr( $instance['checkbox7'] );
 		} else {
@@ -131,6 +148,8 @@ class SDPVS_Widget extends WP_Widget {
 			 $checkbox3 = '';
 			 $checkbox4 = '';
 			 $checkbox5 = '';
+			 $checkbox8 = '';
+			 $checkbox9 = '';
 			 $checkbox6 = '';
 			 $checkbox7 = '';
 		}
@@ -172,6 +191,14 @@ class SDPVS_Widget extends WP_Widget {
 		<label for="<?php echo esc_attr($this -> get_field_id('checkbox5')); ?>"><?php esc_html_e('Hour', 'post-volume-stats'); ?></label>
 		</p>
 		<p>
+		<input id="<?php echo esc_attr($this -> get_field_id('checkbox8')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox8')); ?>" type="checkbox" value="words" <?php checked('words', $checkbox8); ?> />
+		<label for="<?php echo esc_attr($this -> get_field_id('checkbox8')); ?>"><?php esc_html_e('Words per Post', 'post-volume-stats'); ?></label>
+		</p>
+		<p>
+		<input id="<?php echo esc_attr($this -> get_field_id('checkbox9')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox9')); ?>" type="checkbox" value="interval" <?php checked('interval', $checkbox9); ?> />
+		<label for="<?php echo esc_attr($this -> get_field_id('checkbox9')); ?>"><?php esc_html_e('Interval', 'post-volume-stats'); ?></label>
+		</p>
+		<p>
 		<input id="<?php echo esc_attr($this -> get_field_id('checkbox6')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox6')); ?>" type="checkbox" value="category" <?php checked('category', $checkbox6); ?> />
 		<label for="<?php echo esc_attr($this -> get_field_id('checkbox6')); ?>"><?php esc_html_e('Categories', 'post-volume-stats'); ?></label>
 		</p>
@@ -200,6 +227,8 @@ class SDPVS_Widget extends WP_Widget {
 			$instance['checkbox3'] = strip_tags($new_instance['checkbox3']);
 			$instance['checkbox4'] = strip_tags($new_instance['checkbox4']);
 			$instance['checkbox5'] = strip_tags($new_instance['checkbox5']);
+			$instance['checkbox8'] = strip_tags($new_instance['checkbox8']);
+			$instance['checkbox9'] = strip_tags($new_instance['checkbox9']);
 			$instance['checkbox6'] = strip_tags($new_instance['checkbox6']);
 			$instance['checkbox7'] = strip_tags($new_instance['checkbox7']);
 			return $instance;

@@ -49,6 +49,7 @@ function sdpvs_register_general_settings() {
 	add_settings_field( 'admintool', 'Put a link to Post Volume Stats in the Admin Toolbar', 'sdpvs_field_six_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
 	add_settings_field( 'exportcsv', 'Allow export of CSV', 'sdpvs_field_seven_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
 	add_settings_field( 'showrange', 'Show Date Range (BETA)', 'sdpvs_field_callback_date_range', 'post-volume-stats-settings', 'sdpvs_general_settings' );
+	add_settings_field( 'maxinterval', 'Maximum post interval to show', 'sdpvs_field_callback_max_interval', 'post-volume-stats-settings', 'sdpvs_general_settings' );
 	
 }
 
@@ -269,7 +270,23 @@ function sdpvs_field_callback_date_range() {
 	echo "</div>";
 }
 
-
+function sdpvs_field_callback_max_interval() {
+	$genoptions = get_option('sdpvs_general_settings');
+	$maxinterval = filter_var ( $genoptions['maxinterval'], FILTER_SANITIZE_STRING);
+    echo "<div style='display: block; padding: 5px;'>";
+    echo  "<select name=\"sdpvs_general_settings[maxinterval]\">";
+	for ( $i=0; $i <= 10; $i++ ) {
+		$interval = 30 + ($i * 5);
+		if($interval == $maxinterval){
+			echo  "<option name=\"sdpvs_general_settings[maxinterval]\" value=\"$interval\" selected=\"selected\">$interval days</option>";
+		}else{
+			echo  "<option name=\"sdpvs_general_settings[maxinterval]\" value=\"$interval\">$interval days</option>";
+		}
+	}
+	echo  "</select>";
+	echo "<p>Default is 30 days. Bigger interval = longer time to load.</p>";
+	echo "</div>";
+}
 
 
 /**

@@ -117,7 +117,7 @@ class sdpvsBarChart extends sdpvsArrays {
 			$bars_total = $this -> total_bars;
 			$order = "asc";
 			if ("y" != $public) {
-				echo '<h2>' . esc_html__('Days Between Posts (BETA)', 'post-volume-stats') . '</h2>';
+				echo '<h2>' . esc_html__('Days Between Posts', 'post-volume-stats') . '</h2>';
 			} else {
 				echo '<h2>' . esc_html__('Days Between Posts', 'post-volume-stats') . '</h2>';
 			}
