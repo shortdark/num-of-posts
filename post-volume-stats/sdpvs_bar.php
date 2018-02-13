@@ -189,7 +189,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				if ($chart_array[$i]['name'] == $searchyear and "year" == $which) {
 					$color = $highlight_color;
 					$set_explicit_color = "background-color: $color;";
-				}elseif ($chart_array[$i]['id'] == $searchauthor and "author" == $which) {
+				}elseif ( isset($chart_array[$i]['id']) and $chart_array[$i]['id'] == $searchauthor and "author" == $which) {
 					$color = $highlight_color;
 					$set_explicit_color = "background-color: $color;";
 				}elseif ( ($chart_array[$i]['name'] == "Saturday" or $chart_array[$i]['name'] == "Sunday") and "dayofweek" == $which) {

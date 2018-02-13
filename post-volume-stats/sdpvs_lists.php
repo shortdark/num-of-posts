@@ -151,9 +151,6 @@ class sdpvsTextLists extends sdpvsArrays {
 			// Only grab all data when everything is required
 			parent::sdpvs_post_taxonomy_type_volumes($taxonomy_type, $searchyear, $searchauthor);
 			$universal_array = $this -> tax_type_array;
-
-				// var_dump($tax_array_name);
-
 			if ("subpage" == $list_type) {
 				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export to a post then click the \'Show Preview\' button. On mobile devices you may have to scroll down as the results may be at the bottom of the page.', 'post-volume-stats'), $typetitleplural) . '</p>';
 

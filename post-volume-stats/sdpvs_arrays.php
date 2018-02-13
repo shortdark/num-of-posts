@@ -233,6 +233,7 @@ abstract class sdpvsArrays {
 	protected function sdpvs_number_of_posts_in_order($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "" ) {
 		global $wpdb;
 		$extra="";
+		$previous_date="";
 		$genoptions = get_option('sdpvs_general_settings');
 		$max_interval = absint ( $genoptions['maxinterval'] );
 		if( 30 > $max_interval ){
@@ -243,17 +244,17 @@ abstract class sdpvsArrays {
 		$this -> list_array = array();
 		$test_array = array();
 		if (0 < $searchyear) {
-			$extra = " AND $wpdb->posts.post_date LIKE '$searchyear%' ";
+			$extra = " AND post_date LIKE '$searchyear%' ";
 		}elseif("" != $start_date and "" != $end_date ){
-			$extra = " AND $wpdb->posts.post_date >= '$start_date' ";
-			$extra .= " AND $wpdb->posts.post_date <= '$end_date' ";
+			$extra = " AND post_date >= '$start_date' ";
+			$extra .= " AND post_date <= '$end_date' ";
 		}
 		if("" != $searchauthor){
-			$extra = " AND post_author = '$searchauthor' ";
+			$extra .= " AND post_author = '$searchauthor' ";
 		}
 		$found_posts = $wpdb -> get_results("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' $extra ORDER BY post_date ASC ");
 			foreach ($found_posts as $ordered_post) {
-				if(!$previous_date){
+				if(""==$previous_date){
 					$previous_date = substr($ordered_post -> post_date, 0, 10);
 				}else{
 					$current_date = substr($ordered_post -> post_date, 0, 10);
@@ -263,10 +264,20 @@ abstract class sdpvsArrays {
 					$i = absint( $interval->format('%a') );
 					if($i >= $max_interval){
 						$test_array[$max_interval]['name'] = $max_interval;
-						$test_array[$max_interval]['volume'] ++;
+						if( isset($test_array[$max_interval]['volume']) ){
+							$test_array[$max_interval]['volume'] ++;
+						}else{
+							$test_array[$max_interval]['volume'] = 1;
+						}
+						
 					}else{
 						$test_array[$i]['name'] = $i;
-						$test_array[$i]['volume'] ++;
+						if( isset($test_array[$i]['volume']) ){
+							$test_array[$i]['volume'] ++;
+						}else{
+							$test_array[$i]['volume'] = 1;
+						}
+						
 					}
 					$previous_date = $current_date;
 				}
@@ -279,7 +290,7 @@ abstract class sdpvsArrays {
 						$this -> list_array[$j]['name'] = "$j+ days";
 					}
 					for ($k=0; $k <= $max_interval; $k++){
-						if( $j == $test_array[$k]['name'] ){
+						if( isset($test_array[$k]['name']) and $j == $test_array[$k]['name'] ){
 							if( 0 < $test_array[$k]['volume'] ){
 								$this -> list_array[$j]['volume'] = $test_array[$k]['volume'];
 							}

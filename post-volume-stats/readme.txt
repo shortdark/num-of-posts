@@ -47,6 +47,11 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 3.1.17 =
+
+* Fixed bug where a selected user meant that it wasn't recognizing the selected year on "Days Between Posts".
+* Tidied up code and removed WordPress notices.
+
 = 3.1.16 =
 
 * Setting added to make max. interval between posts 30 to 80 days for "Days Between Posts". Longer intervals take longer to load in "Compare Years" table.

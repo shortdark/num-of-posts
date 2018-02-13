@@ -5,6 +5,8 @@ defined('ABSPATH') or die('No script kiddies please!');
 class sdpvsMainContent {
 
 	public function sdpvs_page_content() {
+		$start_date = "";
+		$end_date = "";
 
 		// create an instance of the required classes
 		$sdpvs_info = new sdpvsInfo();
@@ -15,8 +17,12 @@ class sdpvsMainContent {
 
 		$options = get_option('sdpvs_year_option');
 		$selected = absint($options['year_number']);
-		$start_date = $options['start_date'];
-		$end_date = $options['end_date'];
+		if(isset($options['start_date'])){
+			$start_date = filter_var ( $options['start_date'], FILTER_SANITIZE_STRING);
+		}
+		if(isset($options['end_date'])){
+			$end_date = filter_var ( $options['end_date'], FILTER_SANITIZE_STRING);
+		}
 
 		$authoroptions = get_option('sdpvs_author_option');
 		$author = absint($authoroptions['author_number']);
@@ -82,7 +88,7 @@ class sdpvsMainContent {
 		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('words', $selected, $author, 'n', '', '', $start_date, $end_date);
 		echo "</div>";
 
-		// words per post bar chart
+		// days between post bar chart
 		echo "<div class='sdpvs_col'>";
 		$sdpvs_bar -> sdpvs_draw_bar_chart_svg('interval', $selected, $author, 'n', '', '', $start_date, $end_date);
 		echo "</div>";

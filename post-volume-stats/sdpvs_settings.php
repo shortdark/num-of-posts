@@ -197,9 +197,7 @@ function sdpvs_field_five_callback() {
 		'_builtin' => false
 	); 
 	$all_taxes = get_taxonomies( $args );
-//	var_dump($all_taxes);
 	$count_taxes = count( $all_taxes );
-//	var_dump($count_taxes);
 	if( 1 < $count_taxes ){
 		echo  "<select name=\"sdpvs_general_settings[customvalue]\">";
 		echo  "<option name=\"sdpvs_general_settings[customvalue]\" value=\"_all_taxonomies\">Display All</option>";
