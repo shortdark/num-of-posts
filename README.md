@@ -3,7 +3,7 @@ My first WordPress plugin. I originally based it on the one file plugin, Hello D
 
 Because I based the plugin on "Hello Dolly" the PHP wasn't OOP to begin with. When I changed the code back to OOP (some of the code comes from another project that was OOP) it worked fine just needed some tidying up. There are probably better ways to do a lot of the functionality, and better ways to interact with WordPress so I aim to continually improve the plugin to get closer to perfection.
 
-There are graphical representation of year, category, tag, day-of-the-week, hour-of-the-day, month and day-of-the-month stats. The lists have been moved to AJAX, to free up more space and so it works better on mobile devices. You are also able to select a year and just see the stats for that one year. 
+There are graphical representation of year, category, tag, day-of-the-week, hour-of-the-day, month, day-of-the-month, and days between posts stats. The lists have been moved to AJAX, to free up more space and so it works better on mobile devices. You are also able to select a year and just see the stats for that one year. 
 
 The tags and categories subpages allow the ability to export the data as HTML lists and line graphs; a click of a button creates a new post with the selected list and line graph in it.
 
