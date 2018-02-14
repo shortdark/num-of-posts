@@ -243,10 +243,10 @@ function sdpvs_date_range_select_page() {
 		$time_start = microtime(true);
 
 		// Content goes here
-		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Date Range Select (BETA)', 'post-volume-stats') . '</h1>';
+		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Date Range Select', 'post-volume-stats') . '</h1>';
 		echo "<p>On this page you can either select a year or you can select a date range.</p>";
 		echo "<p>Selecting a year on this page is an alternative to clicking the bars of the \"Year\" bar chart on the other pages. To de-select the year and view all years together select the blank option at the top.</p>";
-		echo "<p>Only if the \"Year\" is blank will the date range be used. You must enter both a start date and an end date. If a date range is entered (with no year selected) it will be applied to the main page, but not the Tag/Category/Custom pages. This is a work in progress.</p>";
+		echo "<p>Only if the \"Year\" is blank will the date range be used. You must enter both a start date and an end date. If a date range is entered (with no year selected) it will be applied to the main page, but not the Tag/Category/Custom pages.</p>";
 
 		echo "<form action='" . esc_url(admin_url('options.php')) . "' method='POST'>";
 		settings_fields( 'sdpvs_year_option' );
@@ -310,7 +310,7 @@ function sdpvs_register_custom_page_in_menu() {
 		add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $customvalue, 'sdpvs_custom_page');
 	}
 	if( "yes" == $showrange ){
-		add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Date Range', 'post-volume-stats'), esc_html__('Date Range (BETA)', 'post-volume-stats'), 'manage_options', 'post-volume-stats-daterange', 'sdpvs_date_range_select_page');
+		add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Date Range', 'post-volume-stats'), esc_html__('Date Range', 'post-volume-stats'), 'manage_options', 'post-volume-stats-daterange', 'sdpvs_date_range_select_page');
 	}
 	add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Settings', 'post-volume-stats'), esc_html__('Settings', 'post-volume-stats'), 'manage_options', 'post-volume-stats-settings', 'sdpvs_settings_page');
 }
@@ -600,7 +600,7 @@ function sdpvs_admin_export_lists() {
 	}
 
 	if ("all" == $howmuch or "list" == $howmuch) {
-		$post_content .= $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($whichlist, $searchyear, $searchauthor, 'export', $matches, $color);
+		$post_content .= $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($whichlist, $searchyear, $searchauthor, '','','export', $matches, $color);
 	}
 
 	if ("all" == $howmuch or "graph" == $howmuch or "list" == $howmuch) {

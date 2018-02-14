@@ -58,7 +58,7 @@ class sdpvsSubPages {
 		echo "</div>";
 		
 		echo "<div style='display: block; width: 250px; vertical-align: top;' id='sdpvs_listselect'>";
-		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, $searchauthor, 'subpage', '');
+		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, $searchauthor, '','','subpage', '');
 		echo "</div>";
 		
 		echo "</div>";
@@ -92,11 +92,11 @@ class sdpvsSubPages {
 		echo "</div>";
 
 		echo "<div style='display: inline-block; width: 500px; vertical-align: top;' id='sdpvs_listsource'>";
-		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, $searchauthor, 'public', $matches, $color);
+		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, $searchauthor, '', '', 'public', $matches, $color);
 		echo "</div>";
 
 		echo "<div style='display: inline-block; width: 250px; vertical-align: top;' id='sdpvs_listpublic'>";
-		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, $searchauthor, 'buttons', $matches);
+		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($type, $searchyear, $searchauthor, '', '', 'buttons', $matches);
 		echo "</div>";
 
 		

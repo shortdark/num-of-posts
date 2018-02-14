@@ -48,7 +48,7 @@ function sdpvs_register_general_settings() {
 	add_settings_field( 'customvalue', 'Select a Taxonomy to view', 'sdpvs_field_five_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
 	add_settings_field( 'admintool', 'Put a link to Post Volume Stats in the Admin Toolbar', 'sdpvs_field_six_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
 	add_settings_field( 'exportcsv', 'Allow export of CSV', 'sdpvs_field_seven_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
-	add_settings_field( 'showrange', 'Show Date Range (BETA)', 'sdpvs_field_callback_date_range', 'post-volume-stats-settings', 'sdpvs_general_settings' );
+	add_settings_field( 'showrange', 'Show Date Range page', 'sdpvs_field_callback_date_range', 'post-volume-stats-settings', 'sdpvs_general_settings' );
 	add_settings_field( 'maxinterval', 'Maximum post interval to show', 'sdpvs_field_callback_max_interval', 'post-volume-stats-settings', 'sdpvs_general_settings' );
 	
 }

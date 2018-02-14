@@ -87,12 +87,15 @@ class sdpvsTextLists extends sdpvsArrays {
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
 		$label = "";
-		if( isset ($start_date) ){
-			$start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+		if("subpage" != $list_type and "public" != $list_type and "buttons" != $list_type and "export" != $list_type ){
+			if( isset ($start_date) ){
+				$start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+			}
+			if( isset ($end_date) ){
+				$end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+			}
 		}
-		if( isset ($end_date) ){
-			$end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
-		}
+		
 		if(0 < $searchyear){
 			$label = "in $searchyear";
 		}elseif( isset($start_date) and isset($end_date) ){
@@ -180,7 +183,7 @@ class sdpvsTextLists extends sdpvsArrays {
 
 		if ("" == $select_array and ("admin" == $list_type or "subpage" == $list_type)) {
 			// Only grab all data when everything is required
-			parent::sdpvs_post_taxonomy_type_volumes($taxonomy_type, $searchyear, $searchauthor, $start_date, $end_date);
+			parent::sdpvs_post_taxonomy_type_volumes($taxonomy_type, $searchyear, $searchauthor);
 			$universal_array = $this -> tax_type_array;
 			if ("subpage" == $list_type) {
 				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export to a post then click the \'Show Preview\' button. On mobile devices you may have to scroll down as the results may be at the bottom of the page.', 'post-volume-stats'), $typetitleplural) . '</p>';
