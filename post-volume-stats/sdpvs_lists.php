@@ -87,19 +87,18 @@ class sdpvsTextLists extends sdpvsArrays {
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
 		$label = "";
-		if("subpage" != $list_type and "public" != $list_type and "buttons" != $list_type and "export" != $list_type ){
-			if( isset ($start_date) ){
-				$start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
-			}
-			if( isset ($end_date) ){
-				$end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
-			}
+		if( isset ($start_date) ){
+			$start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
 		}
-		
+		if( isset ($end_date) ){
+			$end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+		}
 		if(0 < $searchyear){
-			$label = "in $searchyear";
-		}elseif( isset($start_date) and isset($end_date) ){
-			$label = "($start_date to $end_date)";
+			$label = " in $searchyear";
+		}elseif("subpage" != $list_type and "public" != $list_type and "buttons" != $list_type and "export" != $list_type ){
+			if( isset($start_date) and isset($end_date) ){
+				$label = " ($start_date to $end_date)";
+			}
 		}
 		$title = "";
 		$posts_per_cat_tag = "";
@@ -169,7 +168,7 @@ class sdpvsTextLists extends sdpvsArrays {
 				$extradesc = "";
 			}
 			if ( isset($label) ) {
-				$title = sprintf(esc_html__('Post Volumes per %1$s %2$s %3$s!', 'post-volume-stats'), $typetitle, $extradesc, $label);
+				$title = sprintf(esc_html__('Post Volumes per %1$s%2$s%3$s!', 'post-volume-stats'), $typetitle, $extradesc, $label);
 			} else {
 				$title = sprintf(esc_html__('Post Volumes per %s%s!', 'post-volume-stats'), $typetitle, $extradesc);
 			}
