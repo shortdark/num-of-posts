@@ -632,6 +632,7 @@ function add_endpoint() {
 add_action( 'init', 'add_endpoint' );
 
 function sdpvs_download_redirect() {
+	$answer = "";
 	$genoptions = get_option('sdpvs_general_settings');
 	$exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
 	if("yes"==$exportcsv and is_user_logged_in() ){
@@ -639,7 +640,9 @@ function sdpvs_download_redirect() {
 		$searchstring = $_SERVER['REQUEST_URI'];
 		$pattern = "/\/wp-admin\/download-csv\/([0-9a-zA-Z-]+)\.csv/";
 		preg_match($pattern, $searchstring, $matches);
-		$answer = $matches[1];
+		if( isset($matches[1]) ){
+			$answer = $matches[1];
+		}
 
 		if("words"!=$answer and "hour"!=$answer and "dayofweek"!=$answer and "month"!=$answer and "dayofmonth"!=$answer and "tag"!=$answer and "category"!=$answer and "interval"!=$answer){
 				#check that the taxonomy exists

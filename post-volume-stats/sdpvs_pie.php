@@ -83,8 +83,8 @@ class sdpvsPieChart extends sdpvsArrays {
 			$pie_svg = '<h2>' . esc_html__($tax_labels->label, 'post-volume-stats') . '</h2>';
 			$link_part = $type;
 		}
-		if ("year" != $which and "y" == $public) {
-			if (0 < $searchyear) {
+		if ("year" != $type and "y" == $public) {
+			if ( isset($searchyear) and 0 < $searchyear) {
 				$pie_svg .= '<h3>' . sprintf(esc_html__('%d', 'post-volume-stats'), $searchyear) . '</h3>';
 			} else {
 				$pie_svg .= '<h3>' . esc_html__('All-time', 'post-volume-stats') . '</h3>';
