@@ -140,7 +140,7 @@ class sdpvsPieChart extends sdpvsArrays {
 				if("yes"==$exportcsv){
 					$sdpvs_csv_download_url = admin_url("/download-csv/$type.csv");
 					$pie_svg .= "<p>";
-					$pie_svg .= "<form class='sdpvs_export' action=\"$sdpvs_csv_download_url\" method='POST'><input type='submit' class='button-primary' value='Export CSV'></form>";
+					$pie_svg .= "<form class='sdpvs_export' action=\"$sdpvs_csv_download_url\" method='POST'><input type='submit' class='button-primary' value='Export Compare Years CSV'></form>";
 					$pie_svg .= "</p>";
 				}
 

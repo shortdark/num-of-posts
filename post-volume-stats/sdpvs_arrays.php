@@ -24,8 +24,12 @@ abstract class sdpvsArrays {
 		$term_id = absint($term_id);
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
-		$start_date = absint($start_date);
-		$end_date = absint($end_date);
+		if( isset ($start_date) ){
+			$start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+		}
+		if( isset ($end_date) ){
+			$end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+		}
 		if (0 < $searchyear) {
 			$extra = " AND $wpdb->posts.post_date LIKE '$searchyear%' ";
 		}elseif("" != $start_date and "" != $end_date ){
@@ -76,6 +80,12 @@ abstract class sdpvsArrays {
 		$this -> tax_type_array = array();
 		$searchyear = absint($searchyear);
 		$searchauthor = absint($searchauthor);
+		if( isset ($start_date) ){
+			$start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+		}
+		if( isset ($end_date) ){
+			$end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+		}
 		if (0 < $searchyear) {
 			$extra = " AND $wpdb->posts.post_date LIKE '$searchyear%' ";
 		}elseif("" != $start_date and "" != $end_date ){
@@ -85,7 +95,8 @@ abstract class sdpvsArrays {
 		if("" != $searchauthor){
 			$extra .= " AND $wpdb->posts.post_author = '$searchauthor' ";
 		}
-		if ("" == $searchyear and "" == $searchauthor) {
+		if ("" == $searchyear and "" == $searchauthor and "" == $start_date and "" == $end_date ) {
+			// No year, no author, no date range...
 			$tax_results = $wpdb -> get_results($wpdb -> prepare("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = %s ORDER BY count DESC ", $tax_type));
 			$c = 0;
 			if($tax_results){

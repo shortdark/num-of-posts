@@ -49,7 +49,9 @@ Here are the latest screenshots...
 
 = 3.1.17 =
 
+* Date Range now working for all bar charts, pie charts and lists on main page. The "Years" bar chart, "Compare Years" and "Export Compare Years CSV" remain unaffected. 
 * Fixed bug where a selected user meant that it wasn't recognizing the selected year on "Days Between Posts".
+* Made the list titles more precise.
 * Tidied up code and removed WordPress notices.
 
 = 3.1.16 =

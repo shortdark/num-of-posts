@@ -244,8 +244,9 @@ function sdpvs_date_range_select_page() {
 
 		// Content goes here
 		echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Date Range Select (BETA)', 'post-volume-stats') . '</h1>';
-		echo "<p>On this page you can select the year that you wish to study. It is an alternative to clicking the bars of the \"Year\" bar chart. To view all years together select the blank option at the top.</p>";
-		echo "<p>Only if the \"Year\" is blank will the date range (start and end) be used. If a date range is entered (with no year selected) it will be applied to the bar charts on the main page, but not the pie charts or the line graphs on the Tag/Category/Custom pages. This is a work in progress. Please use the main year select on the other pages.</p>";
+		echo "<p>On this page you can either select a year or you can select a date range.</p>";
+		echo "<p>Selecting a year on this page is an alternative to clicking the bars of the \"Year\" bar chart on the other pages. To de-select the year and view all years together select the blank option at the top.</p>";
+		echo "<p>Only if the \"Year\" is blank will the date range be used. You must enter both a start date and an end date. If a date range is entered (with no year selected) it will be applied to the main page, but not the Tag/Category/Custom pages. This is a work in progress.</p>";
 
 		echo "<form action='" . esc_url(admin_url('options.php')) . "' method='POST'>";
 		settings_fields( 'sdpvs_year_option' );
@@ -417,27 +418,33 @@ function sdpvs_process_ajax() {
 
 	$year = get_option('sdpvs_year_option');
 	$searchyear = absint($year['year_number']);
+		if(isset($year['start_date'])){
+			$start_date = filter_var ( $year['start_date'], FILTER_SANITIZE_STRING);
+		}
+		if(isset($year['end_date'])){
+			$end_date = filter_var ( $year['end_date'], FILTER_SANITIZE_STRING);
+		}
 	$authoroptions = get_option('sdpvs_author_option');
 	$searchauthor = absint($authoroptions['author_number']);
 
 	if ("year" == $answer) {
 		echo $sdpvs_lists -> sdpvs_posts_per_year_list($searchauthor);
 	} elseif ("hour" == $answer) {
-		echo $sdpvs_lists -> sdpvs_posts_per_hour_list($searchyear, $searchauthor);
+		echo $sdpvs_lists -> sdpvs_posts_per_hour_list($searchyear, $searchauthor, $start_date, $end_date);
 	} elseif ("dayofweek" == $answer) {
-		echo $sdpvs_lists -> sdpvs_posts_per_dayofweek_list($searchyear, $searchauthor);
+		echo $sdpvs_lists -> sdpvs_posts_per_dayofweek_list($searchyear, $searchauthor, $start_date, $end_date);
 	} elseif ("month" == $answer) {
-		echo $sdpvs_lists -> sdpvs_posts_per_month_list($searchyear, $searchauthor);
+		echo $sdpvs_lists -> sdpvs_posts_per_month_list($searchyear, $searchauthor, $start_date, $end_date);
 	} elseif ("dayofmonth" == $answer) {
-		echo $sdpvs_lists -> sdpvs_posts_per_day_of_month_list($searchyear, $searchauthor);
+		echo $sdpvs_lists -> sdpvs_posts_per_day_of_month_list($searchyear, $searchauthor, $start_date, $end_date);
 	} elseif ("author" == $answer) {
-		echo $sdpvs_lists -> sdpvs_posts_per_author_list($searchyear, $searchauthor);
+		echo $sdpvs_lists -> sdpvs_posts_per_author_list($searchyear, $start_date, $end_date );
 	} elseif ("words" == $answer){
-		echo $sdpvs_lists -> sdpvs_words_per_post_list($searchyear, $searchauthor);
+		echo $sdpvs_lists -> sdpvs_words_per_post_list($searchyear, $searchauthor, $start_date, $end_date);
 	} elseif ("interval" == $answer){
-		echo $sdpvs_lists -> sdpvs_interval_between_posts_list($searchyear, $searchauthor);
+		echo $sdpvs_lists -> sdpvs_interval_between_posts_list($searchyear, $searchauthor, $start_date, $end_date);
 	} else {
-		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($answer, $searchyear, $searchauthor, 'admin', '');
+		echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($answer, $searchyear, $searchauthor, $start_date, $end_date, 'admin', '');
 	}
 
 	// Always die() AJAX

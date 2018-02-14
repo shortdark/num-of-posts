@@ -288,7 +288,7 @@ class sdpvsBarChart extends sdpvsArrays {
 				echo "<form class='sdpvs_compare' action='' method='POST'><input type='hidden' name='comparedata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Compare Years'></form></p>";
 				if("yes"==$exportcsv){
 					$sdpvs_csv_download_url = admin_url("/download-csv/$which.csv");
-					echo "<form class='sdpvs_export' action=\"$sdpvs_csv_download_url\" method='POST'><input type='submit' class='button-primary' value='Export CSV'></form></p>";
+					echo "<form class='sdpvs_export' action=\"$sdpvs_csv_download_url\" method='POST'><input type='submit' class='button-primary' value='Export Compare Years CSV'></form></p>";
 				}
 				
 			}
