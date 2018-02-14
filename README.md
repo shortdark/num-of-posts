@@ -5,8 +5,10 @@ Because I based the plugin on "Hello Dolly" the PHP wasn't OOP to begin with. Wh
 
 There are graphical representation of year, category, tag, day-of-the-week, hour-of-the-day, month, day-of-the-month, and days between posts stats. The lists have been moved to AJAX, to free up more space and so it works better on mobile devices. You are also able to select a year and just see the stats for that one year. 
 
-The tags and categories subpages allow the ability to export the data as HTML lists and line graphs; a click of a button creates a new post with the selected list and line graph in it.
+The tags and categories subpages allow the ability to export the data as HTML lists and line graphs; a click of a button creates a new post with the selected list and line graph in it. The "Date Range" is also a new feature.
 
 It's a work of constant evolution.
+
+https://www.postvolumestats.com/
 
 https://wordpress.org/plugins/post-volume-stats/
