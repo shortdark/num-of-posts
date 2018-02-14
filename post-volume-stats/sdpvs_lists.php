@@ -18,9 +18,9 @@ class sdpvsTextLists extends sdpvsArrays {
 			$end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
 		}
 		if(0 < $searchyear){
-			$label = "$searchyear";
-		}elseif( isset($start_date) and isset($end_date) ){
-			$label = "$start_date to $end_date";
+			$label = " $searchyear";
+		}elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date){
+			$label = " ($start_date to $end_date)";
 		}
 		if( 0 < $searchauthor){
 			$user = get_user_by( 'id', $searchauthor );
@@ -30,7 +30,7 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 		
 		parent::sdpvs_number_of_posts_per_author($searchyear, $start_date, $end_date);
-		$this -> list_string = '<h2>' . sprintf(esc_html__('Post Volumes per Author %1$s (%2$s)', 'post-volume-stats'), $extradesc, $label) . '</h2>';
+		$this -> list_string = '<h2>' . sprintf(esc_html__('Post Volumes per Author %1$s %2$s', 'post-volume-stats'), $extradesc, $label) . '</h2>';
 		$i=0;
 		while ( array_key_exists($i, $this -> list_array) ) {
 			if (!$this -> list_array[$i]['volume']) {
@@ -96,7 +96,7 @@ class sdpvsTextLists extends sdpvsArrays {
 		if(0 < $searchyear){
 			$label = " in $searchyear";
 		}elseif("subpage" != $list_type and "public" != $list_type and "buttons" != $list_type and "export" != $list_type ){
-			if( isset($start_date) and isset($end_date) ){
+			if( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
 				$label = " ($start_date to $end_date)";
 			}
 		}
@@ -182,7 +182,12 @@ class sdpvsTextLists extends sdpvsArrays {
 
 		if ("" == $select_array and ("admin" == $list_type or "subpage" == $list_type)) {
 			// Only grab all data when everything is required
-			parent::sdpvs_post_taxonomy_type_volumes($taxonomy_type, $searchyear, $searchauthor);
+			if("admin" == $list_type){
+				parent::sdpvs_post_taxonomy_type_volumes($taxonomy_type, $searchyear, $searchauthor, $start_date, $end_date);
+			}elseif("subpage" == $list_type){
+				parent::sdpvs_post_taxonomy_type_volumes($taxonomy_type, $searchyear, $searchauthor);
+			}
+			
 			$universal_array = $this -> tax_type_array;
 			if ("subpage" == $list_type) {
 				$posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export to a post then click the \'Show Preview\' button. On mobile devices you may have to scroll down as the results may be at the bottom of the page.', 'post-volume-stats'), $typetitleplural) . '</p>';
@@ -288,7 +293,7 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 		if(0 < $searchyear){
 			$label = "in $searchyear";
-		}elseif( isset($start_date) and isset($end_date) ){
+		}elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
 			$label = "($start_date to $end_date)";
 		}
 		parent::sdpvs_number_of_posts_in_order($searchyear,$searchauthor, $start_date, $end_date);
@@ -326,7 +331,7 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 		if(0 < $searchyear){
 			$label = "in $searchyear";
-		}elseif( isset($start_date) and isset($end_date) ){
+		}elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
 			$label = "($start_date to $end_date)";
 		}
 		parent::sdpvs_number_of_posts_per_dayofweek($searchyear,$searchauthor, $start_date, $end_date);
@@ -363,7 +368,7 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 		if(0 < $searchyear){
 			$label = "in $searchyear";
-		}elseif( isset($start_date) and isset($end_date) ){
+		}elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
 			$label = "($start_date to $end_date)";
 		}
 		parent::sdpvs_number_of_posts_per_hour($searchyear,$searchauthor, $start_date, $end_date);
@@ -397,7 +402,7 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 		if(0 < $searchyear){
 			$label = "in $searchyear";
-		}elseif( isset($start_date) and isset($end_date) ){
+		}elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
 			$label = "($start_date to $end_date)";
 		}
 		parent::sdpvs_number_of_posts_per_month($searchyear,$searchauthor, $start_date, $end_date);
@@ -432,7 +437,7 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 		if(0 < $searchyear){
 			$label = "in $searchyear";
-		}elseif( isset($start_date) and isset($end_date) ){
+		}elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
 			$label = "($start_date to $end_date)";
 		}
 		parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor, $start_date, $end_date);
@@ -469,7 +474,7 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 		if(0 < $searchyear){
 			$label = "in $searchyear";
-		}elseif( isset($start_date) and isset($end_date) ){
+		}elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
 			$label = "($start_date to $end_date)";
 		}
 		parent::sdpvs_number_of_words_per_post($searchyear,$searchauthor, $start_date, $end_date);
