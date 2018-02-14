@@ -2,18 +2,18 @@
 === Post Volume Stats ===
 Contributors: shortdark
 Donate link: https://www.paypal.me/shortdark
-Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget, author, taxonomy
+Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget, author, taxonomy, csv
 Requires at least: 3.5
 Tested up to: 4.9.4
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Shows stats for the volume of posts per year, month, day-of-the-month, day-of-the-week, hour-of-the-day, author, categories, tags and custom taxonomy.
+Shows stats for the volume of posts per year, month, day-of-the-month, day-of-the-week, hour-of-the-day, words per post, days between posts, author, categories, tags and custom taxonomy.
 
 == Description ==
 
-This plugin looks at the volume of posts in each category, tag, the volume of posts per year, month, day-of-the-month, day-of-the-week, hour, author and number of words-per-post. You can specify a year and/or an author to just look at the post volume stats for that year/author. The bar charts can be added to a sidebar with Post Volume Stats widget. Lists and line graphs can be exported to a new post to show the change in category, tag and custom taxonomy posts over the years. You can also now export the data into a CSV spreadsheet.
+This plugin looks at the volume of posts in each category, tag, the volume of posts per year, month, day-of-the-month, day-of-the-week, hour, author, number of words-per-post and the number of days between posts. You can specify a year and/or an author to just look at the post volume stats for that year/author. The bar and pie charts can be added to a sidebar with Post Volume Stats widget. Lists and line graphs can be exported to a new post to show the change in category, tag and custom taxonomy posts over the years. You can also export the "Compare Years" data into a CSV spreadsheet. The latest feature is the "Date Range" page which applies a date range to the data on the main page.
 
 Please let me know if you like this plugin by [leaving a review](https://wordpress.org/plugins/post-volume-stats/).
 
@@ -44,6 +44,7 @@ Here are the latest screenshots...
 6. The results of exporting the line graph and list into a new post.
 7. Shows the widget in the "live preview" area of the admin.
 8. Settings page allows customization.
+9. New "Date Range" page which applies a date range to the main page only, not "Category", "Tag" or "Custom Taxonomy" pages.
 
 == Changelog ==
 
