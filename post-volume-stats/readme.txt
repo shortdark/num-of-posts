@@ -50,11 +50,11 @@ Here are the latest screenshots...
 
 = 3.1.17 =
 
-* Date Range now working for all bar charts, pie charts and lists on main page. The "Years" bar chart, "Compare Years" and "Export Compare Years CSV" remain unaffected. 
-* CSV export can now be the stats for individual users.
+* "Date Range" now working for all bar charts, pie charts and lists on main page. The "Years" bar chart, "Compare Years" and "Export Compare Years CSV" remain unaffected. 
+* CSV exports can now be the stats for a single user.
 * Fixed bug where a selected user meant that it wasn't recognizing the selected year on "Days Between Posts".
-* Made the list titles more precise.
-* Tidied up code and removed WordPress notices.
+* Made the "Show Data" and "Compare Years" titles more precise.
+* Tidied up code, removed WordPress notices and general bugfix.
 
 = 3.1.16 =
 
