@@ -635,6 +635,8 @@ function sdpvs_download_redirect() {
 	$answer = "";
 	$genoptions = get_option('sdpvs_general_settings');
 	$exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
+	$authoroptions = get_option('sdpvs_author_option');
+	$searchauthor = absint($authoroptions['author_number']);
 	if("yes"==$exportcsv and is_user_logged_in() ){
 
 		$searchstring = $_SERVER['REQUEST_URI'];

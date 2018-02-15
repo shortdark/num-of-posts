@@ -30,7 +30,7 @@ class sdpvsTextLists extends sdpvsArrays {
 		}
 		
 		parent::sdpvs_number_of_posts_per_author($searchyear, $start_date, $end_date);
-		$this -> list_string = '<h2>' . sprintf(esc_html__('Post Volumes per Author %1$s %2$s', 'post-volume-stats'), $extradesc, $label) . '</h2>';
+		$this -> list_string = '<h2>' . sprintf(esc_html__('Post Volumes per Author%1$s%2$s', 'post-volume-stats'), $extradesc, $label) . '</h2>';
 		$i=0;
 		while ( array_key_exists($i, $this -> list_array) ) {
 			if (!$this -> list_array[$i]['volume']) {
@@ -574,6 +574,8 @@ class sdpvsTextLists extends sdpvsArrays {
 
 	 public function sdpvs_compare_years_rows($type = "", $searchauthor="") {
 		$searchauthor = absint($searchauthor);
+		$user = "";
+		$userstring = "";
 		$years_total = 0;
 		$number_of_years = 0;
 
@@ -584,20 +586,25 @@ class sdpvsTextLists extends sdpvsArrays {
 
 		$this -> sdpvs_compile_years_matrix($type, $this->first_val, $searchauthor);
 
+		if( isset($searchauthor) and 0 < $searchauthor){
+			$user = get_user_by( 'id', $searchauthor );
+			$userstring = " ($user->display_name)";
+		}
+
 		if ("hour" == $type) {
-			$this -> output_compare_list .= '<h2>' . esc_html__('Posts per Hour', 'post-volume-stats') . '</h2>';
+			$this -> output_compare_list .= '<h2>' .  sprintf(esc_html__('Posts per Hour%1$s', 'post-volume-stats'), $userstring) . '</h2>';
 		} elseif ("dayofweek" == $type) {
-			$this -> output_compare_list .= '<h2>' . esc_html__('Posts per Day of the week', 'post-volume-stats') . '</h2>';
+			$this -> output_compare_list .= '<h2>' . sprintf(esc_html__('Posts per Day of the week%1$s', 'post-volume-stats'), $userstring) . '</h2>';
 		} elseif ("month" == $type) {
-			$this -> output_compare_list .= '<h2>' . esc_html__('Posts per Month', 'post-volume-stats') . '</h2>';
+			$this -> output_compare_list .= '<h2>' . sprintf(esc_html__('Posts per Month%1$s', 'post-volume-stats'), $userstring) . '</h2>';
 		} elseif ("dayofmonth" == $type) {
-			$this -> output_compare_list .= '<h2>' . esc_html__('Posts per Day of the Month', 'post-volume-stats') . '</h2>';
+			$this -> output_compare_list .= '<h2>' . sprintf(esc_html__('Posts per Day of the Month%1$s', 'post-volume-stats'), $userstring) . '</h2>';
 		} elseif("words" == $type){
-			$this -> output_compare_list .= '<h2>' . esc_html__('Words per Post', 'post-volume-stats') . '</h2>';
+			$this -> output_compare_list .= '<h2>' . sprintf(esc_html__('Words per Post%1$s', 'post-volume-stats'), $userstring) . '</h2>';
 		} elseif("interval" == $type){
-			$this -> output_compare_list .= '<h2>' . esc_html__('Intervals Between Posts', 'post-volume-stats') . '</h2>';
+			$this -> output_compare_list .= '<h2>' . sprintf(esc_html__('Intervals Between Posts%1$s', 'post-volume-stats'), $userstring) . '</h2>';
 		}else{
-			$this -> output_compare_list .= '<h2>' . sprintf(esc_html__('Posts per Taxonomy: %s', 'post-volume-stats'), $type) . '</h2>';
+			$this -> output_compare_list .= '<h2>' . sprintf(esc_html__('Posts per Taxonomy: %1$s%2$s', 'post-volume-stats'), $type, $userstring) . '</h2>';
 		}
 
 		$this -> output_compare_list .= "<table>";
@@ -632,7 +639,12 @@ class sdpvsTextLists extends sdpvsArrays {
 		$searchauthor = absint($searchauthor);
 		$years_total = 0;
 		$number_of_years = 0;
-
+		$user = "";
+		$userstring = "";
+		if( isset($searchauthor) and 0 < $searchauthor){
+			$user = get_user_by( 'id', $searchauthor );
+			$userstring = " ($user->display_name)";
+		}
 		// All this just gets the number of years
 		parent::sdpvs_number_of_posts_per_year($searchauthor);
 		$chart_array = $this -> list_array;
@@ -640,23 +652,23 @@ class sdpvsTextLists extends sdpvsArrays {
 
 		$this -> sdpvs_compile_years_matrix($type, $this->first_val, $searchauthor);
 		if("words"==$type){
-			$this -> output_compare_list = "Words per Post,";
+			$this -> output_compare_list = "Words per Post$userstring,";
 		}elseif("hour"==$type){
-			$this -> output_compare_list = "Hours of the Day,";
+			$this -> output_compare_list = "Hours of the Day$userstring,";
 		}elseif("dayofweek"==$type){
-			$this -> output_compare_list = "Days of the Week,";
+			$this -> output_compare_list = "Days of the Week$userstring,";
 		}elseif("month"==$type){
-			$this -> output_compare_list = "Months,";
+			$this -> output_compare_list = "Months$userstring,";
 		}elseif("dayofmonth"==$type){
-			$this -> output_compare_list = "Days of the Month,";
+			$this -> output_compare_list = "Days of the Month$userstring,";
 		}elseif("category"==$type){
-			$this -> output_compare_list = "Categories,";
+			$this -> output_compare_list = "Categories$userstring,";
 		}elseif("tag"==$type){
-			$this -> output_compare_list = "Tags,";
+			$this -> output_compare_list = "Tags$userstring,";
 		}elseif("interval"==$type){
-			$this -> output_compare_list = "Interval,";
+			$this -> output_compare_list = "Interval$userstring,";
 		}else{
-			$this -> output_compare_list = $type.",";
+			$this -> output_compare_list = $type."$userstring,";
 		}
 
 		for ($i = $this -> first_val; $i >= 0; $i--) {
