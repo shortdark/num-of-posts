@@ -50,6 +50,7 @@ function sdpvs_register_general_settings() {
 	add_settings_field( 'exportcsv', 'Allow export of CSV', 'sdpvs_field_seven_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
 	add_settings_field( 'showrange', 'Show Date Range page', 'sdpvs_field_callback_date_range', 'post-volume-stats-settings', 'sdpvs_general_settings' );
 	add_settings_field( 'maxinterval', 'Maximum post interval to show', 'sdpvs_field_callback_max_interval', 'post-volume-stats-settings', 'sdpvs_general_settings' );
+    add_settings_field( 'showimage', 'Images per Post (BETA)', 'sdpvs_field_callback_image', 'post-volume-stats-settings', 'sdpvs_general_settings' );
 	
 }
 
@@ -284,6 +285,23 @@ function sdpvs_field_callback_max_interval() {
 	echo  "</select>";
 	echo "<p>Default is 30 days. Bigger interval = longer time to load.</p>";
 	echo "</div>";
+}
+
+function sdpvs_field_callback_image() {
+    $genoptions = get_option('sdpvs_general_settings');
+    $showimage = filter_var ( $genoptions['showimage'], FILTER_SANITIZE_STRING);
+    echo "<div style='display: block; padding: 5px;'>";
+    if("no" == $showimage or !$showimage){
+        echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showimage]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
+        echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showimage]\" value=\"yes\">Yes</label>";
+    }else{
+        echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showimage]\" value=\"no\">No (default)</label><br>";
+        echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showimage]\" value=\"yes\" checked=\"checked\">Yes</label>";
+    }
+    echo '<p>';
+    echo ' '. __('The new <strong>"Images per Post"</strong> bar chart counts the number of images in the content, also the number of gallery images in the post. '). '<br /><span style="color:red;">'. __('If you create image galleries in a way that is not the built-in WordPress method (such as using a gallery plugin) those images may not show up on the chart. ') . '</span>' . __('If you use a gallery plugin and it is not included in the images per post count please let me know which plugin you are using. ');
+    echo '</p>';
+    echo "</div>";
 }
 
 
