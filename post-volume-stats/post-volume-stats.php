@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.1.17
+ * @version 3.2.02
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.2.01
+ * Version: 3.2.02
  * Author URI: http://www.shortdark.net/
  */
 
@@ -37,7 +37,7 @@ if (!function_exists('add_action')) {
 define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SDPVS__PLUGIN_FOLDER', 'post-volume-stats');
 define('SDPVS__PLUGIN_SETTINGS', 'post-volume-stats-settings');
-define('SDPVS__VERSION_NUMBER', '3.2.01');
+define('SDPVS__VERSION_NUMBER', '3.2.02');
 
 /******************
  ** SETUP THE PAGE
@@ -78,11 +78,8 @@ function sdpvs_post_volume_stats_assembled() {
         $sdpvs_info = new sdpvsInfo();
         $sdpvs_content = new sdpvsMainContent();
 
-        // Admin notices can be used once they're properly dimissable
-        // echo '<div class="notice notice-info is-dismissible"><p class="sdpvs"><strong>' . esc_html__('NEW: You can now export category and tag data directly into a new blog post at the click of a button. There is also a Post Volume Stats widget to add bar charts into your sidebar.', 'post-volume-stats') . '</strong></p></div>';
-
         // Load content for the main page
-        $sdpvs_content -> sdpvs_page_content();
+        $sdpvs_content->sdpvs_page_content();
 
         // DIV for loading
         echo "<div id='sdpvs_loading'>";
@@ -92,12 +89,12 @@ function sdpvs_post_volume_stats_assembled() {
         echo "<div id='sdpvs_listcontent'>";
         echo "</div>";
 
-        // Div for ajax list box
+        // Div for ajax compare years box
         echo "<div id='sdpvs_listcompare'>";
         echo "</div>";
     }
 
-    $sdpvs_info -> sdpvs_info();
+    $sdpvs_info->sdpvs_info();
 
     // Stop the timer and show the results
     $time_end = microtime(true);
@@ -117,7 +114,7 @@ function sdpvs_category_page() {
         $sdpvs_sub = new sdpvsSubPages();
 
         // Call the method
-        $sdpvs_sub -> sdpvs_combined_page_content('category');
+        $sdpvs_sub->sdpvs_combined_page_content('category');
 
         $link = "https://wordpress.org/plugins/post-volume-stats/";
         $linkdesc = "Post Volume Stats plugin page";
@@ -147,7 +144,7 @@ function sdpvs_tag_page() {
         $sdpvs_sub = new sdpvsSubPages();
 
         // Call the method
-        $sdpvs_sub -> sdpvs_combined_page_content('tag');
+        $sdpvs_sub->sdpvs_combined_page_content('tag');
 
         $link = "https://wordpress.org/plugins/post-volume-stats/";
         $linkdesc = "Post Volume Stats plugin page";
@@ -183,7 +180,7 @@ function sdpvs_custom_page() {
         $customvalue = filter_var ( $matches[1], FILTER_SANITIZE_STRING);
 
         // Call the method
-        $sdpvs_sub -> sdpvs_combined_page_content($customvalue);
+        $sdpvs_sub->sdpvs_combined_page_content($customvalue);
 
         $link = "https://wordpress.org/plugins/post-volume-stats/";
         $linkdesc = "Post Volume Stats plugin page";
@@ -428,25 +425,27 @@ function sdpvs_process_ajax() {
     $searchauthor = absint($authoroptions['author_number']);
 
     if ("year" == $answer) {
-        echo $sdpvs_lists -> sdpvs_posts_per_year_list($searchauthor);
+        echo $sdpvs_lists->sdpvs_posts_per_year_list($searchauthor);
     } elseif ("hour" == $answer) {
-        echo $sdpvs_lists -> sdpvs_posts_per_hour_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_posts_per_hour_list($searchyear, $searchauthor, $start_date, $end_date);
     } elseif ("dayofweek" == $answer) {
-        echo $sdpvs_lists -> sdpvs_posts_per_dayofweek_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_posts_per_dayofweek_list($searchyear, $searchauthor, $start_date, $end_date);
     } elseif ("month" == $answer) {
-        echo $sdpvs_lists -> sdpvs_posts_per_month_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_posts_per_month_list($searchyear, $searchauthor, $start_date, $end_date);
     } elseif ("dayofmonth" == $answer) {
-        echo $sdpvs_lists -> sdpvs_posts_per_day_of_month_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_posts_per_day_of_month_list($searchyear, $searchauthor, $start_date, $end_date);
     } elseif ("author" == $answer) {
-        echo $sdpvs_lists -> sdpvs_posts_per_author_list($searchyear, $start_date, $end_date );
+        echo $sdpvs_lists->sdpvs_posts_per_author_list($searchyear, $start_date, $end_date );
     } elseif ("words" == $answer){
-        echo $sdpvs_lists -> sdpvs_words_per_post_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_words_per_post_list($searchyear, $searchauthor, $start_date, $end_date);
     } elseif ("images" == $answer){
-        echo $sdpvs_lists -> sdpvs_images_per_post_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_images_per_post_list($searchyear, $searchauthor, $start_date, $end_date);
+    } elseif ("comments" == $answer){
+        echo $sdpvs_lists->sdpvs_comments_per_post_list($searchyear, $searchauthor, $start_date, $end_date);
     } elseif ("interval" == $answer){
-        echo $sdpvs_lists -> sdpvs_interval_between_posts_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_interval_between_posts_list($searchyear, $searchauthor, $start_date, $end_date);
     } else {
-        echo $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($answer, $searchyear, $searchauthor, $start_date, $end_date, 'admin', '');
+        echo $sdpvs_lists->sdpvs_posts_per_cat_tag_list($answer, $searchyear, $searchauthor, $start_date, $end_date, 'admin', '');
     }
 
     // Always die() AJAX
@@ -470,7 +469,7 @@ function sdpvs_compare_data_over_years() {
     $authoroptions = get_option('sdpvs_author_option');
     $searchauthor = absint($authoroptions['author_number']);
 
-    echo $sdpvs_lists -> sdpvs_compare_years_rows($answer, $searchauthor);
+    echo $sdpvs_lists->sdpvs_compare_years_rows($answer, $searchauthor);
 
     // Always die() AJAX
     die();
@@ -488,7 +487,7 @@ function sdpvs_cats_lists() {
     $gotit = filter_var($_POST['whichcats'], FILTER_SANITIZE_STRING);
     preg_match_all('/=([0-9]*)/', $gotit, $matches);
 
-    echo $sdpvs_sub -> update_ajax_lists('category', $matches);
+    echo $sdpvs_sub->update_ajax_lists('category', $matches);
 
     // Always die() AJAX
     die();
@@ -506,7 +505,7 @@ function sdpvs_tags_lists() {
     $gotit = filter_var($_POST['whichtags'], FILTER_SANITIZE_STRING);
     preg_match_all('/=([0-9]*)/', $gotit, $matches);
 
-    echo $sdpvs_sub -> update_ajax_lists('tag', $matches);
+    echo $sdpvs_sub->update_ajax_lists('tag', $matches);
 
     // Always die() AJAX
     die();
@@ -532,7 +531,7 @@ function sdpvs_custom_lists() {
         $customvalue = $filtertype[1];
     }
 
-    echo $sdpvs_sub -> update_ajax_lists($customvalue, $matches);
+    echo $sdpvs_sub->update_ajax_lists($customvalue, $matches);
 
     // Always die() AJAX
     die();
@@ -545,7 +544,7 @@ function sdpvs_remove_admin_notice() {
     check_ajax_referer('num-of-posts', 'security');
 
     // activate this with AJAX, #sdpvs-notice
-    set_transient('sdpvs-admin-notice-005', true, 0);
+    set_transient('sdpvs-admin-notice-006', true, 0);
 
     // Always die() AJAX
     die();
@@ -593,16 +592,16 @@ function sdpvs_admin_export_lists() {
     else
         $title = ucfirst($whichlist) . ' Stats'. $extradesc;
 
-    $color = $sdpvs_lists -> sdpvs_color_list();
+    $color = $sdpvs_lists->sdpvs_color_list();
     $link = "https://wordpress.org/plugins/post-volume-stats/";
     $linkdesc = "Post Volume Stats";
 
     if ("all" == $howmuch or "graph" == $howmuch) {
-        $post_content = $sdpvs_bar -> sdpvs_comparison_line_graph($whichlist, $matches, $searchauthor, $color,"y");
+        $post_content = $sdpvs_bar->sdpvs_comparison_line_graph($whichlist, $matches, $searchauthor, $color,"y");
     }
 
     if ("all" == $howmuch or "list" == $howmuch) {
-        $post_content .= $sdpvs_lists -> sdpvs_posts_per_cat_tag_list($whichlist, $searchyear, $searchauthor, '','','export', $matches, $color);
+        $post_content .= $sdpvs_lists->sdpvs_posts_per_cat_tag_list($whichlist, $searchyear, $searchauthor, '','','export', $matches, $color);
     }
 
     if ("all" == $howmuch or "graph" == $howmuch or "list" == $howmuch) {
@@ -648,7 +647,7 @@ function sdpvs_download_redirect() {
             $answer = $matches[1];
         }
 
-        if("words"!=$answer and "images"!=$answer and "hour"!=$answer and "dayofweek"!=$answer and "month"!=$answer and "dayofmonth"!=$answer and "tag"!=$answer and "category"!=$answer and "interval"!=$answer){
+        if("words"!=$answer and "images"!=$answer and "comments"!=$answer and "hour"!=$answer and "dayofweek"!=$answer and "month"!=$answer and "dayofmonth"!=$answer and "tag"!=$answer and "category"!=$answer and "interval"!=$answer){
                 #check that the taxonomy exists
                 $foundit = 0;
                 $args = array(
@@ -672,7 +671,7 @@ function sdpvs_download_redirect() {
         if($answer){
             // create an instance of the list class
             $sdpvs_lists = new sdpvsTextLists();
-            $csv = $sdpvs_lists -> sdpvs_create_csv_output($answer, $searchauthor);
+            $csv = $sdpvs_lists->sdpvs_create_csv_output($answer, $searchauthor);
             $length = strlen($csv);
 
             // Download the file.
@@ -697,13 +696,13 @@ add_action( 'template_redirect', 'sdpvs_download_redirect' );
 
 add_action('admin_notices', 'sdpvs_check_activation_notice');
 function sdpvs_check_activation_notice() {
-    if (!get_transient('sdpvs-admin-notice-005')) {
+    if (!get_transient('sdpvs-admin-notice-006')) {
         # When a new admin notice is added, make sure to change "sdpvs-admin-notice-005" to the next number.
         # Also, remember to update the AJAX to remove the notice with the new number.
 
         $sdpvs_link = admin_url('admin.php?page=' . SDPVS__PLUGIN_FOLDER);
         $sdpvs_settings_link = admin_url('admin.php?page=' . SDPVS__PLUGIN_SETTINGS);
-        echo '<div id="sdpvs-notice" class="notice notice-info is-dismissible"><p class="sdpvs">' . sprintf(wp_kses(__('NEW to <a href="%1$s">Post Volume Stats</a>: ', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($sdpvs_link)) . __('<strong>"Images per post"</strong> bar chart added. ') . sprintf(wp_kses(__('This BETA feature must be enabled in <a href="%1$s">PVS settings</a>. ', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($sdpvs_settings_link)) . '</p></div>';
+        echo '<div id="sdpvs-notice" class="notice notice-info is-dismissible"><p class="sdpvs">' . sprintf(wp_kses(__('NEW to <a href="%1$s">Post Volume Stats</a>: ', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($sdpvs_link)) . __('<strong>"Comments per post"</strong> bar chart added and <strong>"Images per post"</strong> bugfix. ') . sprintf(wp_kses(__('The new charts must be enabled in <a href="%1$s">PVS settings</a>. ', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($sdpvs_settings_link)) . '</p></div>';
     }
 }
 ?>

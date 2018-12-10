@@ -35,9 +35,9 @@ class sdpvsBarChart extends sdpvsArrays {
 
         if ("year" == $which) {
             parent::sdpvs_number_of_posts_per_year($searchauthor);
-            $chart_array = $this -> list_array;
+            $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
-            $bars_total = $this -> first_val + 1;
+            $bars_total = $this->first_val + 1;
             $order = "desc";
             if ("y" != $public) {
                 echo '<h2>' . esc_html__('Years', 'post-volume-stats') . '</h2>';
@@ -46,7 +46,7 @@ class sdpvsBarChart extends sdpvsArrays {
             }
         } elseif ("dayofweek" == $which) {
             parent::sdpvs_number_of_posts_per_dayofweek($searchyear,$searchauthor, $start_date, $end_date);
-            $chart_array = $this -> list_array;
+            $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = 7;
             $order = "asc";
@@ -57,7 +57,7 @@ class sdpvsBarChart extends sdpvsArrays {
             }
         } elseif ("hour" == $which) {
             parent::sdpvs_number_of_posts_per_hour($searchyear,$searchauthor, $start_date, $end_date);
-            $chart_array = $this -> list_array;
+            $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = 24;
             $order = "asc";
@@ -68,7 +68,7 @@ class sdpvsBarChart extends sdpvsArrays {
             }
         } elseif ("month" == $which) {
             parent::sdpvs_number_of_posts_per_month($searchyear,$searchauthor, $start_date, $end_date);
-            $chart_array = $this -> list_array;
+            $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = 12;
             $order = "asc";
@@ -79,7 +79,7 @@ class sdpvsBarChart extends sdpvsArrays {
             }
         } elseif ("dayofmonth" == $which) {
             parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor, $start_date, $end_date);
-            $chart_array = $this -> list_array;
+            $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = 31;
             $order = "asc";
@@ -90,9 +90,9 @@ class sdpvsBarChart extends sdpvsArrays {
             }
         } elseif ("author" == $which) {
             parent::sdpvs_number_of_posts_per_author($searchyear, $start_date, $end_date);
-            $chart_array = $this -> list_array;
+            $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
-            $bars_total = $this -> total_bars;
+            $bars_total = $this->total_bars;
             $order = "asc";
             if ("y" != $public) {
                 echo '<h2>' . esc_html__('Authors', 'post-volume-stats') . '</h2>';
@@ -101,9 +101,9 @@ class sdpvsBarChart extends sdpvsArrays {
             }
         } elseif ("words" == $which) {
             parent::sdpvs_number_of_words_per_post($searchyear,$searchauthor, $start_date, $end_date);
-            $chart_array = $this -> list_array;
+            $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
-            $bars_total = $this -> total_bars;
+            $bars_total = $this->total_bars;
             $order = "asc";
             if ("y" != $public) {
                 echo '<h2>' . esc_html__('Words per Post', 'post-volume-stats') . '</h2>';
@@ -112,25 +112,36 @@ class sdpvsBarChart extends sdpvsArrays {
             }
         } elseif ("images" == $which) {
             parent::sdpvs_number_of_images_per_post($searchyear,$searchauthor, $start_date, $end_date);
-            $chart_array = $this -> list_array;
+            $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
-            $bars_total = $this -> total_bars;
+            $bars_total = $this->total_bars;
             $order = "asc";
             if ("y" != $public) {
                 echo '<h2>' . esc_html__('Images per Post', 'post-volume-stats') . '</h2>';
             } else {
                 echo '<h2>' . esc_html__('Images per Post', 'post-volume-stats') . '</h2>';
             }
-        }elseif ("interval" == $which) {
-            parent::sdpvs_number_of_posts_in_order($searchyear, $searchauthor, $start_date, $end_date);
-            $chart_array = $this -> list_array;
+        } elseif ("comments" == $which) {
+            parent::sdpvs_number_of_comments_per_post($searchyear,$searchauthor, $start_date, $end_date);
+            $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
-            $bars_total = $this -> total_bars;
+            $bars_total = $this->total_bars;
             $order = "asc";
             if ("y" != $public) {
-                echo '<h2>' . esc_html__('Days Between Posts', 'post-volume-stats') . '</h2>';
+                echo '<h2>' . esc_html__('Comments per Post', 'post-volume-stats') . '</h2>';
             } else {
-                echo '<h2>' . esc_html__('Days Between Posts', 'post-volume-stats') . '</h2>';
+                echo '<h2>' . esc_html__('Comments per Post', 'post-volume-stats') . '</h2>';
+            }
+        }elseif ("interval" == $which) {
+            parent::sdpvs_number_of_posts_in_order($searchyear, $searchauthor, $start_date, $end_date);
+            $chart_array = $this->list_array;
+            parent::find_highest_first_and_total($chart_array);
+            $bars_total = $this->total_bars;
+            $order = "asc";
+            if ("y" != $public) {
+                echo '<h2>' . esc_html__('Intervals Between Posts', 'post-volume-stats') . '</h2>';
+            } else {
+                echo '<h2>' . esc_html__('Intervals Between Posts', 'post-volume-stats') . '</h2>';
             }
         }
         if ("year" != $which and "y" == $public) {
@@ -142,7 +153,7 @@ class sdpvsBarChart extends sdpvsArrays {
         }
 
         // specify the margin width on the left of the bar chart
-        $graphleft = (strlen($this -> highest_val) * 7) + 5;
+        $graphleft = (strlen($this->highest_val) * 7) + 5;
 
         $bar_width = $graphwidth / $bars_total;
         if (17 > $bar_width) {
@@ -158,7 +169,7 @@ class sdpvsBarChart extends sdpvsArrays {
         echo "<svg width=\"" . $svgwidth . "px\" height=\"" . $svgheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" class=\"sdpvs_bar\">\n";
         echo "<path stroke=\"$text_color\" stroke-width=\"1\" d=\"M$graphleft $graphtop v $graphheight\"></path>";
 
-        $number_per_increment = ceil($this -> highest_val / 5);
+        $number_per_increment = ceil($this->highest_val / 5);
         // If an increment is a strange number, like 39, round it up or down to 40 or 35.
         if (5 < $number_per_increment) {
             $inc_mod = $number_per_increment % 5;
@@ -173,7 +184,7 @@ class sdpvsBarChart extends sdpvsArrays {
                 }
             }
         }
-        $horiz_line_increment = $graphheight * ($number_per_increment / $this -> highest_val);
+        $horiz_line_increment = $graphheight * ($number_per_increment / $this->highest_val);
 
         for ($j = 0; $j <= 5; $j++) {
             $depth = $graphtop + $graphheight - ($j * $horiz_line_increment);
@@ -190,7 +201,7 @@ class sdpvsBarChart extends sdpvsArrays {
             }
         }
         $y_start = $graphheight + $graphtop;
-        for ($i = 0; $i <= $this -> first_val; $i++) {
+        for ($i = 0; $i <= $this->first_val; $i++) {
             if (0 < $chart_array[$i]['volume']) {
                 if ("desc" == $order) {
                     $x_start = $svgwidth - ($i * $bar_width);
@@ -210,7 +221,7 @@ class sdpvsBarChart extends sdpvsArrays {
                     $color = $graph_color;
                     $set_explicit_color = "";
                 }
-                $bar_height = intval($graphheight * ( absint($chart_array[$i]['volume']) / $this -> highest_val));
+                $bar_height = intval($graphheight * ( absint($chart_array[$i]['volume']) / $this->highest_val));
 
                 if ("year" == $which) {
                     if ($chart_array[$i]['name'] == $searchyear) {
@@ -294,7 +305,7 @@ class sdpvsBarChart extends sdpvsArrays {
         echo "</svg>\n";
         if ("n" == $subpage and "y" != $public) {
             echo "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form></p>";
-            if("words" == $which or "images" == $which or "hour" == $which or "dayofweek" == $which or "month" == $which or "dayofmonth" == $which or "interval" == $which){
+            if("words" == $which or "images" == $which or "comments" == $which or "hour" == $which or "dayofweek" == $which or "month" == $which or "dayofmonth" == $which or "interval" == $which){
                 echo "<form class='sdpvs_compare' action='' method='POST'><input type='hidden' name='comparedata' value='$which'><input type='submit' class='button-primary sdpvs_load_content' value='Compare Years'></form></p>";
                 if("yes"==$exportcsv){
                     $sdpvs_csv_download_url = admin_url("/download-csv/$which.csv");
@@ -338,21 +349,21 @@ class sdpvsBarChart extends sdpvsArrays {
 
         // All this just gets the number of years
         parent::sdpvs_number_of_posts_per_year($searchauthor);
-        $chart_array = $this -> list_array;
+        $chart_array = $this->list_array;
         parent::find_highest_first_and_total($chart_array);
-        $bars_total = $this -> first_val + 1;
+        $bars_total = $this->first_val + 1;
         $order = "desc";
 
         $x = $logical_starter;
         while ($select_array[1][$x]) {
             if (0 < $select_array[1][$x]) {
                 $term_id = $select_array[1][$x];
-                for ($i = 0; $i <= $this -> first_val; $i++) {
+                for ($i = 0; $i <= $this->first_val; $i++) {
                     $searchyear = absint($chart_array[$i]['name']);
                     // Get slug, name and volume
                     $item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear,$searchauthor);
-                    if (!$this -> highest_val2 or $this -> highest_val2 < $item['volume']) {
-                        $this -> highest_val2 = $item['volume'];
+                    if (!$this->highest_val2 or $this->highest_val2 < $item['volume']) {
+                        $this->highest_val2 = $item['volume'];
                     }
                 }
             }
@@ -360,7 +371,7 @@ class sdpvsBarChart extends sdpvsArrays {
         }
 
         // specify the margin width on the left of the bar chart
-        $graphleft = (strlen($this -> highest_val2) * 7) + 5;
+        $graphleft = (strlen($this->highest_val2) * 7) + 5;
 
         $bar_width = $graphwidth / $bars_total;
         if (17 > $bar_width) {
@@ -373,10 +384,10 @@ class sdpvsBarChart extends sdpvsArrays {
         $svgwidth = $graphwidth + $graphleft;
         $svgheight = $graphheight + $graphtop + $graphbottom;
 
-        $this -> svg_output_string = "<svg width=\"" . $svgwidth . "px\" height=\"" . $svgheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" class=\"sdpvs_bar\">\n";
-        $this -> svg_output_string .= "<path stroke=\"#000\" stroke-width=\"1\" d=\"M$graphleft $graphtop v $graphheight\"></path>";
+        $this->svg_output_string = "<svg width=\"" . $svgwidth . "px\" height=\"" . $svgheight . "px\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" class=\"sdpvs_bar\">\n";
+        $this->svg_output_string .= "<path stroke=\"#000\" stroke-width=\"1\" d=\"M$graphleft $graphtop v $graphheight\"></path>";
 
-        $number_per_increment = ceil($this -> highest_val2 / 5);
+        $number_per_increment = ceil($this->highest_val2 / 5);
         // If an increment is a strange number, like 39, round it up or down to 40 or 35.
         if (5 < $number_per_increment) {
             $inc_mod = $number_per_increment % 5;
@@ -391,32 +402,32 @@ class sdpvsBarChart extends sdpvsArrays {
                 }
             }
         }
-        $horiz_line_increment = $graphheight * ($number_per_increment / $this -> highest_val2);
+        $horiz_line_increment = $graphheight * ($number_per_increment / $this->highest_val2);
 
         for ($j = 0; $j <= 5; $j++) {
             $depth = $graphtop + $graphheight - ($j * $horiz_line_increment);
             if ($graphtop <= $depth) {
                 $value = $j * $number_per_increment;
                 if (0 == $j) {
-                    $this -> svg_output_string .= "<path stroke=\"#000\" stroke-width=\"1\" d=\"M$graphleft $depth h $graphwidth\"></path>";
+                    $this->svg_output_string .= "<path stroke=\"#000\" stroke-width=\"1\" d=\"M$graphleft $depth h $graphwidth\"></path>";
                 } else {
-                    $this -> svg_output_string .= "<path stroke=\"#000\" stroke-width=\"0.2\" d=\"M$graphleft $depth h $graphwidth\"></path>";
+                    $this->svg_output_string .= "<path stroke=\"#000\" stroke-width=\"0.2\" d=\"M$graphleft $depth h $graphwidth\"></path>";
                 }
                 $text_x = $graphleft - (strlen($value) * 7) - 5;
                 $text_y = $depth + 4;
-                $this -> svg_output_string .= "<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"#000\">$value</text>";
+                $this->svg_output_string .= "<text x=\"$text_x\" y=\"$text_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"#000\">$value</text>";
             }
         }
 
         $y_start = $graphheight + $graphtop;
-        for ($i = 0; $i <= $this -> first_val; $i++) {
+        for ($i = 0; $i <= $this->first_val; $i++) {
             $legend = absint($chart_array[$i]['name']);
             $x_start = $svgwidth - ($i * $bar_width);
 
             if (strlen($legend) * 7 < $bar_width) {
                 $legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
                 $legend_y = $y_start + 17;
-                $this -> svg_output_string .= "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
+                $this->svg_output_string .= "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
             }
         }
 
@@ -434,25 +445,24 @@ class sdpvsBarChart extends sdpvsArrays {
                 $term_id = absint($select_array[1][$x]);
 
                 if ("y" == $public) {
-//					$item_id = $pie_array[$c]['id'];
                     $link = get_term_link( $term_id );
                 }
 
 
-                for ($i = 0; $i <= $this -> first_val; $i++) {
+                for ($i = 0; $i <= $this->first_val; $i++) {
                     $searchyear = absint($chart_array[$i]['name']);
                     // Get slug, name and volume
                     $item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear, $searchauthor);
                     $x_start = $svgwidth - ($i * $bar_width);
 
-                    $point_height = intval($graphheight * ( absint($item['volume']) / absint($this -> highest_val2)));
+                    $point_height = intval($graphheight * ( absint($item['volume']) / absint($this->highest_val2)));
                     $x_start = $svgwidth - ($i * $bar_width) - $bar_width / 2;
                     $y_start = $graphheight + $graphtop - $point_height;
 
-                    if (0 < $this -> first_val) {
+                    if (0 < $this->first_val) {
                         if (0 == $i) {
                             $line_graph = "<path d=\"M$x_start $y_start, ";
-                        } elseif ($i == $this -> first_val) {
+                        } elseif ($i == $this->first_val) {
                             $line_graph .= "$x_start $y_start\" fill=\"transparent\" stroke=\"$color\"/>";
                         } else {
                             $line_graph .= "$x_start $y_start, ";
@@ -470,17 +480,17 @@ class sdpvsBarChart extends sdpvsArrays {
                         $link = admin_url("edit.php?$link_part=" . $item['slug']);
                     }
 
-                    $this -> svg_output_string .= "<a href=\"$link\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:title=\"{$item['name']}, {$item['volume']} posts out of {$chart_array[$i]['volume']}\"><circle cx=\"$x_start\" cy=\"$y_start\" r=\"3\" stroke=\"$color\" stroke-width=\"0\" fill=\"$color\" /></a>";
+                    $this->svg_output_string .= "<a href=\"$link\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:title=\"{$item['name']}, {$item['volume']} posts out of {$chart_array[$i]['volume']}\"><circle cx=\"$x_start\" cy=\"$y_start\" r=\"3\" stroke=\"$color\" stroke-width=\"0\" fill=\"$color\" /></a>";
                 }
-                $this -> svg_output_string .= $line_graph;
+                $this->svg_output_string .= $line_graph;
             }
             $x++;
             $y++;
         }
 
-        $this -> svg_output_string .= "</svg>\n";
+        $this->svg_output_string .= "</svg>\n";
 
-        return $this -> svg_output_string;
+        return $this->svg_output_string;
     }
 
 }

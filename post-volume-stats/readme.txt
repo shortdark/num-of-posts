@@ -48,6 +48,13 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 3.2.02 =
+
+* NEW: Added "Comments per post" to the main page, must be added in the settings.
+* FIX: Last update changed the way "Words per post" data was collected, fixed.
+* FIX: "Images per post" was not working correctly on "compare years", fixed.
+* UPDATED: More code tidy up.
+
 = 3.2.01 =
 
 * NEW: "Images per post" added to the main page. Beta feature, must be added in the settings.
