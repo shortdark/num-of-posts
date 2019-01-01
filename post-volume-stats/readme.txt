@@ -4,7 +4,7 @@ Contributors: shortdark
 Donate link: https://www.paypal.me/shortdark
 Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget, author, taxonomy, csv
 Requires at least: 3.5
-Tested up to: 4.9.8
+Tested up to: 5.0.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -47,6 +47,10 @@ Here are the latest screenshots...
 9. New "Date Range" page which applies a date range to the main page only, not "Category", "Tag" or "Custom Taxonomy" pages.
 
 == Changelog ==
+
+= 3.2.03 =
+
+* UPDATED: Refactored the array functions.
 
 = 3.2.02 =
 
