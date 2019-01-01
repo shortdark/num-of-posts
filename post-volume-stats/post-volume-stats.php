@@ -99,7 +99,9 @@ function sdpvs_post_volume_stats_assembled() {
     // Stop the timer and show the results
     $time_end = microtime(true);
     $elapsed_time = sprintf("%.5f", $time_end - $time_start);
-    echo '<p>' . sprintf(esc_html__('Post Volume Stats Version %s, Script time elapsed: %f seconds', 'post-volume-stats'), SDPVS__VERSION_NUMBER, $elapsed_time) . '</p>';
+    echo '<p>' . sprintf(esc_html__('Post Volume Stats Version %s, Script time elapsed: %f seconds', 'post-volume-stats'), SDPVS__VERSION_NUMBER, $elapsed_time) . '</p>
+        <div class="d-inline-block"><span class="dashicons dashicons-chart-pie"></span></div>
+        <div class="d-inline-block"><span class="dashicons dashicons-chart-pie"></span></div>';
 
 }
 
@@ -359,6 +361,11 @@ add_action( 'wp_before_admin_bar_render', 'sdpvs_custom_toolbar' );
  *************/
 
 function sdpvs_load_all_admin_scripts() {
+
+    // Load Boostrap CSS
+    wp_enqueue_style( 'bootstrap-css', 'https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css' );
+
+    // Load plugin CSS
     wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.6', 'screen');
 
     // Importing external JQuery UI element using "wp-includes/script-loader.php"
