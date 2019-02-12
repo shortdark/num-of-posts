@@ -575,7 +575,7 @@ abstract class sdpvsArrays {
 
         // If a date has been specified we run another SQL query for that date
         if( 0 < $searchyear || ("" != $start_date && "" != $end_date) ){
-            $temp_array=[];
+            $temp_array=array();
 
             $extra .= $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
 

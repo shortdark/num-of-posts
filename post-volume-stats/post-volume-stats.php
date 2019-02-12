@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.2.03
+ * @version 3.2.04
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.2.03
+ * Version: 3.2.04
  * Author URI: http://www.shortdark.net/
  */
 
@@ -37,7 +37,7 @@ if (!function_exists('add_action')) {
 define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SDPVS__PLUGIN_FOLDER', 'post-volume-stats');
 define('SDPVS__PLUGIN_SETTINGS', 'post-volume-stats-settings');
-define('SDPVS__VERSION_NUMBER', '3.2.03');
+define('SDPVS__VERSION_NUMBER', '3.2.04');
 
 /******************
  ** SETUP THE PAGE
@@ -100,8 +100,7 @@ function sdpvs_post_volume_stats_assembled() {
     $time_end = microtime(true);
     $elapsed_time = sprintf("%.5f", $time_end - $time_start);
     echo '<p>' . sprintf(esc_html__('Post Volume Stats Version %s, Script time elapsed: %f seconds', 'post-volume-stats'), SDPVS__VERSION_NUMBER, $elapsed_time) . '</p>
-        <div class="d-inline-block"><span class="dashicons dashicons-chart-pie"></span></div>
-        <div class="d-inline-block"><span class="dashicons dashicons-chart-pie"></span></div>';
+        <div style="display:block"><span class="dashicons dashicons-chart-pie"></span></div>';
 
 }
 
@@ -363,7 +362,7 @@ add_action( 'wp_before_admin_bar_render', 'sdpvs_custom_toolbar' );
 function sdpvs_load_all_admin_scripts() {
 
     // Load Boostrap CSS
-    wp_enqueue_style( 'bootstrap-css', 'https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css' );
+    // wp_enqueue_style( 'bootstrap-css', 'https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css' );
 
     // Load plugin CSS
     wp_enqueue_style('sdpvs_css', plugins_url('sdpvs_css.css', __FILE__), '', '1.0.6', 'screen');
