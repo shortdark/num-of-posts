@@ -64,11 +64,7 @@ class sdpvsInfo extends sdpvsArrays {
         echo '<p><em>' . esc_html__('(The summary stats are from the date of the first post up to today\'s date)', 'post-volume-stats') . '</em></p>';
 
 
-        $link = "https://wordpress.org/plugins/post-volume-stats/";
-        $linkdesc = "Post Volume Stats plugin page";
-
         echo '<h2>' . esc_html__('Thank You', 'post-volume-stats') . '</h2>';
-        echo '<p>Thank you for installing Post Volume Stats. If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
 
         return;
     }
@@ -87,8 +83,17 @@ class sdpvsInfo extends sdpvsArrays {
         return $earliest_date;
     }
 
+    public function drawFooter($time_start=0,$time_end=0){
+        $link = "https://wordpress.org/plugins/post-volume-stats/";
+        $linkdesc = "Post Volume Stats plugin page";
+        echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
+
+        $elapsed_time = sprintf("%.5f", $time_end - $time_start);
+        echo '<p>' . sprintf(esc_html__('Post Volume Stats Version %s, Script time elapsed: %f seconds', 'post-volume-stats'), SDPVS__VERSION_NUMBER, $elapsed_time) . '</p>';
+    }
+
 
 
 
 }
-?>
+

@@ -13,7 +13,7 @@ class sdpvsPieChart extends sdpvsArrays {
     /*
      * COUNT NUMBER OF POSTS PER CATEGORY IN TOTAL, some posts might have multiple cats
      */
-    private function sdpvs_count_post_taxonomies($year = "", $author = "") {
+    private function sdpvs_count_post_taxonomies() {
         $this->number_of_taxonomies = "";
         $this->total_taxonomy_posts = "";
         $c = 0;
@@ -30,10 +30,10 @@ class sdpvsPieChart extends sdpvsArrays {
     /*
      * ADD THE ANGLE TO THE EXISTING CATEGORY ARRAY
      */
-    private function sdpvs_add_to_taxonomy_array($type = "", $year = "", $author = "", $start_date = "", $end_date = "") {
+    private function sdpvs_add_to_taxonomy_array($type = "", $year = "", $author = "", $start_date = "", $end_date = "", $search_text="") {
         $this->tax_type_array = "";
-        parent::sdpvs_post_taxonomy_type_volumes($type, $year,$author, $start_date, $end_date);
-        $this->sdpvs_count_post_taxonomies($year,$author);
+        parent::sdpvs_post_taxonomy_type_volumes($type, $year,$author, $start_date, $end_date, $search_text);
+        $this->sdpvs_count_post_taxonomies();
         $c = 0;
         while (array_key_exists($c, $this->tax_type_array)) {
             if (0 < $this->tax_type_array[$c]['volume']) {
@@ -47,7 +47,7 @@ class sdpvsPieChart extends sdpvsArrays {
     /**
      * DISPLAY CATEGORY DATA IN A PIE CHART
      */
-    public function sdpvs_draw_pie_svg($type = "", $year = "", $author = "", $subpage = "", $public = "", $start_date = "", $end_date = "") {
+    public function sdpvs_draw_pie_svg($type = "", $year = "", $author = "", $subpage = "", $public = "", $start_date = "", $end_date = "", $search_text="") {
         $testangle_orig = 0;
         $radius = 100;
         $prev_angle = 0;
@@ -60,7 +60,7 @@ class sdpvsPieChart extends sdpvsArrays {
         $exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
 
         if ("category" == $type) {
-            $this->sdpvs_add_to_taxonomy_array($type,$year,$author, $start_date, $end_date);
+            $this->sdpvs_add_to_taxonomy_array($type,$year,$author, $start_date, $end_date, $search_text);
             $pie_array = $this->tax_type_array;
             $total_volume = $this->total_taxonomy_posts;
             $number_of_containers = $this->number_of_taxonomies;
@@ -68,14 +68,14 @@ class sdpvsPieChart extends sdpvsArrays {
             $link_part = "category_name";
         } elseif ("tag" == $type) {
             $wp_type_name = "post_tag";
-            $this->sdpvs_add_to_taxonomy_array($wp_type_name,$year,$author, $start_date, $end_date);
+            $this->sdpvs_add_to_taxonomy_array($wp_type_name,$year,$author, $start_date, $end_date, $search_text);
             $total_volume = $this->total_taxonomy_posts;
             $pie_array = $this->tax_type_array;
             $number_of_containers = $this->number_of_taxonomies;
             $pie_svg = '<h2>' . esc_html__("Tags", 'post-volume-stats') . '</h2>';
             $link_part = $type;
         }else{
-            $this->sdpvs_add_to_taxonomy_array($type,$year,$author, $start_date, $end_date);
+            $this->sdpvs_add_to_taxonomy_array($type,$year,$author, $start_date, $end_date, $search_text);
             $total_volume = $this->total_taxonomy_posts;
             $pie_array = $this->tax_type_array;
             $number_of_containers = $this->number_of_taxonomies;
@@ -233,4 +233,4 @@ class sdpvsPieChart extends sdpvsArrays {
     }
 
 }
-?>
+

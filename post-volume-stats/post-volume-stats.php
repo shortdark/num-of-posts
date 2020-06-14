@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.2.04
+ * @version 3.3.01
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.2.04
+ * Version: 3.3.01
  * Author URI: http://www.shortdark.net/
  */
 
@@ -37,7 +37,7 @@ if (!function_exists('add_action')) {
 define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SDPVS__PLUGIN_FOLDER', 'post-volume-stats');
 define('SDPVS__PLUGIN_SETTINGS', 'post-volume-stats-settings');
-define('SDPVS__VERSION_NUMBER', '3.2.04');
+define('SDPVS__VERSION_NUMBER', '3.3.01');
 
 /******************
  ** SETUP THE PAGE
@@ -96,11 +96,14 @@ function sdpvs_post_volume_stats_assembled() {
 
     $sdpvs_info->sdpvs_info();
 
-    // Stop the timer and show the results
+
+    echo '<div style="display:block"><span class="dashicons dashicons-chart-pie"></span></div>';
+
+    // Stop the timer
     $time_end = microtime(true);
-    $elapsed_time = sprintf("%.5f", $time_end - $time_start);
-    echo '<p>' . sprintf(esc_html__('Post Volume Stats Version %s, Script time elapsed: %f seconds', 'post-volume-stats'), SDPVS__VERSION_NUMBER, $elapsed_time) . '</p>
-        <div style="display:block"><span class="dashicons dashicons-chart-pie"></span></div>';
+
+    // Footer
+    $sdpvs_info->drawFooter($time_start,$time_end);
 
 }
 
@@ -111,15 +114,12 @@ function sdpvs_category_page() {
         // Start the timer
         $time_start = microtime(true);
 
-        // Create an instance of the required class
+        // Create an instance of the required classes
+        $sdpvs_info = new sdpvsInfo();
         $sdpvs_sub = new sdpvsSubPages();
 
         // Call the method
         $sdpvs_sub->sdpvs_combined_page_content('category');
-
-        $link = "https://wordpress.org/plugins/post-volume-stats/";
-        $linkdesc = "Post Volume Stats plugin page";
-        echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
 
         // DIV for loading
         echo "<div id='sdpvs_loading'>";
@@ -127,8 +127,9 @@ function sdpvs_category_page() {
 
         // Stop the timer
         $time_end = microtime(true);
-        $elapsed_time = sprintf("%.5f", $time_end - $time_start);
-        echo '<p>' . sprintf(esc_html__('Post Volume Stats Version %s, Script time elapsed: %f seconds', 'post-volume-stats'), SDPVS__VERSION_NUMBER, $elapsed_time) . '</p>';
+
+        // Footer
+        $sdpvs_info->drawFooter($time_start,$time_end);
 
     }
     return;
@@ -141,15 +142,12 @@ function sdpvs_tag_page() {
         // Start the timer
         $time_start = microtime(true);
 
-        // Create an instance of the required class
+        // Create an instance of the required classes
+        $sdpvs_info = new sdpvsInfo();
         $sdpvs_sub = new sdpvsSubPages();
 
         // Call the method
         $sdpvs_sub->sdpvs_combined_page_content('tag');
-
-        $link = "https://wordpress.org/plugins/post-volume-stats/";
-        $linkdesc = "Post Volume Stats plugin page";
-        echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
 
         // DIV for loading
         echo "<div id='sdpvs_loading'>";
@@ -157,8 +155,9 @@ function sdpvs_tag_page() {
 
         // Stop the timer
         $time_end = microtime(true);
-        $elapsed_time = sprintf("%.5f", $time_end - $time_start);
-        echo '<p>' . sprintf(esc_html__('Post Volume Stats Version %s, Script time elapsed: %f seconds', 'post-volume-stats'), SDPVS__VERSION_NUMBER, $elapsed_time) . '</p>';
+
+        // Footer
+        $sdpvs_info->drawFooter($time_start,$time_end);
 
     }
     return;
@@ -171,7 +170,8 @@ function sdpvs_custom_page() {
         // Start the timer
         $time_start = microtime(true);
 
-        // Create an instance of the required class
+        // Create an instance of the required classes
+        $sdpvs_info = new sdpvsInfo();
         $sdpvs_sub = new sdpvsSubPages();
 
         $genoptions = get_option('sdpvs_general_settings');
@@ -183,18 +183,15 @@ function sdpvs_custom_page() {
         // Call the method
         $sdpvs_sub->sdpvs_combined_page_content($customvalue);
 
-        $link = "https://wordpress.org/plugins/post-volume-stats/";
-        $linkdesc = "Post Volume Stats plugin page";
-        echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
-
         // DIV for loading
         echo "<div id='sdpvs_loading'>";
         echo "</div>";
 
         // Stop the timer
         $time_end = microtime(true);
-        $elapsed_time = sprintf("%.5f", $time_end - $time_start);
-        echo '<p>' . sprintf(esc_html__('Post Volume Stats Version %s, Script time elapsed: %f seconds', 'post-volume-stats'), SDPVS__VERSION_NUMBER, $elapsed_time) . '</p>';
+
+        // Footer
+        $sdpvs_info->drawFooter($time_start,$time_end);
 
     }
     return;
@@ -206,6 +203,9 @@ function sdpvs_custom_page() {
 // Settings page
 function sdpvs_settings_page() {
     if (is_admin()) {
+
+        // Create an instance of the required classes
+        $sdpvs_info = new sdpvsInfo();
 
         // Start the timer
         $time_start = microtime(true);
@@ -219,28 +219,28 @@ function sdpvs_settings_page() {
         submit_button('Save');
         echo "</form>";
 
-        $link = "https://wordpress.org/plugins/post-volume-stats/";
-        $linkdesc = "Post Volume Stats plugin page";
-        echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
-
         // Stop the timer
         $time_end = microtime(true);
-        $elapsed_time = sprintf("%.5f", $time_end - $time_start);
-        echo '<p>' . sprintf(esc_html__('Post Volume Stats Version %s, Script time elapsed: %f seconds', 'post-volume-stats'), SDPVS__VERSION_NUMBER, $elapsed_time) . '</p>';
+
+        // Footer
+        $sdpvs_info->drawFooter($time_start,$time_end);
     }
     return;
 }
 
-// Settings page
+// Date Range page
 function sdpvs_date_range_select_page() {
     if (is_admin()) {
+
+        // Create an instance of the required classes
+        $sdpvs_info = new sdpvsInfo();
 
         // Start the timer
         $time_start = microtime(true);
 
         // Content goes here
-        echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Date Range Select', 'post-volume-stats') . '</h1>';
-        echo "<p>On this page you can either select a year or you can select a date range.</p>";
+        echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Filter Results', 'post-volume-stats') . '</h1>';
+        echo "<p>On this page you can either select a year or you can select a date range and filter the results to only search for posts which have a certain text string within them.</p>";
         echo "<p>Selecting a year on this page is an alternative to clicking the bars of the \"Year\" bar chart on the other pages. To de-select the year and view all years together select the blank option at the top.</p>";
         echo "<p>Only if the \"Year\" is blank will the date range be used. You must enter both a start date and an end date. If a date range is entered (with no year selected) it will be applied to the main page, but not the Tag/Category/Custom pages.</p>";
 
@@ -252,14 +252,11 @@ function sdpvs_date_range_select_page() {
         submit_button('Save');
         echo "</form>";
 
-        $link = "https://wordpress.org/plugins/post-volume-stats/";
-        $linkdesc = "Post Volume Stats plugin page";
-        echo '<p>If you find this free plugin useful please take a moment to give a rating at the ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>. Thank you.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
-
         // Stop the timer
         $time_end = microtime(true);
-        $elapsed_time = sprintf("%.5f", $time_end - $time_start);
-        echo '<p>' . sprintf(esc_html__('Post Volume Stats Version %s, Script time elapsed: %f seconds', 'post-volume-stats'), SDPVS__VERSION_NUMBER, $elapsed_time) . '</p>';
+
+        // Footer
+        $sdpvs_info->drawFooter($time_start,$time_end);
     }
     return;
 }
@@ -308,7 +305,7 @@ function sdpvs_register_custom_page_in_menu() {
         add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $customvalue, 'sdpvs_custom_page');
     }
     if( "yes" == $showrange ){
-        add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Date Range', 'post-volume-stats'), esc_html__('Date Range', 'post-volume-stats'), 'manage_options', 'post-volume-stats-daterange', 'sdpvs_date_range_select_page');
+        add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Filter Results', 'post-volume-stats'), esc_html__('Filter Results', 'post-volume-stats'), 'manage_options', 'post-volume-stats-daterange', 'sdpvs_date_range_select_page');
     }
     add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Settings', 'post-volume-stats'), esc_html__('Settings', 'post-volume-stats'), 'manage_options', 'post-volume-stats-settings', 'sdpvs_settings_page');
 }
@@ -323,6 +320,10 @@ function sdpvs_load_textdomain() {
 }
 
 add_action('init', 'sdpvs_load_textdomain');
+
+
+
+
 
 
 
@@ -421,37 +422,40 @@ function sdpvs_process_ajax() {
 
     $year = get_option('sdpvs_year_option');
     $searchyear = absint($year['year_number']);
-        if(isset($year['start_date'])){
-            $start_date = filter_var ( $year['start_date'], FILTER_SANITIZE_STRING);
-        }
-        if(isset($year['end_date'])){
-            $end_date = filter_var ( $year['end_date'], FILTER_SANITIZE_STRING);
-        }
+    if(isset($year['start_date'])){
+        $start_date = filter_var ( $year['start_date'], FILTER_SANITIZE_STRING);
+    }
+    if(isset($year['end_date'])){
+        $end_date = filter_var ( $year['end_date'], FILTER_SANITIZE_STRING);
+    }
+    if(isset($year['search_text'])){
+        $search_text = filter_var ( $year['search_text'], FILTER_SANITIZE_STRING);
+    }
     $authoroptions = get_option('sdpvs_author_option');
     $searchauthor = absint($authoroptions['author_number']);
 
     if ("year" == $answer) {
-        echo $sdpvs_lists->sdpvs_posts_per_year_list($searchauthor);
+        echo $sdpvs_lists->sdpvs_posts_per_year_list($searchauthor, $search_text);
     } elseif ("hour" == $answer) {
-        echo $sdpvs_lists->sdpvs_posts_per_hour_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_posts_per_hour_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
     } elseif ("dayofweek" == $answer) {
-        echo $sdpvs_lists->sdpvs_posts_per_dayofweek_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_posts_per_dayofweek_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
     } elseif ("month" == $answer) {
-        echo $sdpvs_lists->sdpvs_posts_per_month_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_posts_per_month_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
     } elseif ("dayofmonth" == $answer) {
-        echo $sdpvs_lists->sdpvs_posts_per_day_of_month_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_posts_per_day_of_month_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
     } elseif ("author" == $answer) {
-        echo $sdpvs_lists->sdpvs_posts_per_author_list($searchyear, $start_date, $end_date );
+        echo $sdpvs_lists->sdpvs_posts_per_author_list($searchyear, $start_date, $end_date, $search_text);
     } elseif ("words" == $answer){
-        echo $sdpvs_lists->sdpvs_words_per_post_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_words_per_post_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
     } elseif ("images" == $answer){
-        echo $sdpvs_lists->sdpvs_images_per_post_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_images_per_post_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
     } elseif ("comments" == $answer){
-        echo $sdpvs_lists->sdpvs_comments_per_post_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_comments_per_post_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
     } elseif ("interval" == $answer){
-        echo $sdpvs_lists->sdpvs_interval_between_posts_list($searchyear, $searchauthor, $start_date, $end_date);
+        echo $sdpvs_lists->sdpvs_interval_between_posts_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
     } else {
-        echo $sdpvs_lists->sdpvs_posts_per_cat_tag_list($answer, $searchyear, $searchauthor, $start_date, $end_date, 'admin', '');
+        echo $sdpvs_lists->sdpvs_posts_per_cat_tag_list($answer, $searchyear, $searchauthor, $start_date, $end_date, 'admin', '', '', $search_text);
     }
 
     // Always die() AJAX

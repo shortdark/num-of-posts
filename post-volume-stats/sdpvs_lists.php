@@ -7,7 +7,7 @@ class sdpvsTextLists extends sdpvsArrays {
     /*
      * NUMBER OF POSTS PER AUTHOR
      */
-    public function sdpvs_posts_per_author_list($searchyear = "", $start_date = "", $end_date = "" ) {
+    public function sdpvs_posts_per_author_list($searchyear = "", $start_date = "", $end_date = "", $search_text = "" ) {
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $label = "";
@@ -29,7 +29,7 @@ class sdpvsTextLists extends sdpvsArrays {
             $extradesc = "";
         }
         
-        parent::sdpvs_number_of_posts_per_author($searchyear, $start_date, $end_date);
+        parent::sdpvs_number_of_posts_per_author($searchyear, $start_date, $end_date, $search_text);
         $this->list_string = '<h2>' . sprintf(esc_html__('Post Volumes per Author%1$s%2$s', 'post-volume-stats'), $extradesc, $label) . '</h2>';
         $i=0;
         while ( array_key_exists($i, $this->list_array) ) {
@@ -45,9 +45,9 @@ class sdpvsTextLists extends sdpvsArrays {
     /*
      * NUMBER OF POSTS PER YEAR TEXT
      */
-    public function sdpvs_posts_per_year_list($searchauthor = "") {
+    public function sdpvs_posts_per_year_list($searchauthor = "", $search_text = "") {
         $searchauthor = absint($searchauthor);
-        parent::sdpvs_number_of_posts_per_year($searchauthor);
+        parent::sdpvs_number_of_posts_per_year($searchauthor, $search_text);
         parent::find_highest_first_and_total($this->list_array);
         $number_of_years = $this->first_val + 1;
         $this->list_string = '<h2>' . esc_html__('Post Volumes per Year', 'post-volume-stats') . '</h2>';
@@ -83,7 +83,7 @@ class sdpvsTextLists extends sdpvsArrays {
     /*
      * NUMBER OF POSTS PER CATEGORY / TAG TEXT
      */
-    public function sdpvs_posts_per_cat_tag_list($type, $searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $list_type = "admin", $select_array = "", $colorlist="" ) {
+    public function sdpvs_posts_per_cat_tag_list($type, $searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $list_type = "admin", $select_array = "", $colorlist="", $search_text="") {
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $label = "";
@@ -99,6 +99,9 @@ class sdpvsTextLists extends sdpvsArrays {
             if( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
                 $label = " ($start_date to $end_date)";
             }
+        }
+        if(!empty($search_text)){
+            $label .= " (with \"$search_text\")";
         }
         $title = "";
         $posts_per_cat_tag = "";
@@ -183,7 +186,7 @@ class sdpvsTextLists extends sdpvsArrays {
         if ("" == $select_array and ("admin" == $list_type or "subpage" == $list_type)) {
             // Only grab all data when everything is required
             if("admin" == $list_type){
-                parent::sdpvs_post_taxonomy_type_volumes($taxonomy_type, $searchyear, $searchauthor, $start_date, $end_date);
+                parent::sdpvs_post_taxonomy_type_volumes($taxonomy_type, $searchyear, $searchauthor, $start_date, $end_date, $search_text);
             }elseif("subpage" == $list_type){
                 parent::sdpvs_post_taxonomy_type_volumes($taxonomy_type, $searchyear, $searchauthor);
             }
@@ -235,7 +238,7 @@ class sdpvsTextLists extends sdpvsArrays {
                     $term_id = abs($select_array[1][$x]);
 
                     // Get slug, name and volume
-                    $item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear,$searchauthor, $start_date, $end_date);
+                    $item = parent::sdpvs_get_one_item_info($term_id, $taxonomy_type, $searchyear,$searchauthor, $start_date, $end_date, $search_text);
 
                     $link = get_term_link( $term_id );
 
@@ -275,7 +278,7 @@ class sdpvsTextLists extends sdpvsArrays {
     /*
      * NUMBER OF DAYS BETWEEN POSTS
      */
-    public function sdpvs_interval_between_posts_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "" ) {
+    public function sdpvs_interval_between_posts_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $search_text = "" ) {
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $label = "";
@@ -296,7 +299,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
-        parent::sdpvs_number_of_posts_in_order($searchyear,$searchauthor, $start_date, $end_date);
+        parent::sdpvs_number_of_posts_in_order($searchyear,$searchauthor, $start_date, $end_date, $search_text);
         $this->list_string = '<h2>' . sprintf( esc_html__('Intervals Between Posts %1$s %2$s', 'post-volume-stats'), $extradesc, $label ) . '</h2>';
         $i=0;
         while ($this->list_array[$i]['name']) {
@@ -313,7 +316,7 @@ class sdpvsTextLists extends sdpvsArrays {
     /*
      * NUMBER OF POSTS PER DAY-OF-WEEK TEXT
      */
-    public function sdpvs_posts_per_dayofweek_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "" ) {
+    public function sdpvs_posts_per_dayofweek_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $search_text = "" ) {
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $label = "";
@@ -334,7 +337,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
-        parent::sdpvs_number_of_posts_per_dayofweek($searchyear,$searchauthor, $start_date, $end_date);
+        parent::sdpvs_number_of_posts_per_dayofweek($searchyear,$searchauthor, $start_date, $end_date, $search_text);
         parent::find_highest_first_and_total($this->list_array);
         $this->list_string = '<h2>' . sprintf (esc_html__('Post Volumes per Day of the Week %1$s %2$s', 'post-volume-stats'), $extradesc, $label ) . '</h2>';
         $this->list_string .= "<p>Which day of the week the $this->total_volume_of_posts posts were made on.</p>";
@@ -350,7 +353,7 @@ class sdpvsTextLists extends sdpvsArrays {
     /*
      * NUMBER OF POSTS PER HOUR TEXT
      */
-    public function sdpvs_posts_per_hour_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "" ) {
+    public function sdpvs_posts_per_hour_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $search_text = "" ) {
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $label = "";
@@ -371,7 +374,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
-        parent::sdpvs_number_of_posts_per_hour($searchyear,$searchauthor, $start_date, $end_date);
+        parent::sdpvs_number_of_posts_per_hour($searchyear,$searchauthor, $start_date, $end_date, $search_text);
         parent::find_highest_first_and_total($this->list_array);
         $this->list_string = '<h2>' . sprintf ( esc_html__('Post Volumes per Hour %1$s %2$s', 'post-volume-stats'), $extradesc, $label ) . '</h2>';
         $this->list_string .= "<p>Which hour of the day the $this->total_volume_of_posts posts were made on.</p>";
@@ -384,7 +387,7 @@ class sdpvsTextLists extends sdpvsArrays {
     /*
      * NUMBER OF POSTS PER MONTH TEXT
      */
-    public function sdpvs_posts_per_month_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "" ) {
+    public function sdpvs_posts_per_month_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $search_text = "" ) {
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $label = "";
@@ -405,7 +408,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
-        parent::sdpvs_number_of_posts_per_month($searchyear,$searchauthor, $start_date, $end_date);
+        parent::sdpvs_number_of_posts_per_month($searchyear,$searchauthor, $start_date, $end_date, $search_text);
         $this->list_string = '<h2>' . sprintf ( esc_html__('Post Volumes per Month %1$s %2$s', 'post-volume-stats'), $extradesc, $label ) . '</h2>';
         for ($i = 0; $i < 12; $i++) {
             if (!$this->list_array[$i]['volume']) {
@@ -419,7 +422,7 @@ class sdpvsTextLists extends sdpvsArrays {
     /*
      * NUMBER OF POSTS PER DAY OF MONTH TEXT
      */
-    public function sdpvs_posts_per_day_of_month_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "" ) {
+    public function sdpvs_posts_per_day_of_month_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $search_text = "" ) {
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $label = "";
@@ -440,7 +443,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
-        parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor, $start_date, $end_date);
+        parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor, $start_date, $end_date, $search_text);
         $this->list_string = '<h2>' . sprintf ( esc_html__('Post Volumes per Day of the Month %1$s %2$s', 'post-volume-stats'), $extradesc, $label ) . '</h2>';
         for ($i = 0; $i < 31; $i++) {
             if (!$this->list_array[$i]['volume']) {
@@ -456,7 +459,7 @@ class sdpvsTextLists extends sdpvsArrays {
     /*
      * NUMBER OF WORDS PER POST
      */
-    public function sdpvs_words_per_post_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "") {
+    public function sdpvs_words_per_post_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $search_text = "") {
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $label = "";
@@ -477,7 +480,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
-        parent::sdpvs_number_of_words_per_post($searchyear,$searchauthor, $start_date, $end_date);
+        parent::sdpvs_number_of_words_per_post($searchyear,$searchauthor, $start_date, $end_date, $search_text);
         $this->list_string = '<h2>' . sprintf( esc_html__('Words per Post %1$s %2$s', 'post-volume-stats'), $extradesc, $label ) . '</h2>';
         $i=0;
         while ( array_key_exists($i, $this->list_array) ) {
@@ -495,7 +498,7 @@ class sdpvsTextLists extends sdpvsArrays {
     /*
      * NUMBER OF IMAGES PER POST
      */
-    public function sdpvs_images_per_post_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "") {
+    public function sdpvs_images_per_post_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $search_text = "") {
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $label = "";
@@ -516,7 +519,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
-        parent::sdpvs_number_of_images_per_post($searchyear,$searchauthor, $start_date, $end_date);
+        parent::sdpvs_number_of_images_per_post($searchyear,$searchauthor, $start_date, $end_date, $search_text);
         $this->list_string = '<h2>' . sprintf( esc_html__('Images per Post %1$s %2$s', 'post-volume-stats'), $extradesc, $label ) . '</h2>';
         $i=0;
         while ( array_key_exists($i, $this->list_array) ) {
@@ -533,7 +536,7 @@ class sdpvsTextLists extends sdpvsArrays {
     /**
      * NUMBER OF IMAGES PER POST
      */
-    public function sdpvs_comments_per_post_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "") {
+    public function sdpvs_comments_per_post_list($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $search_text = "") {
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $label = "";
@@ -554,7 +557,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
-        parent::sdpvs_number_of_comments_per_post($searchyear,$searchauthor, $start_date, $end_date);
+        parent::sdpvs_number_of_comments_per_post($searchyear,$searchauthor, $start_date, $end_date, $search_text);
         $this->list_string = '<h2>' . sprintf( esc_html__('Comments per Post %1$s %2$s', 'post-volume-stats'), $extradesc, $label ) . '</h2>';
         $i=0;
         while ( array_key_exists($i, $this->list_array) ) {
@@ -572,14 +575,14 @@ class sdpvsTextLists extends sdpvsArrays {
     /**
      * COMPILE YEARS MATRIX
      */
-    public function sdpvs_test_years_matrix_4_tax($type = "", $firstval="", $searchauthor="" ) {
+    public function sdpvs_test_years_matrix_4_tax($type = "", $firstval="", $searchauthor="", $search_text = "" ) {
         $firstval = absint($firstval);
-        parent::sdpvs_number_of_posts_per_year($searchauthor);
+        parent::sdpvs_number_of_posts_per_year($searchauthor, $search_text);
         $chart_array = $this->list_array;
 
         for ($i = $firstval; $i >= 0; $i--) {
             $searchyear = absint($chart_array[$i]['name']);
-            parent::sdpvs_post_tax_type_vols_structured($type,$searchyear,$searchauthor);
+            parent::sdpvs_post_tax_type_vols_structured($type,$searchyear,$searchauthor, $search_text);
 
             $a=0;
             while ( array_key_exists($a, $this->list_array) ) {
@@ -602,12 +605,12 @@ class sdpvsTextLists extends sdpvsArrays {
     /**
      * COMPILE YEARS MATRIX
      */
-    public function sdpvs_compile_years_matrix($type = "", $firstval="", $searchauthor="" ) {
+    public function sdpvs_compile_years_matrix($type = "", $firstval="", $searchauthor="", $search_text = "" ) {
         if("tag" == $type){
             $type = "post_tag";
         }
         $firstval = absint($firstval);
-        parent::sdpvs_number_of_posts_per_year($searchauthor);
+        parent::sdpvs_number_of_posts_per_year($searchauthor, $search_text);
         $chart_array = $this->list_array;
 
         for ($i = $firstval; $i >= 0; $i--) {
@@ -650,7 +653,7 @@ class sdpvsTextLists extends sdpvsArrays {
      * COMPARE YEARS
      */
 
-     public function sdpvs_compare_years_rows($type = "", $searchauthor="") {
+     public function sdpvs_compare_years_rows($type = "", $searchauthor="", $search_text = "") {
         $searchauthor = absint($searchauthor);
         $user = "";
         $userstring = "";
@@ -658,11 +661,11 @@ class sdpvsTextLists extends sdpvsArrays {
         $number_of_years = 0;
 
         // All this just gets the number of years
-        parent::sdpvs_number_of_posts_per_year($searchauthor);
+        parent::sdpvs_number_of_posts_per_year($searchauthor, $search_text);
         $chart_array = $this->list_array;
         parent::find_highest_first_and_total($chart_array);
 
-        $this->sdpvs_compile_years_matrix($type, $this->first_val, $searchauthor);
+        $this->sdpvs_compile_years_matrix($type, $this->first_val, $searchauthor, $search_text);
 
         if( isset($searchauthor) and 0 < $searchauthor){
             $user = get_user_by( 'id', $searchauthor );
@@ -717,7 +720,7 @@ class sdpvsTextLists extends sdpvsArrays {
     }
 
 
-    public function sdpvs_create_csv_output($type = "", $searchauthor="") {
+    public function sdpvs_create_csv_output($type = "", $searchauthor="", $search_text = "") {
         $searchauthor = absint($searchauthor);
         $years_total = 0;
         $number_of_years = 0;
@@ -728,11 +731,11 @@ class sdpvsTextLists extends sdpvsArrays {
             $userstring = " ($user->display_name)";
         }
         // All this just gets the number of years
-        parent::sdpvs_number_of_posts_per_year($searchauthor);
+        parent::sdpvs_number_of_posts_per_year($searchauthor, $search_text);
         $chart_array = $this->list_array;
         parent::find_highest_first_and_total($chart_array);
 
-        $this->sdpvs_compile_years_matrix($type, $this->first_val, $searchauthor);
+        $this->sdpvs_compile_years_matrix($type, $this->first_val, $searchauthor, $search_text);
         if("words"==$type) {
             $this->output_compare_list = "Words per Post$userstring,";
         }elseif("images"==$type){
@@ -786,4 +789,4 @@ class sdpvsTextLists extends sdpvsArrays {
 
 
 }
-?>
+

@@ -4,7 +4,7 @@ Contributors: shortdark
 Donate link: https://www.paypal.me/shortdark
 Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget, author, taxonomy, csv
 Requires at least: 3.5
-Tested up to: 5.0.3
+Tested up to: 5.4.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -47,6 +47,11 @@ Here are the latest screenshots...
 9. New "Date Range" page which applies a date range to the main page only, not "Category", "Tag" or "Custom Taxonomy" pages.
 
 == Changelog ==
+
+= 3.3.01 =
+
+* NEW: Date Range page renamed Filter Results and you can now filter the main page charts by text in the post content.
+* NEW: Footer method created and is now added to every page.
 
 = 3.2.04 =
 

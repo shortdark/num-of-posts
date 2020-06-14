@@ -15,7 +15,7 @@ class sdpvsBarChart extends sdpvsArrays {
     /**
      * DISPLAY DATA IN A BAR CHART
      */
-    public function sdpvs_draw_bar_chart_svg($which = "", $searchyear = "", $searchauthor = "", $subpage = "", $public = "", $text_color="black", $start_date = "", $end_date = "") {
+    public function sdpvs_draw_bar_chart_svg($which = "", $searchyear = "", $searchauthor = "", $subpage = "", $public = "", $text_color="black", $start_date = "", $end_date = "", $search_text= "") {
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $years_total = 0;
@@ -34,7 +34,7 @@ class sdpvsBarChart extends sdpvsArrays {
         $exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
 
         if ("year" == $which) {
-            parent::sdpvs_number_of_posts_per_year($searchauthor);
+            parent::sdpvs_number_of_posts_per_year($searchauthor, $search_text);
             $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = $this->first_val + 1;
@@ -45,7 +45,7 @@ class sdpvsBarChart extends sdpvsArrays {
                 echo '<h2>' . esc_html__('Posts per Year', 'post-volume-stats') . '</h2>';
             }
         } elseif ("dayofweek" == $which) {
-            parent::sdpvs_number_of_posts_per_dayofweek($searchyear,$searchauthor, $start_date, $end_date);
+            parent::sdpvs_number_of_posts_per_dayofweek($searchyear,$searchauthor, $start_date, $end_date, $search_text);
             $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = 7;
@@ -56,7 +56,7 @@ class sdpvsBarChart extends sdpvsArrays {
                 echo '<h2>' . esc_html__('Posts per Day of the Week', 'post-volume-stats') . '</h2>';
             }
         } elseif ("hour" == $which) {
-            parent::sdpvs_number_of_posts_per_hour($searchyear,$searchauthor, $start_date, $end_date);
+            parent::sdpvs_number_of_posts_per_hour($searchyear,$searchauthor, $start_date, $end_date, $search_text);
             $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = 24;
@@ -67,7 +67,7 @@ class sdpvsBarChart extends sdpvsArrays {
                 echo '<h2>' . esc_html__('Posts per Hour', 'post-volume-stats') . '</h2>';
             }
         } elseif ("month" == $which) {
-            parent::sdpvs_number_of_posts_per_month($searchyear,$searchauthor, $start_date, $end_date);
+            parent::sdpvs_number_of_posts_per_month($searchyear,$searchauthor, $start_date, $end_date, $search_text);
             $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = 12;
@@ -78,7 +78,7 @@ class sdpvsBarChart extends sdpvsArrays {
                 echo '<h2>' . esc_html__('Posts per Month', 'post-volume-stats') . '</h2>';
             }
         } elseif ("dayofmonth" == $which) {
-            parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor, $start_date, $end_date);
+            parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor, $start_date, $end_date, $search_text);
             $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = 31;
@@ -89,7 +89,7 @@ class sdpvsBarChart extends sdpvsArrays {
                 echo '<h2>' . esc_html__('Posts per Day of the Month', 'post-volume-stats') . '</h2>';
             }
         } elseif ("author" == $which) {
-            parent::sdpvs_number_of_posts_per_author($searchyear, $start_date, $end_date);
+            parent::sdpvs_number_of_posts_per_author($searchyear, $start_date, $end_date, $search_text);
             $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = $this->total_bars;
@@ -100,7 +100,7 @@ class sdpvsBarChart extends sdpvsArrays {
                 echo '<h2>' . esc_html__('Posts per Author', 'post-volume-stats') . '</h2>';
             }
         } elseif ("words" == $which) {
-            parent::sdpvs_number_of_words_per_post($searchyear,$searchauthor, $start_date, $end_date);
+            parent::sdpvs_number_of_words_per_post($searchyear,$searchauthor, $start_date, $end_date, $search_text);
             $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = $this->total_bars;
@@ -111,7 +111,7 @@ class sdpvsBarChart extends sdpvsArrays {
                 echo '<h2>' . esc_html__('Words per Post', 'post-volume-stats') . '</h2>';
             }
         } elseif ("images" == $which) {
-            parent::sdpvs_number_of_images_per_post($searchyear,$searchauthor, $start_date, $end_date);
+            parent::sdpvs_number_of_images_per_post($searchyear,$searchauthor, $start_date, $end_date, $search_text);
             $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = $this->total_bars;
@@ -122,7 +122,7 @@ class sdpvsBarChart extends sdpvsArrays {
                 echo '<h2>' . esc_html__('Images per Post', 'post-volume-stats') . '</h2>';
             }
         } elseif ("comments" == $which) {
-            parent::sdpvs_number_of_comments_per_post($searchyear,$searchauthor, $start_date, $end_date);
+            parent::sdpvs_number_of_comments_per_post($searchyear,$searchauthor, $start_date, $end_date, $search_text);
             $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = $this->total_bars;
@@ -133,7 +133,7 @@ class sdpvsBarChart extends sdpvsArrays {
                 echo '<h2>' . esc_html__('Comments per Post', 'post-volume-stats') . '</h2>';
             }
         }elseif ("interval" == $which) {
-            parent::sdpvs_number_of_posts_in_order($searchyear, $searchauthor, $start_date, $end_date);
+            parent::sdpvs_number_of_posts_in_order($searchyear, $searchauthor, $start_date, $end_date, $search_text);
             $chart_array = $this->list_array;
             parent::find_highest_first_and_total($chart_array);
             $bars_total = $this->total_bars;
@@ -494,4 +494,4 @@ class sdpvsBarChart extends sdpvsArrays {
     }
 
 }
-?>
+

@@ -21,6 +21,9 @@ class sdpvsMainContent {
         if(isset($options['end_date'])){
             $end_date = filter_var ( $options['end_date'], FILTER_SANITIZE_STRING);
         }
+        if(isset($options['search_text'])){
+            $search_text = filter_var ( $options['search_text'], FILTER_SANITIZE_STRING);
+        }
 
         $authoroptions = get_option('sdpvs_author_option');
         $author = absint($authoroptions['author_number']);
@@ -66,51 +69,51 @@ class sdpvsMainContent {
         if("one" != $authoroff){
             // posts per author bar chart
             echo "<div class='sdpvs_col'>";
-            $sdpvs_bar->sdpvs_draw_bar_chart_svg('author', $selected, $author, 'n', '', '', $start_date, $end_date);
+            $sdpvs_bar->sdpvs_draw_bar_chart_svg('author', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
             echo "</div>";
         }
 
         // year bar chart
         echo "<div class='sdpvs_col'>";
-        $sdpvs_bar->sdpvs_draw_bar_chart_svg('year', $selected, $author, 'n', '', '', $start_date, $end_date);
+        $sdpvs_bar->sdpvs_draw_bar_chart_svg('year', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
         echo "</div>";
 
         // posts per month bar chart
         echo "<div class='sdpvs_col'>";
-        $sdpvs_bar->sdpvs_draw_bar_chart_svg('month', $selected, $author, 'n', '', '', $start_date, $end_date);
+        $sdpvs_bar->sdpvs_draw_bar_chart_svg('month', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
         echo "</div>";
 
         // posts per day of the month bar chart
         echo "<div class='sdpvs_col'>";
-        $sdpvs_bar->sdpvs_draw_bar_chart_svg('dayofmonth', $selected, $author, 'n', '', '', $start_date, $end_date);
+        $sdpvs_bar->sdpvs_draw_bar_chart_svg('dayofmonth', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
         echo "</div>";
 
         // posts per day of the week bar chart
         echo "<div class='sdpvs_col'>";
-        $sdpvs_bar->sdpvs_draw_bar_chart_svg('dayofweek', $selected, $author, 'n', '', '', $start_date, $end_date);
+        $sdpvs_bar->sdpvs_draw_bar_chart_svg('dayofweek', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
         echo "</div>";
 
         // posts per hour of the day bar chart
         echo "<div class='sdpvs_col'>";
-        $sdpvs_bar->sdpvs_draw_bar_chart_svg('hour', $selected, $author, 'n', '', '', $start_date, $end_date);
+        $sdpvs_bar->sdpvs_draw_bar_chart_svg('hour', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
         echo "</div>";
 
         // words per post bar chart
         echo "<div class='sdpvs_col'>";
-        $sdpvs_bar->sdpvs_draw_bar_chart_svg('words', $selected, $author, 'n', '', '', $start_date, $end_date);
+        $sdpvs_bar->sdpvs_draw_bar_chart_svg('words', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
         echo "</div>";
 
         if( "yes" == $showimage ) {
             // images per post bar chart
             echo "<div class='sdpvs_col'>";
-            $sdpvs_bar->sdpvs_draw_bar_chart_svg('images', $selected, $author, 'n', '', '', $start_date, $end_date);
+            $sdpvs_bar->sdpvs_draw_bar_chart_svg('images', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
             echo "</div>";
         }
 
         if( "yes" == $showcomment ) {
             // comments per post bar chart
             echo "<div class='sdpvs_col'>";
-            $sdpvs_bar->sdpvs_draw_bar_chart_svg('comments', $selected, $author, 'n', '', '', $start_date, $end_date);
+            $sdpvs_bar->sdpvs_draw_bar_chart_svg('comments', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
             echo "</div>";
         }
 
@@ -118,17 +121,17 @@ class sdpvsMainContent {
 
         // days between post bar chart
         echo "<div class='sdpvs_col'>";
-        $sdpvs_bar->sdpvs_draw_bar_chart_svg('interval', $selected, $author, 'n', '', '', $start_date, $end_date);
+        $sdpvs_bar->sdpvs_draw_bar_chart_svg('interval', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
         echo "</div>";
 
         // posts per category pie chart
         echo "<div class='sdpvs_col'>";
-        echo $sdpvs_pie->sdpvs_draw_pie_svg('category', $selected, $author, 'n', 'n', $start_date, $end_date);
+        echo $sdpvs_pie->sdpvs_draw_pie_svg('category', $selected, $author, 'n', 'n', $start_date, $end_date, $search_text);
         echo "</div>";
 
         // posts per tag pie chart
         echo "<div class='sdpvs_col'>";
-        echo $sdpvs_pie->sdpvs_draw_pie_svg('tag', $selected, $author, 'n', 'n', $start_date, $end_date);
+        echo $sdpvs_pie->sdpvs_draw_pie_svg('tag', $selected, $author, 'n', 'n', $start_date, $end_date, $search_text);
         echo "</div>";
 
         if( "yes" == $customoff and "_all_taxonomies" == $customvalue ){
@@ -145,7 +148,7 @@ class sdpvsMainContent {
                         $tax_labels = get_taxonomy($taxonomy);
                         // posts per $tax_labels->name pie chart
                         echo "<div class='sdpvs_col'>";
-                        echo $sdpvs_pie->sdpvs_draw_pie_svg($tax_labels->name, $selected, $author, 'n', 'n', $start_date, $end_date);
+                        echo $sdpvs_pie->sdpvs_draw_pie_svg($tax_labels->name, $selected, $author, 'n', 'n', $start_date, $end_date, $search_text);
                         echo "</div>";
                     }
                 }
@@ -153,11 +156,11 @@ class sdpvsMainContent {
         }elseif( "yes" == $customoff and "" != $customvalue ){
             // posts per custom taxonomy pie chart
             echo "<div class='sdpvs_col'>";
-            echo $sdpvs_pie->sdpvs_draw_pie_svg($customvalue, $selected, $author, 'n', 'n', $start_date, $end_date);
+            echo $sdpvs_pie->sdpvs_draw_pie_svg($customvalue, $selected, $author, 'n', 'n', $start_date, $end_date, $search_text);
             echo "</div>";
         }
         return;
     }
 
 }
-?>
+

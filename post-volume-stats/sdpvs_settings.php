@@ -13,7 +13,7 @@ function sdpvs_register_settings() {
     register_setting('sdpvs_year_option', // settings section
     'sdpvs_year_option' // setting name
     );
-    add_settings_section( 'sdpvs_year_option', 'Year', 'sdpvs_sanitize', 'post-volume-stats-daterange' );
+    add_settings_section( 'sdpvs_year_option', 'Filter Results', 'sdpvs_sanitize', 'post-volume-stats-daterange' );
     add_settings_field('year_number', // ID
     'Select a Year', // Title
     'sdpvs_year_field_callback', 'post-volume-stats-daterange', 'sdpvs_year_option');
@@ -23,6 +23,10 @@ function sdpvs_register_settings() {
     add_settings_field('end_date', // ID
     'Date Range: end date', // Title
     'sdpvs_enddate_field_callback', 'post-volume-stats-daterange', 'sdpvs_year_option');
+    add_settings_field('search_text', // ID
+        'Filter by Post Content', // Title
+        'sdpvs_searchtext_field_callback', 'post-volume-stats-daterange', 'sdpvs_year_option');
+
 }
 add_action('admin_init', 'sdpvs_register_settings');
 
@@ -48,7 +52,7 @@ function sdpvs_register_general_settings() {
     add_settings_field( 'customvalue', 'Select a Taxonomy to view', 'sdpvs_field_five_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
     add_settings_field( 'admintool', 'Put a link to Post Volume Stats in the Admin Toolbar', 'sdpvs_field_six_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
     add_settings_field( 'exportcsv', 'Allow export of CSV', 'sdpvs_field_seven_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
-    add_settings_field( 'showrange', 'Show Date Range page', 'sdpvs_field_callback_date_range', 'post-volume-stats-settings', 'sdpvs_general_settings' );
+    add_settings_field( 'showrange', 'Show Filter Results page', 'sdpvs_field_callback_date_range', 'post-volume-stats-settings', 'sdpvs_general_settings' );
     add_settings_field( 'maxinterval', 'Maximum post interval to show', 'sdpvs_field_callback_max_interval', 'post-volume-stats-settings', 'sdpvs_general_settings' );
     add_settings_field( 'showimage', 'Images per Post', 'sdpvs_field_callback_image', 'post-volume-stats-settings', 'sdpvs_general_settings' );
     add_settings_field( 'showcomment', 'Comments per Post', 'sdpvs_field_callback_comment', 'post-volume-stats-settings', 'sdpvs_general_settings' );
@@ -60,13 +64,9 @@ function sdpvs_startdate_field_callback() {
     $options = get_option('sdpvs_year_option');
     $selected = $options['start_date'];
 
-    // Create an instance of the required class
-    $sdpvs_info = new sdpvsInfo();
-    $earliest_date = $sdpvs_info->sdpvs_earliest_date();
-
     echo "<div style='display: block; padding: 5px;'>";
 
-    echo "<label>YYYY-MM-DD <input name=\"sdpvs_year_option[start_date]\" id=\"start-date\" value=\"$selected\">";
+    echo "<label><input name=\"sdpvs_year_option[start_date]\" id=\"start-date\" value=\"$selected\" placeholder=\"YYYY-MM-DD\">";
     
     echo "</label><br>";
     echo "</div>";
@@ -78,7 +78,7 @@ function sdpvs_enddate_field_callback() {
 
     echo "<div style='display: block; padding: 5px;'>";
 
-    echo "<label>YYYY-MM-DD <input name=\"sdpvs_year_option[end_date]\" id=\"end-date\" value=\"$selected\">";
+    echo "<label><input name=\"sdpvs_year_option[end_date]\" id=\"end-date\" value=\"$selected\" placeholder=\"YYYY-MM-DD\">";
     
     echo "</label><br>";
     echo "</div>";
@@ -119,6 +119,18 @@ function sdpvs_year_field_callback() {
     }
 
     echo "</select></label><br>";
+    echo "</div>";
+}
+
+function sdpvs_searchtext_field_callback() {
+    $options = get_option('sdpvs_year_option');
+    $selected = $options['search_text'];
+
+    echo "<div style='display: block; padding: 5px;'>";
+
+    echo "<label><input name=\"sdpvs_year_option[search_text]\" id=\"search-text\" value=\"$selected\" placeholder=\"Filter text...\">";
+    echo " (not working for pie charts on main plugin page)";
+    echo "</label><br>";
     echo "</div>";
 }
 
