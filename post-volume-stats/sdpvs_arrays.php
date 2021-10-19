@@ -19,41 +19,41 @@ abstract class sdpvsArrays {
      */
 
 
-    protected function sdpvs_add_date_sql($searchyear = "", $start_date = "", $end_date = ""){
+    protected function sdpvs_add_date_sql($searchyear, $start_date, $end_date){
         global $wpdb;
         $extra = "";
 
-        if( isset ($start_date) ){
+        if( !empty ($start_date) ){
             $start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
         }
-        if( isset ($end_date) ){
+        if( !empty ($end_date) ){
             $end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
         }
-        if (0 < $searchyear) {
+        if (!empty($searchyear)) {
             $extra = " AND $wpdb->posts.post_date LIKE '$searchyear%' ";
-        }elseif("" != $start_date and "" != $end_date ){
+        }elseif( !empty ($start_date) && !empty ($end_date) ){
             $extra = " AND DATE($wpdb->posts.post_date) >= '$start_date' ";
             $extra .= " AND DATE($wpdb->posts.post_date) <= '$end_date' ";
         }
         return $extra;
     }
 
-    protected function sdpvs_add_author_sql($extra = "", $searchauthor = ""){
+    protected function sdpvs_add_author_sql($searchauthor){
         global $wpdb;
 
-        if("" != $searchauthor){
-            $extra .= " AND $wpdb->posts.post_author = '$searchauthor' ";
+        if(!empty($searchauthor)){
+            return " AND $wpdb->posts.post_author = $searchauthor ";
         }
-        return $extra;
+        return '';
     }
 
-    protected function sdpvs_add_search_sql($extra = "", $searchtext = ""){
+    protected function sdpvs_add_search_sql($searchtext){
         global $wpdb;
 
-        if("" != $searchtext){
-            $extra .= " AND $wpdb->posts.post_content LIKE '%$searchtext%' ";
+        if(!empty($searchtext)){
+            return " AND $wpdb->posts.post_content LIKE '%$searchtext%' ";
         }
-        return $extra;
+        return '';
     }
 
 
@@ -69,9 +69,9 @@ abstract class sdpvsArrays {
         $searchauthor = absint($searchauthor);
 
         $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
-        $extra = $this->sdpvs_add_author_sql($extra, $searchauthor);
+        $extra .= $this->sdpvs_add_author_sql($searchauthor);
         if(!empty($searchtext)){
-            $extra = $this->sdpvs_add_search_sql($extra, $searchtext);
+            $extra .= $this->sdpvs_add_search_sql($searchtext);
         }
 
 
@@ -102,7 +102,6 @@ abstract class sdpvsArrays {
 
             return $one_item_array;
         }
-        return;
     }
 
     /**
@@ -111,15 +110,15 @@ abstract class sdpvsArrays {
     protected function sdpvs_post_taxonomy_type_volumes($tax_type = "", $searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $searchtext="") {
         global $wpdb;
 
-        $tax_results="";
+        //$tax_results="";
         $this->tax_type_array = array();
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
 
         $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
-        $extra = $this->sdpvs_add_author_sql($extra, $searchauthor);
+        $extra .= $this->sdpvs_add_author_sql($searchauthor);
         if(!empty($searchtext)){
-            $extra = $this->sdpvs_add_search_sql($extra, $searchtext);
+            $extra .= $this->sdpvs_add_search_sql($searchtext);
         }
 
         if ("" == $searchyear and "" == $searchauthor and "" == $start_date and "" == $end_date ) {
@@ -144,7 +143,6 @@ abstract class sdpvsArrays {
             $highestval = 0;
             if ($tax_results) {
                 foreach ($tax_results as $tax_item) {
-                    $posts = 0;
                     $posts = $wpdb->get_var("
                         SELECT COUNT(*)
                         FROM $wpdb->posts
@@ -183,9 +181,7 @@ abstract class sdpvsArrays {
                 }
             }
         }
-
         $wpdb->flush();
-        return;
     }
 
 
@@ -203,9 +199,9 @@ abstract class sdpvsArrays {
         $searchauthor = absint($searchauthor);
 
         $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
-        $extra = $this->sdpvs_add_author_sql($extra, $searchauthor);
+        $extra .= $this->sdpvs_add_author_sql($searchauthor);
         if(!empty($searchtext)){
-            $extra = $this->sdpvs_add_search_sql($extra, $searchtext);
+            $extra .= $this->sdpvs_add_search_sql($searchtext);
         }
 
         $tax_results = $wpdb->get_results($wpdb->prepare("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = %s ORDER BY count DESC ", $tax_type));
@@ -219,11 +215,10 @@ abstract class sdpvsArrays {
             $c++;
         }
 
-        if ($searchyear or $searchauthor) {
+        if ($searchyear || $searchauthor) {
             $tax_results = $wpdb->get_results($wpdb->prepare("SELECT term_id, term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy = %s ORDER BY term_id DESC ", $tax_type));
 
             foreach ($tax_results as $tax_item) {
-                $volume = 0;
                 $volume = $wpdb->get_var("
                     SELECT COUNT(*)
                     FROM $wpdb->posts
@@ -239,7 +234,7 @@ abstract class sdpvsArrays {
                     while($this->list_array[$c]['id']){
                         if($tax_item->term_id == $this->list_array[$c]['id']){
                             $this->list_array[$c]['volume'] = absint( $volume );
-                            #continue;
+                            //continue;
                         }
                         $c++;
                     }
@@ -256,7 +251,6 @@ abstract class sdpvsArrays {
         }
 
         $wpdb->flush();
-        return;
     }
 
 
@@ -278,9 +272,9 @@ abstract class sdpvsArrays {
         $test_array = array();
 
         $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
-        $extra = $this->sdpvs_add_author_sql($extra, $searchauthor);
+        $extra .= $this->sdpvs_add_author_sql($searchauthor);
         if(!empty($searchtext)){
-            $extra = $this->sdpvs_add_search_sql($extra, $searchtext);
+            $extra .= $this->sdpvs_add_search_sql($searchtext);
         }
 
         $found_posts = $wpdb->get_results("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' $extra ORDER BY post_date ASC ");
@@ -325,11 +319,10 @@ abstract class sdpvsArrays {
                             if( 0 < $test_array[$k]['volume'] ){
                                 $this->list_array[$j]['volume'] = $test_array[$k]['volume'];
                             }
-                            continue;
+                            //continue;
                         }
                     }
             }
-        return;
     }
 
 
@@ -341,35 +334,33 @@ abstract class sdpvsArrays {
      */
     protected function sdpvs_number_of_posts_per_year($searchauthor = "", $searchtext="") {
         global $wpdb;
-        $extra="";
 
         $searchauthor = absint($searchauthor);
         $this->list_array = array();
 
         $currentyear = date('Y');
 
-        $extra = $this->sdpvs_add_author_sql($extra, $searchauthor);
+        $extra = $this->sdpvs_add_author_sql($searchauthor);
         if(!empty($searchtext)){
-            $extra = $this->sdpvs_add_search_sql($extra, $searchtext);
+            $extra .= $this->sdpvs_add_search_sql($searchtext);
         }
 
         for ($i = 0; $i <= 30; $i++) {
             $searchyear = $currentyear - $i;
-            $found_posts = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '$searchyear%' $extra ");
-            if (0 > $found_posts or !$found_posts or "" == $found_posts) {
+            $found_posts = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '{$searchyear}%' {$extra} ");
+            if (0 > $found_posts || !$found_posts || "" == $found_posts) {
                 $found_posts = 0;
             }
             $this->list_array[$i]['name'] = $searchyear;
             $this->list_array[$i]['volume'] = absint ( $found_posts );
             $wpdb->flush();
         }
-        return;
     }
 
     /**
      * NUMBER OF POSTS PER DAY-OF-WEEK
      */
-    protected function sdpvs_number_of_posts_per_dayofweek($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $searchtext="") {
+    protected function sdpvs_number_of_posts_per_dayofweek($searchyear, $searchauthor, $start_date, $end_date, $searchtext) {
         global $wpdb;
 
         $genoptions = get_option('sdpvs_general_settings');
@@ -378,13 +369,7 @@ abstract class sdpvsArrays {
         $searchauthor = absint($searchauthor);
         $this->list_array = array();
 
-        $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
-        $extra = $this->sdpvs_add_author_sql($extra, $searchauthor);
-        if(!empty($searchtext)){
-            $extra = $this->sdpvs_add_search_sql($extra, $searchtext);
-        }
-
-        if("sunday" == $startweek or !$startweek){
+        if("sunday" == $startweek || !$startweek){
             $days_of_week = array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
             for ($w = 0; $w <= 6; $w++) {
                 $this->list_array[$w]['name'] = $days_of_week[$w];
@@ -400,7 +385,16 @@ abstract class sdpvsArrays {
             $weekletter = "N";
         }
 
-        $myblogitems = $wpdb->get_results("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' {$extra} ");
+
+        $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
+        $extra .= $this->sdpvs_add_author_sql($searchauthor);
+        if(!empty($searchtext)){
+            $extra .= $this->sdpvs_add_search_sql($searchtext);
+        }
+        $sql = "SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' $extra ";
+
+        //$myblogitems = $wpdb->get_var($wpdb->prepare("SELECT post_date FROM {$wpdb->posts} WHERE post_status = 'publish' AND post_type = 'post' ", ''));
+        $myblogitems = $wpdb->get_results( $sql );
         foreach ($myblogitems as $dowpost) {
             $year = substr($dowpost->post_date, 0, 4);
             $month = substr($dowpost->post_date, 5, 2);
@@ -416,29 +410,33 @@ abstract class sdpvsArrays {
 
         }
         $wpdb->flush();
-        return;
     }
 
     /**
      * NUMBER OF POSTS PER HOUR
      */
-    protected function sdpvs_number_of_posts_per_hour($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $searchtext="") {
+    protected function sdpvs_number_of_posts_per_hour($searchyear, $searchauthor, $start_date, $end_date, $searchtext) {
         global $wpdb;
 
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $this->list_array = array();
 
-        $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
-        $extra = $this->sdpvs_add_author_sql($extra, $searchauthor);
-        if(!empty($searchtext)){
-            $extra = $this->sdpvs_add_search_sql($extra, $searchtext);
-        }
+
 
         for ($i = 0; $i <= 23; $i++) {
             $searchhour = sprintf("%02s", $i);
-            $found_posts = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '% $searchhour:%' $extra ");
-            if (0 > $found_posts or !$found_posts or "" == $found_posts) {
+
+
+            $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
+            $extra .= $this->sdpvs_add_author_sql($searchauthor);
+            if(!empty($searchtext)){
+                $extra .= $this->sdpvs_add_search_sql($searchtext);
+            }
+            $sql = "SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '% $searchhour:%' $extra ";
+
+            $found_posts = $wpdb->get_var($sql);
+            if (0 > $found_posts || !$found_posts || "" == $found_posts) {
                 $found_posts = 0;
             }
             $j = sprintf("%02s", $i);
@@ -446,7 +444,6 @@ abstract class sdpvsArrays {
             $this->list_array[$i]['volume'] = $found_posts;
         }
         $wpdb->flush();
-        return;
     }
 
     /**
@@ -461,9 +458,9 @@ abstract class sdpvsArrays {
         $this->list_array = array();
 
         $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
-        $extra = $this->sdpvs_add_author_sql($extra, $searchauthor);
+        $extra .= $this->sdpvs_add_author_sql($searchauthor);
         if(!empty($searchtext)){
-            $extra = $this->sdpvs_add_search_sql($extra, $searchtext);
+            $extra .= $this->sdpvs_add_search_sql($searchtext);
         }
 
         for ($w = 0; $w < 12; $w++) {
@@ -474,13 +471,12 @@ abstract class sdpvsArrays {
             $j = $i + 1;
             $searchmonth = sprintf("%02s", $j);
             $found_posts = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '%-$searchmonth-%' $extra ");
-            if (0 > $found_posts or !$found_posts or "" == $found_posts) {
+            if (0 > $found_posts || !$found_posts || "" == $found_posts) {
                 $found_posts = 0;
             }
             $this->list_array[$i]['volume'] = $found_posts;
         }
         $wpdb->flush();
-        return;
     }
 
     /**
@@ -494,9 +490,9 @@ abstract class sdpvsArrays {
         $this->list_array = array();
 
         $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
-        $extra = $this->sdpvs_add_author_sql($extra, $searchauthor);
+        $extra .= $this->sdpvs_add_author_sql($searchauthor);
         if(!empty($searchtext)){
-            $extra = $this->sdpvs_add_search_sql($extra, $searchtext);
+            $extra .= $this->sdpvs_add_search_sql($searchtext);
         }
 
         for ($i = 0; $i < 31; $i++) {
@@ -505,14 +501,13 @@ abstract class sdpvsArrays {
 
             $found_posts = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '%-$searchday %' $extra ");
 
-            if (0 > $found_posts or !$found_posts or "" == $found_posts) {
+            if (0 > $found_posts || !$found_posts || "" == $found_posts) {
                 $found_posts = 0;
             }
             $this->list_array[$i]['name'] = $searchday;
             $this->list_array[$i]['volume'] = $found_posts;
         }
         $wpdb->flush();
-        return;
     }
 
     /**
@@ -526,7 +521,7 @@ abstract class sdpvsArrays {
 
         $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
         if(!empty($searchtext)){
-            $extra = $this->sdpvs_add_search_sql($extra, $searchtext);
+            $extra .= $this->sdpvs_add_search_sql($searchtext);
         }
 
         // Array of WP_User objects.
@@ -550,8 +545,6 @@ abstract class sdpvsArrays {
         if(1 < $a){
             usort($this->list_array, 'sortByOrder');
         }
-
-        return;
     }
 
     /**
@@ -634,7 +627,7 @@ abstract class sdpvsArrays {
         $wpdb->flush();
 
         // Populate the output array
-        if($temp_array){
+        if(isset($temp_array)){
             natsort($temp_array);
             foreach($temp_array as $word_count){
                 if( 0 == $word_count % $vol_per_bar ){
@@ -648,7 +641,6 @@ abstract class sdpvsArrays {
                 $this->list_array[$i]['volume'] ++;
             }
         }
-        return;
     }
 
 
@@ -748,8 +740,6 @@ abstract class sdpvsArrays {
             }
         }
         $wpdb->flush();
-
-        return;
     }
 
 
@@ -814,8 +804,6 @@ abstract class sdpvsArrays {
             }
         }
         $wpdb->flush();
-
-        return;
     }
 
 
@@ -827,7 +815,6 @@ abstract class sdpvsArrays {
         global $wpdb;
         $this->earliest_date = $wpdb->get_var("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' ORDER BY post_date ASC LIMIT 1 ");
         $wpdb->flush();
-        return;
     }
 
     /**
@@ -837,7 +824,6 @@ abstract class sdpvsArrays {
         global $wpdb;
         $this->latest_date = $wpdb->get_var("SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' ORDER BY post_date DESC LIMIT 1 ");
         $wpdb->flush();
-        return;
     }
 
     /**
@@ -845,9 +831,8 @@ abstract class sdpvsArrays {
      */
     protected function sdpvs_total_published_volume() {
         global $wpdb;
-        $this->published_volume = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' ");
+        $this->published_volume = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status = 'publish' AND post_type = 'post' ");
         $wpdb->flush();
-        return;
     }
 
     /**
@@ -870,12 +855,6 @@ abstract class sdpvsArrays {
             $this->total_bars ++;
             $i++;
         }
-
-        return;
-    }
-
-    function __construct() {
-
     }
 
 }

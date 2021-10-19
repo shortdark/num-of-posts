@@ -4,7 +4,7 @@ Contributors: shortdark
 Donate link: https://www.paypal.me/shortdark
 Tags: posts, stats, graphs, charts, categories, tags, admin, year, month, day, hour, widget, author, taxonomy, csv
 Requires at least: 3.5
-Tested up to: 5.4.2
+Tested up to: 5.8
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -47,6 +47,19 @@ Here are the latest screenshots...
 9. New "Date Range" page which applies a date range to the main page only, not "Category", "Tag" or "Custom Taxonomy" pages.
 
 == Changelog ==
+
+= 3.3.04 =
+
+* Updated: Fixes for PHP 8.
+
+= 3.3.03 =
+
+* FIX: Fix for PHP 8.
+* UPDATED: Refactored the bar chart class.
+
+= 3.3.02 =
+
+* UPDATED: WordPress version.
 
 = 3.3.01 =
 

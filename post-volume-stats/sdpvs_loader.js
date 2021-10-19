@@ -1,4 +1,6 @@
 jQuery(document).ready(function($) {
+
+	$(".sdpvs_preview").attr('disabled', true);
 	
 	$("#sdpvs-notice > .notice-dismiss").click(function(e) {
 		var data = {
@@ -23,6 +25,17 @@ jQuery(document).ready(function($) {
 			$(':checkbox').each(function() {
 				this.checked = false;
 			});
+	});
+
+	$(':checkbox').click(function(e) {
+		if ($("input:checkbox:checked").length > 0)
+		{
+			$(".sdpvs_preview").attr('disabled', false);
+		}
+		else
+		{
+			$(".sdpvs_preview").attr('disabled', true);
+		}
 	});
 
 	$(".sdpvs_catselect").submit(function(e) {

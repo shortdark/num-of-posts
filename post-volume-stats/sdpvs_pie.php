@@ -14,24 +14,23 @@ class sdpvsPieChart extends sdpvsArrays {
      * COUNT NUMBER OF POSTS PER CATEGORY IN TOTAL, some posts might have multiple cats
      */
     private function sdpvs_count_post_taxonomies() {
-        $this->number_of_taxonomies = "";
-        $this->total_taxonomy_posts = "";
+        $this->number_of_taxonomies = 0;
+        $this->total_taxonomy_posts = 0;
         $c = 0;
         while (array_key_exists($c, $this->tax_type_array)) {
             if (0 < $this->tax_type_array[$c]['volume']) {
                 $this->number_of_taxonomies++;
-                $this->total_taxonomy_posts += absint ( $this->tax_type_array[$c]['volume'] );
+                $this->total_taxonomy_posts += absint( $this->tax_type_array[$c]['volume'] );
             }
             $c++;
         }
-        return;
     }
 
     /*
      * ADD THE ANGLE TO THE EXISTING CATEGORY ARRAY
      */
     private function sdpvs_add_to_taxonomy_array($type = "", $year = "", $author = "", $start_date = "", $end_date = "", $search_text="") {
-        $this->tax_type_array = "";
+        $this->tax_type_array = array();
         parent::sdpvs_post_taxonomy_type_volumes($type, $year,$author, $start_date, $end_date, $search_text);
         $this->sdpvs_count_post_taxonomies();
         $c = 0;
@@ -41,17 +40,16 @@ class sdpvsPieChart extends sdpvsArrays {
             }
             $c++;
         }
-        return;
     }
 
     /**
      * DISPLAY CATEGORY DATA IN A PIE CHART
      */
-    public function sdpvs_draw_pie_svg($type = "", $year = "", $author = "", $subpage = "", $public = "", $start_date = "", $end_date = "", $search_text="") {
+    public function sdpvs_draw_pie_svg($type, $year, $author, $subpage, $public, $start_date, $end_date, $search_text) {
         $testangle_orig = 0;
         $radius = 100;
-        $prev_angle = 0;
-        $remaining = 0;
+        //$prev_angle = 0;
+        //$remaining = 0;
         $this->newx = 0;
         $this->newy = 0;
         $this->tax_type_array = array();
@@ -62,30 +60,30 @@ class sdpvsPieChart extends sdpvsArrays {
         if ("category" == $type) {
             $this->sdpvs_add_to_taxonomy_array($type,$year,$author, $start_date, $end_date, $search_text);
             $pie_array = $this->tax_type_array;
-            $total_volume = $this->total_taxonomy_posts;
-            $number_of_containers = $this->number_of_taxonomies;
+            //$total_volume = $this->total_taxonomy_posts;
+            //$number_of_containers = $this->number_of_taxonomies;
             $pie_svg = '<h2>' . esc_html__("Categories", 'post-volume-stats') . '</h2>';
             $link_part = "category_name";
         } elseif ("tag" == $type) {
             $wp_type_name = "post_tag";
             $this->sdpvs_add_to_taxonomy_array($wp_type_name,$year,$author, $start_date, $end_date, $search_text);
-            $total_volume = $this->total_taxonomy_posts;
+            //$total_volume = $this->total_taxonomy_posts;
             $pie_array = $this->tax_type_array;
-            $number_of_containers = $this->number_of_taxonomies;
+            //$number_of_containers = $this->number_of_taxonomies;
             $pie_svg = '<h2>' . esc_html__("Tags", 'post-volume-stats') . '</h2>';
             $link_part = $type;
         }else{
             $this->sdpvs_add_to_taxonomy_array($type,$year,$author, $start_date, $end_date, $search_text);
-            $total_volume = $this->total_taxonomy_posts;
+            //$total_volume = $this->total_taxonomy_posts;
             $pie_array = $this->tax_type_array;
-            $number_of_containers = $this->number_of_taxonomies;
+            //$number_of_containers = $this->number_of_taxonomies;
             $tax_labels = get_taxonomy($type);
             $pie_svg = '<h2>' . esc_html__($tax_labels->label, 'post-volume-stats') . '</h2>';
             $link_part = $type;
         }
-        if ("year" != $type and "y" == $public) {
-            if ( isset($searchyear) and 0 < $searchyear) {
-                $pie_svg .= '<h3>' . sprintf(esc_html__('%d', 'post-volume-stats'), $searchyear) . '</h3>';
+        if ("year" != $type && "y" == $public) {
+            if ( !empty($year) ) {
+                $pie_svg .= '<h3>' . sprintf(esc_html__('%d', 'post-volume-stats'), $year) . '</h3>';
             } else {
                 $pie_svg .= '<h3>' . esc_html__('All-time', 'post-volume-stats') . '</h3>';
             }
@@ -110,10 +108,10 @@ class sdpvsPieChart extends sdpvsArrays {
                         $largest_angle = $pie_array[$c]['angle'];
                     }
 
-                    $hue = 240 - intval($pie_array[$c]['angle']*240 / $largest_angle);
+                    $hue = 240 - absint($pie_array[$c]['angle']*240 / $largest_angle);
                     $color = "hsl($hue, 70%, 65%)";
 
-                    $display_angle_as = sprintf("%.1f", $pie_array[$c]['angle']);
+                    //$display_angle_as = sprintf("%.1f", $pie_array[$c]['angle']);
 
                     if("y"==$public){
                         $item_id = $pie_array[$c]['id'];
@@ -137,7 +135,7 @@ class sdpvsPieChart extends sdpvsArrays {
         }
         $pie_svg .= "</svg>\n";
 
-        if ("n" == $subpage and "y"!=$public) {
+        if ("n" == $subpage && "y"!=$public) {
             $pie_svg .= "<p>";
             $pie_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$type'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form>";
             $pie_svg .= "</p>";
@@ -145,7 +143,7 @@ class sdpvsPieChart extends sdpvsArrays {
             $pie_svg .= "<form class='sdpvs_compare' action='' method='POST'><input type='hidden' name='comparedata' value='$type'><input type='submit' class='button-primary sdpvs_load_content' value='Compare Years'></form>";
             $pie_svg .= "</p>";
                 if("yes"==$exportcsv){
-                    $sdpvs_csv_download_url = admin_url("/download-csv/$type.csv");
+                    $sdpvs_csv_download_url = plugin_dir_url( __FILE__ ) . "download-csv/$type.csv";
                     $pie_svg .= "<p>";
                     $pie_svg .= "<form class='sdpvs_export' action=\"$sdpvs_csv_download_url\" method='POST'><input type='submit' class='button-primary' value='Export Compare Years CSV'></form>";
                     $pie_svg .= "</p>";
@@ -229,7 +227,6 @@ class sdpvsPieChart extends sdpvsArrays {
             $this->newx = $radius - ($radius * cos(deg2rad($testangle)));
             $this->newy = $radius - ($radius * sin(deg2rad($testangle)));
         }
-        return;
     }
 
 }

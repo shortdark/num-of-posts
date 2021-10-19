@@ -14,7 +14,12 @@ class sdpvsSubPages {
         $year = get_option('sdpvs_year_option');
         $searchyear = absint($year['year_number']);
         $authoroptions = get_option('sdpvs_author_option');
-        $searchauthor = absint($authoroptions['author_number']);
+        if (!empty($authoroptions['author_number'])) {
+            $searchauthor = absint($authoroptions['author_number']);
+        } else {
+            $searchauthor = null;
+        }
+
         $genoptions = get_option('sdpvs_general_settings');
         $authoroff = filter_var ( $genoptions['authoroff'], FILTER_SANITIZE_STRING);
 
@@ -45,30 +50,27 @@ class sdpvsSubPages {
 
         echo "<div style='display: inline-block; width: 250px; vertical-align: top;'>";
 
-        if("one" != $authoroff){
-            // posts per author bar chart
+            if("one" != $authoroff){
+                // posts per author bar chart
+                echo "<div class='sdpvs_col'>";
+                $sdpvs_bar->sdpvs_draw_bar_chart_svg('author', $searchyear, $searchauthor, 'y');
+                echo "</div>";
+            }
+
+            // year bar chart
             echo "<div class='sdpvs_col'>";
-            $sdpvs_bar->sdpvs_draw_bar_chart_svg('author', $selected, $searchauthor, 'y');
+            $sdpvs_bar->sdpvs_draw_bar_chart_svg('year', $searchyear, $searchauthor, 'y');
             echo "</div>";
-        }
 
-        // year bar chart
-        echo "<div class='sdpvs_col'>";
-        $sdpvs_bar->sdpvs_draw_bar_chart_svg('year', $searchyear, $searchauthor, 'y');
-        echo "</div>";
-
-        echo "<div style='display: block; width: 250px; vertical-align: top;' id='sdpvs_listselect'>";
-        echo $sdpvs_lists->sdpvs_posts_per_cat_tag_list($type, $searchyear, $searchauthor, '','','subpage', '');
-        echo "</div>";
+            echo "<div style='display: block; width: 250px; vertical-align: top;' id='sdpvs_listselect'>";
+            echo $sdpvs_lists->sdpvs_posts_per_cat_tag_list($type, $searchyear, $searchauthor, '','','subpage', '');
+            echo "</div>";
 
         echo "</div>";
 
         // Get both methods from AJAX call.
         echo "<div style='display: inline-block; vertical-align: top;' id='sdpvs_ajax_lists'>";
-
         echo "</div>";
-
-        return;
     }
 
     public function update_ajax_lists($type, $matches) {
@@ -99,11 +101,6 @@ class sdpvsSubPages {
         echo $sdpvs_lists->sdpvs_posts_per_cat_tag_list($type, $searchyear, $searchauthor, '', '', 'buttons', $matches);
         echo "</div>";
 
-
-
-        return;
-
     }
 
 }
-?>

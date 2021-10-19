@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.3.01
+ * @version 3.3.04
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.3.01
+ * Version: 3.3.04
  * Author URI: http://www.shortdark.net/
  */
 
@@ -37,7 +37,8 @@ if (!function_exists('add_action')) {
 define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SDPVS__PLUGIN_FOLDER', 'post-volume-stats');
 define('SDPVS__PLUGIN_SETTINGS', 'post-volume-stats-settings');
-define('SDPVS__VERSION_NUMBER', '3.3.01');
+define('SDPVS__FILTER_RESULTS', 'post-volume-stats-daterange');
+define('SDPVS__VERSION_NUMBER', '3.3.04');
 
 /******************
  ** SETUP THE PAGE
@@ -132,7 +133,6 @@ function sdpvs_category_page() {
         $sdpvs_info->drawFooter($time_start,$time_end);
 
     }
-    return;
 }
 
 // Tag page
@@ -160,7 +160,6 @@ function sdpvs_tag_page() {
         $sdpvs_info->drawFooter($time_start,$time_end);
 
     }
-    return;
 }
 
 // Custom page
@@ -194,7 +193,6 @@ function sdpvs_custom_page() {
         $sdpvs_info->drawFooter($time_start,$time_end);
 
     }
-    return;
 }
 
 
@@ -225,7 +223,6 @@ function sdpvs_settings_page() {
         // Footer
         $sdpvs_info->drawFooter($time_start,$time_end);
     }
-    return;
 }
 
 // Date Range page
@@ -240,11 +237,19 @@ function sdpvs_date_range_select_page() {
 
         // Content goes here
         echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Filter Results', 'post-volume-stats') . '</h1>';
-        echo "<p>On this page you can either select a year or you can select a date range and filter the results to only search for posts which have a certain text string within them.</p>";
-        echo "<p>Selecting a year on this page is an alternative to clicking the bars of the \"Year\" bar chart on the other pages. To de-select the year and view all years together select the blank option at the top.</p>";
-        echo "<p>Only if the \"Year\" is blank will the date range be used. You must enter both a start date and an end date. If a date range is entered (with no year selected) it will be applied to the main page, but not the Tag/Category/Custom pages.</p>";
+        echo "<p>On this page you can filter the results on the main Post Volume Stats page by a year/date range and/or a word.</p>";
+        echo "<p>
+You can either select a year or you can select a date range and filter the results to only search for posts which have a certain text string within them.
+Selecting a year on this page is an alternative to clicking the bars of the \"Year\" bar chart on the other pages. To de-select the year and view all years together select the blank option at the top.
+Only if the \"Year\" is blank will the date range be used. 
+You must enter both a start date and an end date. 
+If a date range is entered (with no year selected) it will be applied to the main page, but not the Tag/Category/Custom pages.
+There is a bug where any posts on the \"end date\" are not counted. To fix this, add an extra day onto the \"end date\" to get the desired range.</p>";
 
-        echo "<p>There is a bug where any posts on the \"end date\" are not counted. To fix this, add an extra day onto the \"end date\" to get the desired range.</p>";
+        echo "<p>
+Filtering by \"Post Content\" allows you to only display posts which contain a certain word in the text.
+This should work for the main Post Volume Stats bar charts, but not currently the pie charts.
+</p>";
 
         echo "<form action='" . esc_url(admin_url('options.php')) . "' method='POST'>";
         settings_fields( 'sdpvs_year_option' );
@@ -258,7 +263,6 @@ function sdpvs_date_range_select_page() {
         // Footer
         $sdpvs_info->drawFooter($time_start,$time_end);
     }
-    return;
 }
 
 add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'sdpvs_admin_plugin_settings_link' );
@@ -280,9 +284,9 @@ function sdpvs_register_custom_page_in_menu() {
     $customoff = filter_var ( $genoptions['customoff'], FILTER_SANITIZE_STRING);
     $customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
     $showrange = filter_var ( $genoptions['showrange'], FILTER_SANITIZE_STRING);
-    add_menu_page(esc_html__('Post Volume Stats', 'post-volume-stats'), esc_html__('Post Volume Stats', 'post-volume-stats'), 'manage_options', dirname(__FILE__), 'sdpvs_post_volume_stats_assembled', plugins_url('images/post-volume-stats-16x16.png', __FILE__), 1000);
-    add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Categories', 'post-volume-stats'), esc_html__('Categories', 'post-volume-stats'), 'read', 'post-volume-stats-categories', 'sdpvs_category_page');
-    add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Tags', 'post-volume-stats'), esc_html__('Tags', 'post-volume-stats'), 'read', 'post-volume-stats-tags', 'sdpvs_tag_page');
+    add_menu_page(esc_html__('Post Volume Stats', 'post-volume-stats'), esc_html__('Post Volume Stats', 'post-volume-stats'), 'manage_options', __DIR__, 'sdpvs_post_volume_stats_assembled', plugins_url('images/post-volume-stats-16x16.png', __FILE__), 1000);
+    add_submenu_page(__DIR__, esc_html__('Post Volume Stats: Categories', 'post-volume-stats'), esc_html__('Categories', 'post-volume-stats'), 'read', 'post-volume-stats-categories', 'sdpvs_category_page');
+    add_submenu_page(__DIR__, esc_html__('Post Volume Stats: Tags', 'post-volume-stats'), esc_html__('Tags', 'post-volume-stats'), 'read', 'post-volume-stats-tags', 'sdpvs_tag_page');
     if( "yes" == $customoff and "_all_taxonomies" == $customvalue ){
         // Custom Taxonomies
         $args = array(
@@ -295,19 +299,19 @@ function sdpvs_register_custom_page_in_menu() {
             foreach ( $all_taxes as $taxonomy ) {
                 if("category" != $taxonomy and "post_tag" != $taxonomy){
                     $tax_labels = get_taxonomy($taxonomy);
-                    add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $tax_labels->name, 'sdpvs_custom_page');
+                    add_submenu_page(__DIR__, esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $tax_labels->name, 'sdpvs_custom_page');
                 }
             }
         }
     }elseif( "yes" == $customoff and "" != $customvalue ){
         $customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
         $tax_labels = get_taxonomy($customvalue);
-        add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $customvalue, 'sdpvs_custom_page');
+        add_submenu_page(__DIR__, esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $customvalue, 'sdpvs_custom_page');
     }
     if( "yes" == $showrange ){
-        add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Filter Results', 'post-volume-stats'), esc_html__('Filter Results', 'post-volume-stats'), 'manage_options', 'post-volume-stats-daterange', 'sdpvs_date_range_select_page');
+        add_submenu_page(__DIR__, esc_html__('Post Volume Stats: Filter Results', 'post-volume-stats'), esc_html__('Filter Results', 'post-volume-stats'), 'manage_options', 'post-volume-stats-daterange', 'sdpvs_date_range_select_page');
     }
-    add_submenu_page(dirname(__FILE__), esc_html__('Post Volume Stats: Settings', 'post-volume-stats'), esc_html__('Settings', 'post-volume-stats'), 'manage_options', 'post-volume-stats-settings', 'sdpvs_settings_page');
+    add_submenu_page(__DIR__, esc_html__('Post Volume Stats: Settings', 'post-volume-stats'), esc_html__('Settings', 'post-volume-stats'), 'manage_options', 'post-volume-stats-settings', 'sdpvs_settings_page');
 }
 
 add_action('admin_menu', 'sdpvs_register_custom_page_in_menu');
@@ -647,17 +651,22 @@ function sdpvs_download_redirect() {
     $genoptions = get_option('sdpvs_general_settings');
     $exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
     $authoroptions = get_option('sdpvs_author_option');
-    $searchauthor = absint($authoroptions['author_number']);
-    if("yes"==$exportcsv and is_user_logged_in() ){
+    if (!empty($authoroptions['author_number'])) {
+        $searchauthor = absint($authoroptions['author_number']);
+    } else {
+        $searchauthor = null;
+    }
+
+    if("yes"==$exportcsv && is_user_logged_in() ){
 
         $searchstring = $_SERVER['REQUEST_URI'];
-        $pattern = "/\/wp-admin\/download-csv\/([0-9a-zA-Z-]+)\.csv/";
+        $pattern = "/\/wp-content\/plugins\/post-volume-stats\/download-csv\/([0-9a-zA-Z-]+)\.csv/";
         preg_match($pattern, $searchstring, $matches);
         if( isset($matches[1]) ){
             $answer = $matches[1];
         }
 
-        if("words"!=$answer and "images"!=$answer and "comments"!=$answer and "hour"!=$answer and "dayofweek"!=$answer and "month"!=$answer and "dayofmonth"!=$answer and "tag"!=$answer and "category"!=$answer and "interval"!=$answer){
+        if("words"!=$answer && "images"!=$answer && "comments"!=$answer && "hour"!=$answer && "dayofweek"!=$answer && "month"!=$answer && "dayofmonth"!=$answer && "tag"!=$answer && "category"!=$answer && "interval"!=$answer){
                 #check that the taxonomy exists
                 $foundit = 0;
                 $args = array(
@@ -666,15 +675,15 @@ function sdpvs_download_redirect() {
                 );
                 $all_taxes = get_taxonomies( $args );
                 foreach ( $all_taxes as $taxonomy ) {
-                    if("category" != $taxonomy and "post_tag" != $taxonomy){
+                    if("category" != $taxonomy && "post_tag" != $taxonomy){
                         $tax_labels = get_taxonomy($taxonomy);
-                        if($taxonomy == $answer or $tax_labels->label == $answer or $tax_labels->name == $answer){
+                        if($taxonomy == $answer || $tax_labels->label == $answer || $tax_labels->name == $answer){
                             $foundit = 1;
                         }
                     }
                 }
                 if(0 == $foundit){
-                    return;
+                    return false;
                 }
         }
 
@@ -715,4 +724,4 @@ function sdpvs_check_activation_notice() {
         echo '<div id="sdpvs-notice" class="notice notice-info is-dismissible"><p class="sdpvs">' . sprintf(wp_kses(__('NEW to <a href="%1$s">Post Volume Stats</a>: ', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($sdpvs_link)) . __('<strong>"Comments per post"</strong> bar chart added and <strong>"Images per post"</strong> bugfix. ') . sprintf(wp_kses(__('The new charts must be enabled in <a href="%1$s">PVS settings</a>. ', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($sdpvs_settings_link)) . '</p></div>';
     }
 }
-?>
+

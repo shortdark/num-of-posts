@@ -11,6 +11,7 @@ class sdpvsInfo extends sdpvsArrays {
         parent::sdpvs_earliest_date_post();
         parent::sdpvs_latest_date_post();
         parent::sdpvs_total_published_volume();
+
         $currenttime = time();
 
         $earliest = strtotime($this->earliest_date);
@@ -65,8 +66,6 @@ class sdpvsInfo extends sdpvsArrays {
 
 
         echo '<h2>' . esc_html__('Thank You', 'post-volume-stats') . '</h2>';
-
-        return;
     }
 
 

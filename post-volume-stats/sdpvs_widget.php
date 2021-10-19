@@ -49,7 +49,7 @@ class SDPVS_Widget extends WP_Widget {
    		if( $textarea ) {
      		echo '<p class="wp_widget_plugin_textarea">'.$textarea.'</p>';
    		}
-		if($checkbox1 or $checkbox2 or $checkbox3 or $checkbox4 or $checkbox5 or $checkbox8 or $checkbox9 ){
+		if($checkbox1 || $checkbox2 || $checkbox3 || $checkbox4 || $checkbox5 || $checkbox8 || $checkbox9 ){
 			// Check if checkboxes are checked
 			$sdpvs_bar = new sdpvsBarChart();
    			if( 'year' == $checkbox1 ) {
@@ -240,4 +240,3 @@ class SDPVS_Widget extends WP_Widget {
 		register_widget( 'SDPVS_Widget' );
 		}
 		add_action( 'widgets_init', 'sdpvs_widget_register' );
-	?>

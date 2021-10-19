@@ -9,7 +9,7 @@ class sdpvsMainContent {
         $end_date = "";
 
         // create an instance of the required classes
-        $sdpvs_info = new sdpvsInfo();
+        //$sdpvs_info = new sdpvsInfo();
         $sdpvs_bar = new sdpvsBarChart();
         $sdpvs_pie = new sdpvsPieChart();
 
@@ -23,10 +23,14 @@ class sdpvsMainContent {
         }
         if(isset($options['search_text'])){
             $search_text = filter_var ( $options['search_text'], FILTER_SANITIZE_STRING);
+        } else {
+            $search_text = '';
         }
 
         $authoroptions = get_option('sdpvs_author_option');
-        $author = absint($authoroptions['author_number']);
+        if (false != $authoroptions) {
+            $author = absint($authoroptions['author_number']);
+        }
 
         $genoptions = get_option('sdpvs_general_settings');
         $authoroff = filter_var ( $genoptions['authoroff'], FILTER_SANITIZE_STRING);
@@ -34,33 +38,43 @@ class sdpvsMainContent {
         $customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
         $showimage = filter_var ( $genoptions['showimage'], FILTER_SANITIZE_STRING);
         $showcomment = filter_var ( $genoptions['showcomment'], FILTER_SANITIZE_STRING);
+        $showfilter = filter_var ( $genoptions['showrange'], FILTER_SANITIZE_STRING);
+
 
         $sdpvs_settings_link = admin_url('admin.php?page=' . SDPVS__PLUGIN_SETTINGS);
+        $sdpvs_filter_link = admin_url('admin.php?page=' . SDPVS__FILTER_RESULTS);
 
-        if("" != $author){
+        if(isset($author) && null != $author){
             $user = get_user_by( 'id', $author );
             $extradesc = "for $user->display_name";
         }else{
             $extradesc = "";
+            $author=0;
         }
 
         // Title
         echo '<h1 class="sdpvs">';
         echo esc_html__('Post Volume Stats: ', 'post-volume-stats');
         if (0 < $selected) {
-            echo sprintf(__('%d ', 'post-volume-stats'), $selected);
+            echo sprintf(__('%d', 'post-volume-stats'), $selected);
         }elseif($start_date){
-            echo sprintf(__('%s to %s ', 'post-volume-stats'), $start_date, $end_date);
+            echo sprintf(__('%s to %s', 'post-volume-stats'), $start_date, $end_date);
         } else {
-            echo __('All-Time ', 'post-volume-stats');
+            echo __('All-Time', 'post-volume-stats');
         }
         if(isset($extradesc) && '' != $extradesc){
             echo sprintf(__('(%s)'), $extradesc);
+        }
+        if (!empty($search_text)) {
+            echo sprintf(__(': Posts containing "%s"', 'post-volume-stats'), $search_text);
         }
         echo '</h1>';
 
         echo '<p>';
         echo __('Click a bar of the "Years" or "Authors" bar charts to change to that year or author, or click the selected year/author (red) to view the stats for all years/authors. ');
+        if ('yes'==$showfilter) {
+            echo sprintf(wp_kses(__('More filtering options in <a href="%1$s">Filter Results</a>. ', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($sdpvs_filter_link));
+        }
         echo sprintf(wp_kses(__('Add more features in the <a href="%1$s">Post Volume Stats settings page</a>. ', 'post-volume-stats'), array('a' => array('href' => array()))), esc_url($sdpvs_settings_link));
         echo '</p>';
 
@@ -159,7 +173,6 @@ class sdpvsMainContent {
             echo $sdpvs_pie->sdpvs_draw_pie_svg($customvalue, $selected, $author, 'n', 'n', $start_date, $end_date, $search_text);
             echo "</div>";
         }
-        return;
     }
 
 }

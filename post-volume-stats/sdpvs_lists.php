@@ -19,7 +19,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }
         if(0 < $searchyear){
             $label = " $searchyear";
-        }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date){
+        }elseif( isset($start_date) && isset($end_date) && "" != $start_date && "" != $end_date){
             $label = " ($start_date to $end_date)";
         }
         if( 0 < $searchauthor){
@@ -95,8 +95,8 @@ class sdpvsTextLists extends sdpvsArrays {
         }
         if(0 < $searchyear){
             $label = " in $searchyear";
-        }elseif("subpage" != $list_type and "public" != $list_type and "buttons" != $list_type and "export" != $list_type ){
-            if( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
+        }elseif("subpage" != $list_type && "public" != $list_type && "buttons" != $list_type && "export" != $list_type ){
+            if( isset($start_date) && isset($end_date) && "" != $start_date && "" != $end_date ){
                 $label = " ($start_date to $end_date)";
             }
         }
@@ -122,7 +122,7 @@ class sdpvsTextLists extends sdpvsArrays {
             $form_name = 'sdpvs_customselect';
             $taxonomy_type = $type;
         }
-        if("tag" != $type and "category" != $type and "export" != $list_type){
+        if("tag" != $type && "category" != $type && "export" != $list_type){
             $logical_starter = 1;
         }else{
             $logical_starter = 0;
@@ -140,7 +140,7 @@ class sdpvsTextLists extends sdpvsArrays {
             $posts_per_cat_tag .= "<form action='" . esc_url(admin_url('admin-post.php')) . "' method='POST'>";
             $posts_per_cat_tag .= "<input type=\"hidden\" name=\"action\" value=\"export_lists\">";
             $posts_per_cat_tag .= "<input type=\"hidden\" name=\"whichlist\" value=\"$type\">";
-            if("category" != $type and "tag" != $type){
+            if("category" != $type && "tag" != $type){
                 $posts_per_cat_tag .= "<input type=\"hidden\" name=\"customname\" value=\"$type\">";
             }
 
@@ -163,7 +163,7 @@ class sdpvsTextLists extends sdpvsArrays {
             $posts_per_cat_tag .= "</form>";
         }
 
-        if ("buttons" != $list_type and "subpage" != $list_type) {
+        if ("buttons" != $list_type && "subpage" != $list_type) {
             if("" != $searchauthor){
                 $user = get_user_by( 'id', $searchauthor );
                 $extradesc = " for user $user->display_name";
@@ -177,13 +177,13 @@ class sdpvsTextLists extends sdpvsArrays {
             }
         }
 
-        if ("source" == $list_type or "export" == $list_type) {
+        if ("source" == $list_type || "export" == $list_type) {
             $selectable = '<h2>' . $title . '</h2>';
         } else {
             $posts_per_cat_tag .= '<h2>' . $title . '</h2>';
         }
 
-        if ("" == $select_array and ("admin" == $list_type or "subpage" == $list_type)) {
+        if ("" == $select_array && ("admin" == $list_type || "subpage" == $list_type)) {
             // Only grab all data when everything is required
             if("admin" == $list_type){
                 parent::sdpvs_post_taxonomy_type_volumes($taxonomy_type, $searchyear, $searchauthor, $start_date, $end_date, $search_text);
@@ -196,7 +196,7 @@ class sdpvsTextLists extends sdpvsArrays {
                 $posts_per_cat_tag .= '<p>' . sprintf(esc_html__('Check the %s you\'d like to export to a post then click the \'Show Preview\' button. On mobile devices you may have to scroll down as the results may be at the bottom of the page.', 'post-volume-stats'), $typetitleplural) . '</p>';
 
                 $posts_per_cat_tag .= "<form class='$form_name' action='' method='POST'>";
-                if("category" != $type and "tag" != $type){
+                if("category" != $type && "tag" != $type){
                     $posts_per_cat_tag .= "<input type=\"hidden\" name=\"customname\" value=\"$type\">";
                 }
                 $posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' class='button-primary sdpvs_preview' value='" . esc_html__('Show Preview') . "'></div>";
@@ -242,7 +242,7 @@ class sdpvsTextLists extends sdpvsArrays {
 
                     $link = get_term_link( $term_id );
 
-                    if (10 > $y and "off" != $listcolors) {
+                    if (10 > $y && "off" != $listcolors) {
                         $color = $colorlist[$y];
                     } else {
                         $color = "#000";
@@ -296,7 +296,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }
         if(0 < $searchyear){
             $label = "in $searchyear";
-        }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
+        }elseif(isset($start_date, $end_date) && "" != $start_date && "" != $end_date){
             $label = "($start_date to $end_date)";
         }
         parent::sdpvs_number_of_posts_in_order($searchyear,$searchauthor, $start_date, $end_date, $search_text);
@@ -334,7 +334,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }
         if(0 < $searchyear){
             $label = "in $searchyear";
-        }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
+        }elseif( isset($start_date) && isset($end_date) && "" != $start_date && "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
         parent::sdpvs_number_of_posts_per_dayofweek($searchyear,$searchauthor, $start_date, $end_date, $search_text);
@@ -371,7 +371,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }
         if(0 < $searchyear){
             $label = "in $searchyear";
-        }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
+        }elseif( isset($start_date) && isset($end_date) && "" != $start_date && "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
         parent::sdpvs_number_of_posts_per_hour($searchyear,$searchauthor, $start_date, $end_date, $search_text);
@@ -405,7 +405,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }
         if(0 < $searchyear){
             $label = "in $searchyear";
-        }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
+        }elseif( isset($start_date) && isset($end_date) && "" != $start_date && "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
         parent::sdpvs_number_of_posts_per_month($searchyear,$searchauthor, $start_date, $end_date, $search_text);
@@ -440,7 +440,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }
         if(0 < $searchyear){
             $label = "in $searchyear";
-        }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
+        }elseif( isset($start_date) && isset($end_date) && "" != $start_date && "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
         parent::sdpvs_number_of_posts_per_dayofmonth($searchyear,$searchauthor, $start_date, $end_date, $search_text);
@@ -477,7 +477,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }
         if(0 < $searchyear){
             $label = "in $searchyear";
-        }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
+        }elseif( isset($start_date) && isset($end_date) && "" != $start_date && "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
         parent::sdpvs_number_of_words_per_post($searchyear,$searchauthor, $start_date, $end_date, $search_text);
@@ -516,7 +516,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }
         if(0 < $searchyear){
             $label = "in $searchyear";
-        }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
+        }elseif( isset($start_date) && isset($end_date) && "" != $start_date && "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
         parent::sdpvs_number_of_images_per_post($searchyear,$searchauthor, $start_date, $end_date, $search_text);
@@ -554,7 +554,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }
         if(0 < $searchyear){
             $label = "in $searchyear";
-        }elseif( isset($start_date) and isset($end_date) and "" != $start_date and "" != $end_date ){
+        }elseif( isset($start_date) && isset($end_date) && "" != $start_date && "" != $end_date ){
             $label = "($start_date to $end_date)";
         }
         parent::sdpvs_number_of_comments_per_post($searchyear,$searchauthor, $start_date, $end_date, $search_text);
@@ -593,7 +593,6 @@ class sdpvsTextLists extends sdpvsArrays {
                 $a++;
             }
         }
-        return;
     }
 
 
@@ -644,8 +643,6 @@ class sdpvsTextLists extends sdpvsArrays {
                 $a++;
             }
         }
-
-        return;
     }
 
 
@@ -672,25 +669,32 @@ class sdpvsTextLists extends sdpvsArrays {
             $userstring = " ($user->display_name)";
         }
 
+
+         $this->output_compare_list .= '<h2>';
+
         if ("hour" == $type) {
-            $this->output_compare_list .= '<h2>' .  sprintf(esc_html__('Posts per Hour%1$s', 'post-volume-stats'), $userstring) . '</h2>';
+            $this->output_compare_list .= sprintf(esc_html__('Posts per Hour%1$s', 'post-volume-stats'), $userstring);
         } elseif ("dayofweek" == $type) {
-            $this->output_compare_list .= '<h2>' . sprintf(esc_html__('Posts per Day of the week%1$s', 'post-volume-stats'), $userstring) . '</h2>';
+            $this->output_compare_list .= sprintf(esc_html__('Posts per Day of the week%1$s', 'post-volume-stats'), $userstring);
         } elseif ("month" == $type) {
-            $this->output_compare_list .= '<h2>' . sprintf(esc_html__('Posts per Month%1$s', 'post-volume-stats'), $userstring) . '</h2>';
+            $this->output_compare_list .= sprintf(esc_html__('Posts per Month%1$s', 'post-volume-stats'), $userstring);
         } elseif ("dayofmonth" == $type) {
-            $this->output_compare_list .= '<h2>' . sprintf(esc_html__('Posts per Day of the Month%1$s', 'post-volume-stats'), $userstring) . '</h2>';
+            $this->output_compare_list .= sprintf(esc_html__('Posts per Day of the Month%1$s', 'post-volume-stats'), $userstring);
         } elseif("words" == $type){
-            $this->output_compare_list .= '<h2>' . sprintf(esc_html__('Words per Post%1$s', 'post-volume-stats'), $userstring) . '</h2>';
+            $this->output_compare_list .= sprintf(esc_html__('Words per Post%1$s', 'post-volume-stats'), $userstring);
         } elseif("images" == $type){
-            $this->output_compare_list .= '<h2>' . sprintf(esc_html__('Images per Post%1$s', 'post-volume-stats'), $userstring) . '</h2>';
+            $this->output_compare_list .= sprintf(esc_html__('Images per Post%1$s', 'post-volume-stats'), $userstring);
         } elseif("comments" == $type){
-            $this->output_compare_list .= '<h2>' . sprintf(esc_html__('Comments per Post%1$s', 'post-volume-stats'), $userstring) . '</h2>';
+            $this->output_compare_list .= sprintf(esc_html__('Comments per Post%1$s', 'post-volume-stats'), $userstring);
         } elseif("interval" == $type){
-            $this->output_compare_list .= '<h2>' . sprintf(esc_html__('Intervals Between Posts%1$s', 'post-volume-stats'), $userstring) . '</h2>';
+            $this->output_compare_list .= sprintf(esc_html__('Intervals Between Posts%1$s', 'post-volume-stats'), $userstring);
         }else{
-            $this->output_compare_list .= '<h2>' . sprintf(esc_html__('Posts per Taxonomy: %1$s%2$s', 'post-volume-stats'), $type, $userstring) . '</h2>';
+            $this->output_compare_list .= sprintf(esc_html__('Posts per Taxonomy: %1$s%2$s', 'post-volume-stats'), $type, $userstring);
         }
+         if (!empty($search_text)) {
+             $this->output_compare_list .= sprintf(__(' containing "%s"', 'post-volume-stats'), $search_text);
+         }
+         $this->output_compare_list .= '</h2>';
 
         $this->output_compare_list .= "<table>";
         $this->output_compare_list .= "<tr>";
