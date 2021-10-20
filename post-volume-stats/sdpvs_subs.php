@@ -8,7 +8,7 @@ class sdpvsSubPages {
 
         // create an instance of the required classes
         $sdpvs_bar = new sdpvsBarChart();
-        $sdpvs_pie = new sdpvsPieChart();
+        //$sdpvs_pie = new sdpvsPieChart();
         $sdpvs_lists = new sdpvsTextLists();
 
         $year = get_option('sdpvs_year_option');

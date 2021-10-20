@@ -151,9 +151,9 @@ class sdpvsBarChart extends sdpvsArrays {
         // specify the margin width on the left of the bar chart
         $graphleft = 25;
 
-	if ($bars_total <= 0) {
-		$bars_total = 1;
-	}
+        if ($bars_total <= 0) {
+            $bars_total = 1;
+        }
         $bar_width = $graphwidth / $bars_total;
         $svgwidth = $graphwidth + $graphleft;
         $svgheight = $graphheight + $graphtop + $graphbottom;
@@ -204,13 +204,13 @@ class sdpvsBarChart extends sdpvsArrays {
                 } elseif ("asc" == $order) {
                     $x_start = $bar_width + $graphleft + ($i * $bar_width);
                 }
-                if ($chart_array[$i]['name'] == $searchyear and "year" == $which) {
+                if ($chart_array[$i]['name'] == $searchyear && "year" == $which) {
                     $color = $highlight_color;
                     $set_explicit_color = "background-color: $color;";
-                }elseif ( isset($chart_array[$i]['id']) and $chart_array[$i]['id'] == $searchauthor and "author" == $which) {
+                }elseif ( isset($chart_array[$i]['id']) && $chart_array[$i]['id'] == $searchauthor && "author" == $which) {
                     $color = $highlight_color;
                     $set_explicit_color = "background-color: $color;";
-                }elseif ( ($chart_array[$i]['name'] == "Saturday" or $chart_array[$i]['name'] == "Sunday") and "dayofweek" == $which) {
+                }elseif ( ($chart_array[$i]['name'] == "Saturday" || $chart_array[$i]['name'] == "Sunday") && "dayofweek" == $which) {
                     $color = $weekend_color;
                     $set_explicit_color = "background-color: $color;";
                 } else {
@@ -225,12 +225,28 @@ class sdpvsBarChart extends sdpvsArrays {
                     } else {
                         $year_form_value = $chart_array[$i]['name'];
                     }
+
                     $legend = $chart_array[$i]['name'];
-                    if (strlen($legend) * 7 < $bar_width) {
-                        $legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
-                        $legend_y = $y_start + 17;
-                        echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
+                    $legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
+                    $legend_y = $y_start + 17;
+                    $legendShort = $legend;
+                    $year_legend_button_x = $x_start - $bar_width;
+                    if ($bars_total > $i) {
+                        if (strlen($legendShort) * 7 > $bar_width) {
+                            $legendShort = substr($legend, -2);
+                            $legend_x = $x_start - ($bar_width / 2) - (strlen($legendShort) * 7) / 2;
+                        }
+                        echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"11px\" fill=\"$text_color\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legendShort) . "</text>";
+                        if ("y" != $public) {
+                            echo "<foreignObject x=\"$year_legend_button_x\" y=\"$y_start\" width=\"$bar_width\" height=\"24\">";
+                            echo "<form action=\"options.php\" method=\"post\" class=\"sdpvs_year_form\" style=\"border:0; margin:0;padding:0;\">";
+                            settings_fields('sdpvs_year_option');
+                            echo " <input type=\"hidden\" name=\"sdpvs_year_option[year_number]\" id=\"year-number\" value=\"$year_form_value\">
+                        <input type=\"submit\" style=\"height: 24px; width: " . $bar_width . "px;\" title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\" class=\"sdpvs_author_legend\">";
+                            echo "</form></foreignObject>";
+                        }
                     }
+
                     $form_y_offset = $y_start - $bar_height;
                     $form_x_offset = $x_start - $bar_width;
 
@@ -257,24 +273,44 @@ class sdpvsBarChart extends sdpvsArrays {
                     $legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
                     $legend_y = $y_start + 17;
                     if (strlen($legend) * 7 >= $bar_width) {
-                        $shorten_to = absint($bar_width / 7);
+                        $shorten_to = absint($bar_width / 7) - 1;
                         $legend_x = $x_start - ($bar_width / 2) - ($shorten_to * 7) / 2;
-                        $legend = substr($legend, 0, $shorten_to);
+                        $legendShort = trim(substr($legend, 0, $shorten_to)) . '.';
+                    } else {
+                        $legendShort = $legend;
                     }
-                    echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">" . sprintf(esc_html__('%s', 'my-text-domain'), $legend) . "</text>";
                     $form_y_offset = $y_start - $bar_height;
                     $form_x_offset = $x_start - $bar_width;
+                    $author_button_height = $bar_height + 20;
+                    $auth_legend_button_x = $x_start - $bar_width;
+
+
+
+
+                    //echo "<a xlink:href=\"#\" xlink:title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\"><text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">" . sprintf(esc_html__('%s', 'my-text-domain'), $legendShort) . "</text></a>";
+
 
                     if ("y" != $public) {
+                        // Text
+                        echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">" . sprintf(esc_html__('%s', 'my-text-domain'), $legendShort) . "</text>";
+                        echo "<foreignObject x=\"$auth_legend_button_x\" y=\"$y_start\" width=\"$bar_width\" height=\"24\">";
+                        echo "<form action=\"options.php\" method=\"post\" class=\"sdpvs_year_form\" style=\"border:0; margin:0;padding:0;\">";
+                        settings_fields('sdpvs_author_option');
+                        echo " <input type=\"hidden\" name=\"sdpvs_author_option[author_number]\" id=\"author-number\" value=\"$author_form_value\">
+                        <input type=\"submit\" style=\"height: 24px; width: " . $bar_width . "px;\" title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\" class=\"sdpvs_author_legend\">";
+                        echo "</form></foreignObject>";
+
+                        // Bar
                         echo "<path fill-opacity=\"0.5\" d=\"M$x_start $y_start v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"white\"></path>";
                         echo "<foreignObject x=\"$form_x_offset\" y=\"$form_y_offset\" width=\"$bar_width\" height=\"$bar_height\">";
                         echo "<form action=\"options.php\" method=\"post\" class=\"sdpvs_year_form\" style=\"border:0; margin:0;padding:0;\">";
                         settings_fields('sdpvs_author_option');
                         echo " <input type=\"hidden\" name=\"sdpvs_author_option[author_number]\" id=\"author-number\" value=\"$author_form_value\">
-                        <input type=\"submit\" style=\"height: " . $bar_height . "px; width: " . $bar_width . "px; $set_explicit_color\" title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\" class=\"sdpvs_year_bar\">
+                        <input type=\"submit\" style=\"height: " . $author_button_height . "px; width: " . $bar_width . "px; $set_explicit_color\" title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\" class=\"sdpvs_year_bar\">
                         </form>
                         </foreignObject>";
                     } else {
+                        echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"12px\" fill=\"$text_color\">" . sprintf(esc_html__('%s', 'my-text-domain'), $legendShort) . "</text>";
                         echo "<a xlink:title=\"{$chart_array[$i]['name']}, {$chart_array[$i]['volume']} posts\"><path fill-opacity=\"0.5\" d=\"M$x_start $y_start v -$bar_height h -$bar_width v $bar_height h $bar_width \" fill=\"$color\" class=\"sdpvs_bar\"></path></a>";
                     }
 
@@ -284,14 +320,18 @@ class sdpvsBarChart extends sdpvsArrays {
 
             }else{
                 // Label the year even if there are no posts
-                if ("year" == $which) {
+                if ("year" == $which && $bars_total > $i) {
                     $x_start = $svgwidth - ($i * $bar_width);
                     $legend = $chart_array[$i]['name'];
-                    if (strlen($legend) * 7 < $bar_width) {
-                        $legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
-                        $legend_y = $y_start + 17;
-                        echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"11px\" fill=\"$text_color\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legend) . "</text>";
-                    }
+                    $legend_x = $x_start - ($bar_width / 2) - (strlen($legend) * 7) / 2;
+                    $legend_y = $y_start + 17;
+                    $legendShort = $legend;
+
+                        if (strlen($legendShort) * 7 > $bar_width) {
+                            $legendShort = substr($legend, -2);
+                            $legend_x = $x_start - ($bar_width / 2) - (strlen($legendShort) * 7) / 2;
+                        }
+                        echo "<text x=\"$legend_x\" y=\"$legend_y\" font-family=\"sans-serif\" font-size=\"11px\" fill=\"$text_color\">" . sprintf(esc_html__('%d', 'my-text-domain'), $legendShort) . "</text>";
                 }
             }
 		$i++;

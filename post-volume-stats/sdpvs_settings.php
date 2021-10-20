@@ -129,7 +129,7 @@ function sdpvs_searchtext_field_callback() {
     echo "<div style='display: block; padding: 5px;'>";
 
     echo "<label><input name=\"sdpvs_year_option[search_text]\" id=\"search-text\" value=\"$selected\" placeholder=\"Filter text...\">";
-    echo " (i.e. only show the posts which contain a keyword in the bar charts on the main Post Volume Stats page)";
+    echo " (i.e. only show the posts which contain a keyword on the main Post Volume Stats page)";
     echo "</label><br>";
     echo "</div>";
 }

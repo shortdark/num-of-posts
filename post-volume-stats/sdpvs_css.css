@@ -32,6 +32,15 @@
 	opacity: 0.5;
 }
 
+.sdpvs_author_legend {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	color: transparent;
+	cursor: pointer;
+	opacity: 0.1;
+}
+
 a .sdpvs_segment:hover, a .sdpvs_bar:hover {
 	stroke: white;
 	fill: green;

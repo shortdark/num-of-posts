@@ -30,7 +30,12 @@ class sdpvsTextLists extends sdpvsArrays {
         }
         
         parent::sdpvs_number_of_posts_per_author($searchyear, $start_date, $end_date, $search_text);
-        $this->list_string = '<h2>' . sprintf(esc_html__('Post Volumes per Author%1$s%2$s', 'post-volume-stats'), $extradesc, $label) . '</h2>';
+        $this->list_string = '<h2>';
+        $this->list_string .= sprintf(esc_html__('Post Volumes per Author%1$s%2$s', 'post-volume-stats'), $extradesc, $label);
+        if (!empty($search_text)) {
+            $this->output_compare_list .= sprintf(__(' containing "%s"', 'post-volume-stats'), $search_text);
+        }
+        $this->list_string .= '</h2>';
         $i=0;
         while ( array_key_exists($i, $this->list_array) ) {
             if (!$this->list_array[$i]['volume']) {
@@ -670,7 +675,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }
 
 
-         $this->output_compare_list .= '<h2>';
+         $this->output_compare_list = '<h2>';
 
         if ("hour" == $type) {
             $this->output_compare_list .= sprintf(esc_html__('Posts per Hour%1$s', 'post-volume-stats'), $userstring);

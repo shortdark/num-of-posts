@@ -55,43 +55,43 @@ class SDPVS_Widget extends WP_Widget {
    			if( 'year' == $checkbox1 ) {
 				// year bar chart
 				echo "<div class='sdpvs_col'>";
-				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('year','','','n','y',$label_color);
+				$sdpvs_bar->sdpvs_draw_bar_chart_svg('year','','','n','y',$label_color);
 				echo "</div>";
    			}
    			if('month' == $checkbox2){
    				// month bar chart
    				echo "<div class='sdpvs_col'>";
-   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('month','','','n','y',$label_color);
+   				$sdpvs_bar->sdpvs_draw_bar_chart_svg('month','','','n','y',$label_color);
 				echo "</div>";
    			}
 			if('dayofmonth' == $checkbox3){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
-   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('dayofmonth','','','n','y',$label_color);
+   				$sdpvs_bar->sdpvs_draw_bar_chart_svg('dayofmonth','','','n','y',$label_color);
 				echo "</div>";
    			}
    			if('dayofweek' == $checkbox4){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
-   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('dayofweek','','','n','y',$label_color);
+   				$sdpvs_bar->sdpvs_draw_bar_chart_svg('dayofweek','','','n','y',$label_color);
 				echo "</div>";
    			}
 			if('hour' == $checkbox5){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
-   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('hour','','','n','y',$label_color);
+   				$sdpvs_bar->sdpvs_draw_bar_chart_svg('hour','','','n','y',$label_color);
 				echo "</div>";
    			}
    			if('words' == $checkbox8){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
-   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('words','','','n','y',$label_color);
+   				$sdpvs_bar->sdpvs_draw_bar_chart_svg('words','','','n','y',$label_color);
 				echo "</div>";
    			}
    			if('interval' == $checkbox9){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
-   				$sdpvs_bar -> sdpvs_draw_bar_chart_svg('interval','','','n','y',$label_color);
+   				$sdpvs_bar->sdpvs_draw_bar_chart_svg('interval','','','n','y',$label_color);
 				echo "</div>";
    			}
 			
@@ -102,13 +102,13 @@ class SDPVS_Widget extends WP_Widget {
 			if('category' == $checkbox6){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
-   				echo $sdpvs_pie -> sdpvs_draw_pie_svg('category','','', 'n', 'y');
+   				echo $sdpvs_pie->sdpvs_draw_pie_svg('category','','', 'n', 'y','','','');
 				echo "</div>";
    			}
 			if('tag' == $checkbox7){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
-   				echo $sdpvs_pie -> sdpvs_draw_pie_svg('tag','','', 'n', 'y');
+   				echo $sdpvs_pie->sdpvs_draw_pie_svg('tag','','', 'n', 'y','','','');
 				echo "</div>";
    			}
 		}
@@ -156,55 +156,55 @@ class SDPVS_Widget extends WP_Widget {
 		?>
 
 		<p>
-		<label for="<?php echo $this -> get_field_id('title'); ?>"><?php esc_html_e('Title', 'post-volume-stats'); ?></label>
-		<input class="widefat" id="<?php echo $this -> get_field_id('title'); ?>" name="<?php echo $this -> get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
+		<label for="<?php echo $this->get_field_id('title'); ?>"><?php esc_html_e('Title', 'post-volume-stats'); ?></label>
+		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
 		</p>
 		<p>
-		<label for="<?php echo esc_attr($this -> get_field_id('textarea')); ?>"><?php esc_html_e('Description', 'post-volume-stats'); ?></label>
-		<textarea class="widefat" id="<?php echo esc_attr($this -> get_field_id('textarea')); ?>" name="<?php echo esc_attr($this -> get_field_name('textarea')); ?>"><?php echo esc_html($textarea); ?></textarea>
+		<label for="<?php echo esc_attr($this->get_field_id('textarea')); ?>"><?php esc_html_e('Description', 'post-volume-stats'); ?></label>
+		<textarea class="widefat" id="<?php echo esc_attr($this->get_field_id('textarea')); ?>" name="<?php echo esc_attr($this->get_field_name('textarea')); ?>"><?php echo esc_html($textarea); ?></textarea>
 		</p>
 		<p>
-		<input id="<?php echo esc_attr($this -> get_field_id('label_color')); ?>" name="<?php echo esc_attr($this -> get_field_name('label_color')); ?>" type="checkbox" value="white" <?php checked('white', $label_color); ?> />
-		<label for="<?php echo esc_attr($this -> get_field_id('label_color')); ?>"><?php esc_html_e('White Text (for dark backgrounds)', 'post-volume-stats'); ?></label>
+		<input id="<?php echo esc_attr($this->get_field_id('label_color')); ?>" name="<?php echo esc_attr($this->get_field_name('label_color')); ?>" type="checkbox" value="white" <?php checked('white', $label_color); ?> />
+		<label for="<?php echo esc_attr($this->get_field_id('label_color')); ?>"><?php esc_html_e('White Text (for dark backgrounds)', 'post-volume-stats'); ?></label>
 		</p>
 		<p>
 		<?php esc_html_e('Select charts to display:', 'post-volume-stats'); ?>
 		</p>
 		<p>
-		<input id="<?php echo esc_attr($this -> get_field_id('checkbox1')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox1')); ?>" type="checkbox" value="year" <?php checked('year', $checkbox1); ?> />
-		<label for="<?php echo esc_attr($this -> get_field_id('checkbox1')); ?>"><?php esc_html_e('Years', 'post-volume-stats'); ?></label>
+		<input id="<?php echo esc_attr($this->get_field_id('checkbox1')); ?>" name="<?php echo esc_attr($this->get_field_name('checkbox1')); ?>" type="checkbox" value="year" <?php checked('year', $checkbox1); ?> />
+		<label for="<?php echo esc_attr($this->get_field_id('checkbox1')); ?>"><?php esc_html_e('Years', 'post-volume-stats'); ?></label>
 		</p>
 		<p>
-		<input id="<?php echo esc_attr($this -> get_field_id('checkbox2')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox2')); ?>" type="checkbox" value="month" <?php checked('month', $checkbox2); ?> />
-		<label for="<?php echo esc_attr($this -> get_field_id('checkbox2')); ?>"><?php esc_html_e('Months', 'post-volume-stats'); ?></label>
+		<input id="<?php echo esc_attr($this->get_field_id('checkbox2')); ?>" name="<?php echo esc_attr($this->get_field_name('checkbox2')); ?>" type="checkbox" value="month" <?php checked('month', $checkbox2); ?> />
+		<label for="<?php echo esc_attr($this->get_field_id('checkbox2')); ?>"><?php esc_html_e('Months', 'post-volume-stats'); ?></label>
 		</p>
 		<p>
-		<input id="<?php echo esc_attr($this -> get_field_id('checkbox3')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox3')); ?>" type="checkbox" value="dayofmonth" <?php checked('dayofmonth', $checkbox3); ?> />
-		<label for="<?php echo esc_attr($this -> get_field_id('checkbox3')); ?>"><?php esc_html_e('Days of the Month', 'post-volume-stats'); ?></label>
+		<input id="<?php echo esc_attr($this->get_field_id('checkbox3')); ?>" name="<?php echo esc_attr($this->get_field_name('checkbox3')); ?>" type="checkbox" value="dayofmonth" <?php checked('dayofmonth', $checkbox3); ?> />
+		<label for="<?php echo esc_attr($this->get_field_id('checkbox3')); ?>"><?php esc_html_e('Days of the Month', 'post-volume-stats'); ?></label>
 		</p>
 		<p>
-		<input id="<?php echo esc_attr($this -> get_field_id('checkbox4')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox4')); ?>" type="checkbox" value="dayofweek" <?php checked('dayofweek', $checkbox4); ?> />
-		<label for="<?php echo esc_attr($this -> get_field_id('checkbox4')); ?>"><?php esc_html_e('Days of the Week', 'post-volume-stats'); ?></label>
+		<input id="<?php echo esc_attr($this->get_field_id('checkbox4')); ?>" name="<?php echo esc_attr($this->get_field_name('checkbox4')); ?>" type="checkbox" value="dayofweek" <?php checked('dayofweek', $checkbox4); ?> />
+		<label for="<?php echo esc_attr($this->get_field_id('checkbox4')); ?>"><?php esc_html_e('Days of the Week', 'post-volume-stats'); ?></label>
 		</p>
 		<p>
-		<input id="<?php echo esc_attr($this -> get_field_id('checkbox5')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox5')); ?>" type="checkbox" value="hour" <?php checked('hour', $checkbox5); ?> />
-		<label for="<?php echo esc_attr($this -> get_field_id('checkbox5')); ?>"><?php esc_html_e('Hour', 'post-volume-stats'); ?></label>
+		<input id="<?php echo esc_attr($this->get_field_id('checkbox5')); ?>" name="<?php echo esc_attr($this->get_field_name('checkbox5')); ?>" type="checkbox" value="hour" <?php checked('hour', $checkbox5); ?> />
+		<label for="<?php echo esc_attr($this->get_field_id('checkbox5')); ?>"><?php esc_html_e('Hour', 'post-volume-stats'); ?></label>
 		</p>
 		<p>
-		<input id="<?php echo esc_attr($this -> get_field_id('checkbox8')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox8')); ?>" type="checkbox" value="words" <?php checked('words', $checkbox8); ?> />
-		<label for="<?php echo esc_attr($this -> get_field_id('checkbox8')); ?>"><?php esc_html_e('Words per Post', 'post-volume-stats'); ?></label>
+		<input id="<?php echo esc_attr($this->get_field_id('checkbox8')); ?>" name="<?php echo esc_attr($this->get_field_name('checkbox8')); ?>" type="checkbox" value="words" <?php checked('words', $checkbox8); ?> />
+		<label for="<?php echo esc_attr($this->get_field_id('checkbox8')); ?>"><?php esc_html_e('Words per Post', 'post-volume-stats'); ?></label>
 		</p>
 		<p>
-		<input id="<?php echo esc_attr($this -> get_field_id('checkbox9')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox9')); ?>" type="checkbox" value="interval" <?php checked('interval', $checkbox9); ?> />
-		<label for="<?php echo esc_attr($this -> get_field_id('checkbox9')); ?>"><?php esc_html_e('Interval', 'post-volume-stats'); ?></label>
+		<input id="<?php echo esc_attr($this->get_field_id('checkbox9')); ?>" name="<?php echo esc_attr($this->get_field_name('checkbox9')); ?>" type="checkbox" value="interval" <?php checked('interval', $checkbox9); ?> />
+		<label for="<?php echo esc_attr($this->get_field_id('checkbox9')); ?>"><?php esc_html_e('Interval', 'post-volume-stats'); ?></label>
 		</p>
 		<p>
-		<input id="<?php echo esc_attr($this -> get_field_id('checkbox6')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox6')); ?>" type="checkbox" value="category" <?php checked('category', $checkbox6); ?> />
-		<label for="<?php echo esc_attr($this -> get_field_id('checkbox6')); ?>"><?php esc_html_e('Categories', 'post-volume-stats'); ?></label>
+		<input id="<?php echo esc_attr($this->get_field_id('checkbox6')); ?>" name="<?php echo esc_attr($this->get_field_name('checkbox6')); ?>" type="checkbox" value="category" <?php checked('category', $checkbox6); ?> />
+		<label for="<?php echo esc_attr($this->get_field_id('checkbox6')); ?>"><?php esc_html_e('Categories', 'post-volume-stats'); ?></label>
 		</p>
 		<p>
-		<input id="<?php echo esc_attr($this -> get_field_id('checkbox7')); ?>" name="<?php echo esc_attr($this -> get_field_name('checkbox7')); ?>" type="checkbox" value="tag" <?php checked('tag', $checkbox7); ?> />
-		<label for="<?php echo esc_attr($this -> get_field_id('checkbox7')); ?>"><?php esc_html_e('Tags', 'post-volume-stats'); ?></label>
+		<input id="<?php echo esc_attr($this->get_field_id('checkbox7')); ?>" name="<?php echo esc_attr($this->get_field_name('checkbox7')); ?>" type="checkbox" value="tag" <?php checked('tag', $checkbox7); ?> />
+		<label for="<?php echo esc_attr($this->get_field_id('checkbox7')); ?>"><?php esc_html_e('Tags', 'post-volume-stats'); ?></label>
 		</p>
 		<?php
 	}
@@ -237,6 +237,6 @@ class SDPVS_Widget extends WP_Widget {
 
 		// register Foo_Widget widget
 		function sdpvs_widget_register() {
-		register_widget( 'SDPVS_Widget' );
+		    register_widget( 'SDPVS_Widget' );
 		}
 		add_action( 'widgets_init', 'sdpvs_widget_register' );

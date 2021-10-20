@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.3.04
+ * @version 3.3.05
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.3.04
+ * Version: 3.3.05
  * Author URI: http://www.shortdark.net/
  */
 
@@ -38,7 +38,7 @@ define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SDPVS__PLUGIN_FOLDER', 'post-volume-stats');
 define('SDPVS__PLUGIN_SETTINGS', 'post-volume-stats-settings');
 define('SDPVS__FILTER_RESULTS', 'post-volume-stats-daterange');
-define('SDPVS__VERSION_NUMBER', '3.3.04');
+define('SDPVS__VERSION_NUMBER', '3.3.05');
 
 /******************
  ** SETUP THE PAGE
@@ -47,21 +47,13 @@ define('SDPVS__VERSION_NUMBER', '3.3.04');
 // Add the includes
 
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_arrays.php');
-
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_info.php');
-
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_bar.php');
-
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_pie.php');
-
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_lists.php');
-
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_main.php');
-
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_subs.php');
-
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_widget.php');
-
 require_once (SDPVS__PLUGIN_DIR . 'sdpvs_settings.php');
 
 /**********************
@@ -237,19 +229,20 @@ function sdpvs_date_range_select_page() {
 
         // Content goes here
         echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Filter Results', 'post-volume-stats') . '</h1>';
-        echo "<p>On this page you can filter the results on the main Post Volume Stats page by a year/date range and/or a word.</p>";
-        echo "<p>
+        echo '<p>On this page you can filter the results on the main Post Volume Stats page by a year/date range and/or a word.</p>';
+        echo '<p>'  . esc_html__('
 You can either select a year or you can select a date range and filter the results to only search for posts which have a certain text string within them.
-Selecting a year on this page is an alternative to clicking the bars of the \"Year\" bar chart on the other pages. To de-select the year and view all years together select the blank option at the top.
-Only if the \"Year\" is blank will the date range be used. 
+Selecting a year on this page is an alternative to clicking the bars of the "Year" bar chart on the other pages. To de-select the year and view all years together select the blank option at the top.
+Only if the "Year" is blank will the date range be used. 
 You must enter both a start date and an end date. 
 If a date range is entered (with no year selected) it will be applied to the main page, but not the Tag/Category/Custom pages.
-There is a bug where any posts on the \"end date\" are not counted. To fix this, add an extra day onto the \"end date\" to get the desired range.</p>";
+There is a bug where any posts on the "end date" are not counted. To fix this, add an extra day onto the "end date" to get the desired range.', 'post-volume-stats') . '</p>';
 
-        echo "<p>
-Filtering by \"Post Content\" allows you to only display posts which contain a certain word in the text.
-This should work for the main Post Volume Stats bar charts, but not currently the pie charts.
-</p>";
+        echo '<p>' . esc_html__('
+Filtering by "Post Content" allows you to only display posts which contain a certain word in the text.
+This should work for the main Post Volume Stats bar charts, pie charts, and "Show Data" lists.
+The data may look incorrect for tags and categories because if a post has multiple tags and categories the post will 
+appear more than once in the pie charts.', 'post-volume-stats') . '</p>';
 
         echo "<form action='" . esc_url(admin_url('options.php')) . "' method='POST'>";
         settings_fields( 'sdpvs_year_option' );

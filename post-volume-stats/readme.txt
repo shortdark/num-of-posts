@@ -48,9 +48,17 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 3.3.05 =
+
+* FIX: Select/deselect all links fixed on tag/cat pages.
+* FIX: Bug with pie charts on the widget.
+* UPDATED: Shortened author names replaced underscore with period on main page.
+* UPDATED: Year shortened to two characters when there are many years of posts.
+* UPDATED: Author/year text is clickable on author/year charts on main page.
+
 = 3.3.04 =
 
-* Updated: Fixes for PHP 8.
+* UPDATED: More fixing for PHP 8.
 
 = 3.3.03 =
 

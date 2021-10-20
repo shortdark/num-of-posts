@@ -14,17 +14,19 @@ jQuery(document).ready(function($) {
 	});
 	
 	$('#select-all').click(function(e) {
-			// Iterate each checkbox
-			$(':checkbox').each(function() {
-				this.checked = true;
-			});
+		// Iterate each checkbox
+		$(':checkbox').each(function() {
+			this.checked = true;
+		});
+		$(".sdpvs_preview").attr('disabled', false);
 	});
 	
 	$('#deselect-all').click(function(e) {
-			// Iterate each checkbox
-			$(':checkbox').each(function() {
-				this.checked = false;
-			});
+		// Iterate each checkbox
+		$(':checkbox').each(function() {
+			this.checked = false;
+		});
+		$(".sdpvs_preview").attr('disabled', true);
 	});
 
 	$(':checkbox').click(function(e) {
