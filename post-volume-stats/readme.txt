@@ -48,6 +48,13 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 3.3.06 =
+
+* UPDATED: Text search added to "compare years" and CSV downloads.
+* UPDATED: Separate pages for text filter and date range.
+* FIX: When you change year the text filter does not get wiped.
+* UPDATED: Huge code tidy.
+
 = 3.3.05 =
 
 * FIX: Select/deselect all links fixed on tag/cat pages.
