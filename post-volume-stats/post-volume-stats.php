@@ -228,8 +228,8 @@ function sdpvs_date_range_select_page() {
         $time_start = microtime(true);
 
         // Content goes here
-        echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Filter Results', 'post-volume-stats') . '</h1>';
-        echo '<p>On this page you can filter the results on the main Post Volume Stats page by a year/date range and/or a word.</p>';
+        echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Date Range', 'post-volume-stats') . '</h1>';
+        echo '<p>On this page you can filter the results on the main Post Volume Stats page by a year/date range.</p>';
         echo '<p>'  . esc_html__('
 You can either select a year or you can select a date range and filter the results to only search for posts which have a certain text string within them.
 Selecting a year on this page is an alternative to clicking the bars of the "Year" bar chart on the other pages. To de-select the year and view all years together select the blank option at the top.
@@ -237,12 +237,6 @@ Only if the "Year" is blank will the date range be used.
 You must enter both a start date and an end date. 
 If a date range is entered (with no year selected) it will be applied to the main page, but not the Tag/Category/Custom pages.
 There is a bug where any posts on the "end date" are not counted. To fix this, add an extra day onto the "end date" to get the desired range.', 'post-volume-stats') . '</p>';
-
-        echo '<p>' . esc_html__('
-Filtering by "Post Content" allows you to only display posts which contain a certain word in the text.
-This should work for the main Post Volume Stats bar charts, pie charts, and "Show Data" lists.
-The data may look incorrect for tags and categories because if a post has multiple tags and categories the post will 
-appear more than once in the pie charts.', 'post-volume-stats') . '</p>';
 
         echo "<form action='" . esc_url(admin_url('options.php')) . "' method='POST'>";
         settings_fields( 'sdpvs_year_option' );
@@ -257,6 +251,40 @@ appear more than once in the pie charts.', 'post-volume-stats') . '</p>';
         $sdpvs_info->drawFooter($time_start,$time_end);
     }
 }
+
+// Text Filter page
+function sdpvs_text_filter_page() {
+    if (is_admin()) {
+
+        // Create an instance of the required classes
+        $sdpvs_info = new sdpvsInfo();
+
+        // Start the timer
+        $time_start = microtime(true);
+
+        // Content goes here
+        echo '<h1 class="sdpvs">' . esc_html__('Post Volume Stats: Text Filter', 'post-volume-stats') . '</h1>';
+        echo '<p>On this page you can filter the results on the main Post Volume Stats page by a word.</p>';
+        echo '<p>' . esc_html__('
+Filtering by "Post Content" allows you to only display posts which contain a certain word in the text.
+This should work for the main Post Volume Stats bar charts, pie charts, and "Show Data" lists.
+The data may look incorrect for tags and categories because if a post has multiple tags and categories the post will 
+appear more than once in the pie charts.', 'post-volume-stats') . '</p>';
+
+        echo "<form action='" . esc_url(admin_url('options.php')) . "' method='POST'>";
+        settings_fields( 'sdpvs_text_option' );
+        do_settings_sections( 'post-volume-stats-textfilter' );
+        submit_button('Save');
+        echo "</form>";
+
+        // Stop the timer
+        $time_end = microtime(true);
+
+        // Footer
+        $sdpvs_info->drawFooter($time_start,$time_end);
+    }
+}
+
 
 add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'sdpvs_admin_plugin_settings_link' );
 function sdpvs_admin_plugin_settings_link( $links ) { 
@@ -280,7 +308,7 @@ function sdpvs_register_custom_page_in_menu() {
     add_menu_page(esc_html__('Post Volume Stats', 'post-volume-stats'), esc_html__('Post Volume Stats', 'post-volume-stats'), 'manage_options', __DIR__, 'sdpvs_post_volume_stats_assembled', plugins_url('images/post-volume-stats-16x16.png', __FILE__), 1000);
     add_submenu_page(__DIR__, esc_html__('Post Volume Stats: Categories', 'post-volume-stats'), esc_html__('Categories', 'post-volume-stats'), 'read', 'post-volume-stats-categories', 'sdpvs_category_page');
     add_submenu_page(__DIR__, esc_html__('Post Volume Stats: Tags', 'post-volume-stats'), esc_html__('Tags', 'post-volume-stats'), 'read', 'post-volume-stats-tags', 'sdpvs_tag_page');
-    if( "yes" == $customoff and "_all_taxonomies" == $customvalue ){
+    if( "yes" === $customoff && "_all_taxonomies" === $customvalue ){
         // Custom Taxonomies
         $args = array(
             'public'   => true,
@@ -290,19 +318,22 @@ function sdpvs_register_custom_page_in_menu() {
         $count_taxes = count( $all_taxes );
         if( 1 < $count_taxes ){
             foreach ( $all_taxes as $taxonomy ) {
-                if("category" != $taxonomy and "post_tag" != $taxonomy){
+                if("category" != $taxonomy && "post_tag" != $taxonomy){
                     $tax_labels = get_taxonomy($taxonomy);
                     add_submenu_page(__DIR__, esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $tax_labels->name, 'sdpvs_custom_page');
                 }
             }
         }
-    }elseif( "yes" == $customoff and "" != $customvalue ){
+    }elseif( "yes" === $customoff && "" !== $customvalue ){
         $customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
         $tax_labels = get_taxonomy($customvalue);
-        add_submenu_page(__DIR__, esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $customvalue, 'sdpvs_custom_page');
+        if (!empty($tax_labels)) {
+            add_submenu_page(__DIR__, esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $customvalue, 'sdpvs_custom_page');
+        }
     }
-    if( "yes" == $showrange ){
-        add_submenu_page(__DIR__, esc_html__('Post Volume Stats: Filter Results', 'post-volume-stats'), esc_html__('Filter Results', 'post-volume-stats'), 'manage_options', 'post-volume-stats-daterange', 'sdpvs_date_range_select_page');
+    if( "yes" === $showrange ){
+        add_submenu_page(__DIR__, esc_html__('Post Volume Stats: Date Range', 'post-volume-stats'), esc_html__('Date Range', 'post-volume-stats'), 'manage_options', 'post-volume-stats-daterange', 'sdpvs_date_range_select_page');
+        add_submenu_page(__DIR__, esc_html__('Post Volume Stats: Text Filter', 'post-volume-stats'), esc_html__('Text Filter', 'post-volume-stats'), 'manage_options', 'post-volume-stats-textfilter', 'sdpvs_text_filter_page');
     }
     add_submenu_page(__DIR__, esc_html__('Post Volume Stats: Settings', 'post-volume-stats'), esc_html__('Settings', 'post-volume-stats'), 'manage_options', 'post-volume-stats-settings', 'sdpvs_settings_page');
 }
@@ -335,7 +366,7 @@ function sdpvs_custom_toolbar() {
     $genoptions = get_option('sdpvs_general_settings');
     $admintool = filter_var ( $genoptions['admintool'], FILTER_SANITIZE_STRING);
 
-    if("yes" == $admintool){
+    if("yes" === $admintool){
         $url = admin_url("admin.php?page=" . SDPVS__PLUGIN_FOLDER);
         $args = array(
             'id'     => 'sdpvs_link',
@@ -419,37 +450,41 @@ function sdpvs_process_ajax() {
 
     $year = get_option('sdpvs_year_option');
     $searchyear = absint($year['year_number']);
+    $start_date='';
     if(isset($year['start_date'])){
         $start_date = filter_var ( $year['start_date'], FILTER_SANITIZE_STRING);
     }
+    $end_date='';
     if(isset($year['end_date'])){
         $end_date = filter_var ( $year['end_date'], FILTER_SANITIZE_STRING);
     }
-    if(isset($year['search_text'])){
-        $search_text = filter_var ( $year['search_text'], FILTER_SANITIZE_STRING);
+    $textoption = get_option('sdpvs_text_option');
+    $search_text='';
+    if(isset($textoption['search_text'])){
+        $search_text = filter_var ( $textoption['search_text'], FILTER_SANITIZE_STRING);
     }
     $authoroptions = get_option('sdpvs_author_option');
     $searchauthor = absint($authoroptions['author_number']);
 
-    if ("year" == $answer) {
+    if ("year" === $answer) {
         echo $sdpvs_lists->sdpvs_posts_per_year_list($searchauthor, $search_text);
-    } elseif ("hour" == $answer) {
+    } elseif ("hour" === $answer) {
         echo $sdpvs_lists->sdpvs_posts_per_hour_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
-    } elseif ("dayofweek" == $answer) {
+    } elseif ("dayofweek" === $answer) {
         echo $sdpvs_lists->sdpvs_posts_per_dayofweek_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
-    } elseif ("month" == $answer) {
+    } elseif ("month" === $answer) {
         echo $sdpvs_lists->sdpvs_posts_per_month_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
-    } elseif ("dayofmonth" == $answer) {
+    } elseif ("dayofmonth" === $answer) {
         echo $sdpvs_lists->sdpvs_posts_per_day_of_month_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
-    } elseif ("author" == $answer) {
+    } elseif ("author" === $answer) {
         echo $sdpvs_lists->sdpvs_posts_per_author_list($searchyear, $start_date, $end_date, $search_text);
-    } elseif ("words" == $answer){
+    } elseif ("words" === $answer){
         echo $sdpvs_lists->sdpvs_words_per_post_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
-    } elseif ("images" == $answer){
+    } elseif ("images" === $answer){
         echo $sdpvs_lists->sdpvs_images_per_post_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
-    } elseif ("comments" == $answer){
+    } elseif ("comments" === $answer){
         echo $sdpvs_lists->sdpvs_comments_per_post_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
-    } elseif ("interval" == $answer){
+    } elseif ("interval" === $answer){
         echo $sdpvs_lists->sdpvs_interval_between_posts_list($searchyear, $searchauthor, $start_date, $end_date, $search_text);
     } else {
         echo $sdpvs_lists->sdpvs_posts_per_cat_tag_list($answer, $searchyear, $searchauthor, $start_date, $end_date, 'admin', '', '', $search_text);
@@ -475,8 +510,14 @@ function sdpvs_compare_data_over_years() {
 
     $authoroptions = get_option('sdpvs_author_option');
     $searchauthor = absint($authoroptions['author_number']);
+    //$year = get_option('sdpvs_year_option');
+    $textoption = get_option('sdpvs_text_option');
+    $search_text='';
+    if(isset($textoption['search_text'])){
+        $search_text = filter_var ( $textoption['search_text'], FILTER_SANITIZE_STRING);
+    }
 
-    echo $sdpvs_lists->sdpvs_compare_years_rows($answer, $searchauthor);
+    echo $sdpvs_lists->sdpvs_compare_years_rows($answer, $searchauthor,$search_text);
 
     // Always die() AJAX
     die();
@@ -533,7 +574,7 @@ function sdpvs_custom_lists() {
     $gotit = filter_var($_POST['whichcustom'], FILTER_SANITIZE_STRING);
     preg_match_all('/=([0-9]*)/', $gotit, $matches);
 
-    if("_all_taxonomies" == $customvalue){
+    if("_all_taxonomies" === $customvalue){
         preg_match('/customname=([0-9a-zA-Z\-_]*)&/', $gotit, $filtertype);
         $customvalue = $filtertype[1];
     }
@@ -587,35 +628,33 @@ function sdpvs_admin_export_lists() {
         $howmuch = "list";
     }
 
-    if("" != $searchauthor){
+    if(0 != $searchauthor){
         $user = get_user_by( 'id', $searchauthor );
         $extradesc = ": $user->display_name";
     }else{
         $extradesc = "";
     }
 
-    if ($searchyear)
-        $title = ucfirst($whichlist) . ' Stats' . $extradesc;
-    else
-        $title = ucfirst($whichlist) . ' Stats'. $extradesc;
+    $title = ucfirst($whichlist) . ' Stats' . $extradesc;
+
 
     $color = $sdpvs_lists->sdpvs_color_list();
     $link = "https://wordpress.org/plugins/post-volume-stats/";
     $linkdesc = "Post Volume Stats";
 
-    if ("all" == $howmuch or "graph" == $howmuch) {
+    if ("all" === $howmuch || "graph" === $howmuch) {
         $post_content = $sdpvs_bar->sdpvs_comparison_line_graph($whichlist, $matches, $searchauthor, $color,"y");
     }
 
-    if ("all" == $howmuch or "list" == $howmuch) {
+    if ("all" === $howmuch || "list" === $howmuch) {
         $post_content .= $sdpvs_lists->sdpvs_posts_per_cat_tag_list($whichlist, $searchyear, $searchauthor, '','','export', $matches, $color);
     }
 
-    if ("all" == $howmuch or "graph" == $howmuch or "list" == $howmuch) {
+    if ("all" === $howmuch || "graph" === $howmuch || "list" === $howmuch) {
         $post_content .= '<p class="alignright">Stats presented with ' . sprintf(wp_kses(__('<a href="%1$s" target="_blank">%2$s</a>.', 'post-volume-stats'), array('a' => array('href' => array(), 'target' => array()))), esc_url($link), $linkdesc) . '</p>';
         $my_post = array('post_title' => $title, 'post_content' => $post_content, 'post_status' => 'draft');
         // Insert the post into the database and get the post ID.
-        $post_id = wp_insert_post($my_post, $wp_error);
+        $post_id = wp_insert_post($my_post);
 
         $url = admin_url("post.php?post=$post_id&action=edit");
 
@@ -649,8 +688,14 @@ function sdpvs_download_redirect() {
     } else {
         $searchauthor = null;
     }
+    //$year = get_option('sdpvs_year_option');
+    $textoption = get_option('sdpvs_text_option');
+    $search_text='';
+    if(isset($textoption['search_text'])){
+        $search_text = filter_var ( $textoption['search_text'], FILTER_SANITIZE_STRING);
+    }
 
-    if("yes"==$exportcsv && is_user_logged_in() ){
+    if("yes"===$exportcsv && is_user_logged_in() ){
 
         $searchstring = $_SERVER['REQUEST_URI'];
         $pattern = "/\/wp-content\/plugins\/post-volume-stats\/download-csv\/([0-9a-zA-Z-]+)\.csv/";
@@ -675,7 +720,7 @@ function sdpvs_download_redirect() {
                         }
                     }
                 }
-                if(0 == $foundit){
+                if(0 === $foundit){
                     return false;
                 }
         }
@@ -683,7 +728,7 @@ function sdpvs_download_redirect() {
         if($answer){
             // create an instance of the list class
             $sdpvs_lists = new sdpvsTextLists();
-            $csv = $sdpvs_lists->sdpvs_create_csv_output($answer, $searchauthor);
+            $csv = $sdpvs_lists->sdpvs_create_csv_output($answer, $searchauthor,$search_text);
             $length = strlen($csv);
 
             // Download the file.

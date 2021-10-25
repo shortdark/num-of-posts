@@ -9,11 +9,11 @@ defined('ABSPATH') or die('No script kiddies please!');
 /**
  * Register the settings
  */
-function sdpvs_register_settings() {
+function sdpvs_register_date_settings() {
     register_setting('sdpvs_year_option', // settings section
     'sdpvs_year_option' // setting name
     );
-    add_settings_section( 'sdpvs_year_option', 'Filter Results', 'sdpvs_sanitize', 'post-volume-stats-daterange' );
+    add_settings_section( 'sdpvs_year_option', 'Filter By Year Or Date Range', 'sdpvs_sanitize', 'post-volume-stats-daterange' );
     add_settings_field('year_number', // ID
     'Select a Year', // Title
     'sdpvs_year_field_callback', 'post-volume-stats-daterange', 'sdpvs_year_option');
@@ -23,12 +23,21 @@ function sdpvs_register_settings() {
     add_settings_field('end_date', // ID
     'Date Range: end date', // Title
     'sdpvs_enddate_field_callback', 'post-volume-stats-daterange', 'sdpvs_year_option');
+}
+add_action('admin_init', 'sdpvs_register_date_settings');
+
+
+function sdpvs_register_text_settings() {
+    register_setting('sdpvs_text_option', // settings section
+        'sdpvs_text_option' // setting name
+    );
+    add_settings_section( 'sdpvs_text_option', 'Filter By Text', 'sdpvs_sanitize', 'post-volume-stats-textfilter' );
     add_settings_field('search_text', // ID
         'Filter by Post Content', // Title
-        'sdpvs_searchtext_field_callback', 'post-volume-stats-daterange', 'sdpvs_year_option');
+        'sdpvs_searchtext_field_callback', 'post-volume-stats-textfilter', 'sdpvs_text_option');
 
 }
-add_action('admin_init', 'sdpvs_register_settings');
+add_action('admin_init', 'sdpvs_register_text_settings');
 
 
 function sdpvs_register_author_settings() {
@@ -52,7 +61,7 @@ function sdpvs_register_general_settings() {
     add_settings_field( 'customvalue', 'Select a Taxonomy to view', 'sdpvs_field_five_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
     add_settings_field( 'admintool', 'Put a link to Post Volume Stats in the Admin Toolbar', 'sdpvs_field_six_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
     add_settings_field( 'exportcsv', 'Allow export of CSV', 'sdpvs_field_seven_callback', 'post-volume-stats-settings', 'sdpvs_general_settings' );
-    add_settings_field( 'showrange', 'Show Filter Results page', 'sdpvs_field_callback_date_range', 'post-volume-stats-settings', 'sdpvs_general_settings' );
+    add_settings_field( 'showrange', 'Show Date Range and Text Filter pages', 'sdpvs_field_callback_date_range', 'post-volume-stats-settings', 'sdpvs_general_settings' );
     add_settings_field( 'maxinterval', 'Maximum post interval to show', 'sdpvs_field_callback_max_interval', 'post-volume-stats-settings', 'sdpvs_general_settings' );
     add_settings_field( 'showimage', 'Images per Post', 'sdpvs_field_callback_image', 'post-volume-stats-settings', 'sdpvs_general_settings' );
     add_settings_field( 'showcomment', 'Comments per Post', 'sdpvs_field_callback_comment', 'post-volume-stats-settings', 'sdpvs_general_settings' );
@@ -62,24 +71,25 @@ add_action('admin_init', 'sdpvs_register_general_settings');
 
 function sdpvs_startdate_field_callback() {
     $options = get_option('sdpvs_year_option');
-    $selected = $options['start_date'];
-
+    $selected = '';
+    if (!empty($options['start_date'])) {
+        $selected = $options['start_date'];
+    }
     echo "<div style='display: block; padding: 5px;'>";
-
     echo "<label><input name=\"sdpvs_year_option[start_date]\" id=\"start-date\" value=\"$selected\" placeholder=\"YYYY-MM-DD\">";
-    
     echo "</label><br>";
     echo "</div>";
 }
 
 function sdpvs_enddate_field_callback() {
     $options = get_option('sdpvs_year_option');
-    $selected = $options['end_date'];
+    $selected = '';
+    if (!empty($options['end_date'])) {
+        $selected = $options['end_date'];
+    }
 
     echo "<div style='display: block; padding: 5px;'>";
-
     echo "<label><input name=\"sdpvs_year_option[end_date]\" id=\"end-date\" value=\"$selected\" placeholder=\"YYYY-MM-DD\">";
-    
     echo "</label><br>";
     echo "</div>";
 }
@@ -100,14 +110,14 @@ function sdpvs_year_field_callback() {
 
     echo "<label><select name=\"sdpvs_year_option[year_number]\" id=\"year-number\">";
     
-    if("" == $selected){
+    if(empty($selected)){
         echo "<option value=\"\" selected=\"selected\"></option>";
     }else{
         echo "<option value=\"\"></option>";
     }
 
     $i=0;
-    while($years[$i]['name']){
+    while(isset($years[$i]['name'])){
         if(0 < $years[$i]['volume']){
             if($years[$i]['name'] == $selected){
                 echo "<option value=\"{$years[$i]['name']}\" selected=\"selected\">{$years[$i]['name']}</option>";
@@ -123,12 +133,14 @@ function sdpvs_year_field_callback() {
 }
 
 function sdpvs_searchtext_field_callback() {
-    $options = get_option('sdpvs_year_option');
-    $selected = $options['search_text'];
+    $options = get_option('sdpvs_text_option');
+    $selected = '';
+    if (!empty($options['search_text'])) {
+        $selected = $options['search_text'];
+    }
 
     echo "<div style='display: block; padding: 5px;'>";
-
-    echo "<label><input name=\"sdpvs_year_option[search_text]\" id=\"search-text\" value=\"$selected\" placeholder=\"Filter text...\">";
+    echo "<label><input name=\"sdpvs_text_option[search_text]\" id=\"search-text\" value=\"$selected\" placeholder=\"Filter text...\">";
     echo " (i.e. only show the posts which contain a keyword on the main Post Volume Stats page)";
     echo "</label><br>";
     echo "</div>";
@@ -143,7 +155,7 @@ function sdpvs_field_one_callback() {
     $blogstartweek = get_option( 'start_of_week' );
     
     echo "<div style='display: block; padding: 5px;'>";
-    if("sunday" == $startweek or !$startweek){
+    if("sunday" === $startweek || !$startweek){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[startweekon]\" value=\"sunday\" checked=\"checked\">Sunday (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[startweekon]\" value=\"monday\">Monday</label>";
     }else{
@@ -157,7 +169,7 @@ function sdpvs_field_two_callback() {
     $genoptions = get_option('sdpvs_general_settings');
     $listcolors = filter_var ( $genoptions['rainbow'], FILTER_SANITIZE_STRING);
     echo "<div style='display: block; padding: 5px;'>";
-    if("on" == $listcolors or !$listcolors){
+    if("on" === $listcolors || !$listcolors){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[rainbow]\" value=\"on\" checked=\"checked\">On (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[rainbow]\" value=\"off\">Off</label>";
     }else{
@@ -172,7 +184,7 @@ function sdpvs_field_three_callback() {
     $genoptions = get_option('sdpvs_general_settings');
     $authoroff = filter_var ( $genoptions['authoroff'], FILTER_SANITIZE_STRING);
     echo "<div style='display: block; padding: 5px;'>";
-    if("multiple" == $authoroff or !$authoroff){
+    if("multiple" === $authoroff || !$authoroff){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[authoroff]\" value=\"multiple\" checked=\"checked\">More than one (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[authoroff]\" value=\"one\">One</label>";
     }else{
@@ -187,7 +199,7 @@ function sdpvs_field_four_callback() {
     $genoptions = get_option('sdpvs_general_settings');
     $customoff = filter_var ( $genoptions['customoff'], FILTER_SANITIZE_STRING);
     echo "<div style='display: block; padding: 5px;'>";
-    if("no" == $customoff or !$customoff){
+    if("no" === $customoff || !$customoff){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[customoff]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[customoff]\" value=\"yes\">Yes</label>";
     }else{
@@ -215,11 +227,11 @@ function sdpvs_field_five_callback() {
         echo  "<select name=\"sdpvs_general_settings[customvalue]\">";
         echo  "<option name=\"sdpvs_general_settings[customvalue]\" value=\"_all_taxonomies\">Display All</option>";
         foreach ( $all_taxes as $taxonomy ) {
-            if("category" != $taxonomy and "post_tag" != $taxonomy){
+            if("category" != $taxonomy && "post_tag" != $taxonomy){
                 $tax_labels = get_taxonomy($taxonomy);
                 if($taxonomy == $customvalue){
                     echo  "<option name=\"sdpvs_general_settings[customvalue]\" value=\"$taxonomy\" selected=\"selected\">$tax_labels->label</option>";
-                }elseif( $taxonomy and "" != $taxonomy ){
+                }elseif( $taxonomy && "" != $taxonomy ){
                     echo  "<option name=\"sdpvs_general_settings[customvalue]\" value=\"$taxonomy\">$tax_labels->label</option>";
                 }
             }
@@ -230,7 +242,7 @@ function sdpvs_field_five_callback() {
         $short_tax = array_values($all_taxes);
         echo 'Only one custom taxonomy found: ' . $short_tax[0];
         echo  "<input type=\"hidden\" name=\"sdpvs_general_settings[customvalue]\" value=\"{$short_tax[0]}\">";
-    }elseif( 1 > $count_taxes or !$count_taxes or "" == $count_taxes ){
+    }elseif( 1 > $count_taxes || !$count_taxes ){
         echo  "<p>No Custom Taxonomies found.</p>";
         echo  "<input type=\"hidden\" name=\"sdpvs_general_settings[customvalue]\" value=\"\">";
     }
@@ -242,7 +254,7 @@ function sdpvs_field_six_callback() {
     $genoptions = get_option('sdpvs_general_settings');
     $admintool = filter_var ( $genoptions['admintool'], FILTER_SANITIZE_STRING);
     echo "<div style='display: block; padding: 5px;'>";
-    if("no" == $admintool or !$admintool){
+    if("no" === $admintool || !$admintool){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[admintool]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[admintool]\" value=\"yes\">Yes</label>";
     }else{
@@ -256,7 +268,7 @@ function sdpvs_field_seven_callback() {
     $genoptions = get_option('sdpvs_general_settings');
     $exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
     echo "<div style='display: block; padding: 5px;'>";
-    if("no" == $exportcsv or !$exportcsv){
+    if("no" === $exportcsv || !$exportcsv){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[exportcsv]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[exportcsv]\" value=\"yes\">Yes</label>";
     }else{
@@ -271,7 +283,7 @@ function sdpvs_field_callback_date_range() {
     $genoptions = get_option('sdpvs_general_settings');
     $showrange = filter_var ( $genoptions['showrange'], FILTER_SANITIZE_STRING);
     echo "<div style='display: block; padding: 5px;'>";
-    if("no" == $showrange or !$showrange){
+    if("no" === $showrange || !$showrange){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showrange]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showrange]\" value=\"yes\">Yes</label>";
     }else{
@@ -303,7 +315,7 @@ function sdpvs_field_callback_image() {
     $genoptions = get_option('sdpvs_general_settings');
     $showimage = filter_var ( $genoptions['showimage'], FILTER_SANITIZE_STRING);
     echo "<div style='display: block; padding: 5px;'>";
-    if("no" == $showimage or !$showimage){
+    if("no" === $showimage || !$showimage){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showimage]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showimage]\" value=\"yes\">Yes</label>";
     }else{
@@ -320,7 +332,7 @@ function sdpvs_field_callback_comment() {
     $genoptions = get_option('sdpvs_general_settings');
     $showimage = filter_var ( $genoptions['showcomment'], FILTER_SANITIZE_STRING);
     echo "<div style='display: block; padding: 5px;'>";
-    if("no" == $showimage or !$showimage){
+    if("no" === $showimage || !$showimage){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showcomment]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showcomment]\" value=\"yes\">Yes</label>";
     }else{

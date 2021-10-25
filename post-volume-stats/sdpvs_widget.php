@@ -52,43 +52,43 @@ class SDPVS_Widget extends WP_Widget {
 		if($checkbox1 || $checkbox2 || $checkbox3 || $checkbox4 || $checkbox5 || $checkbox8 || $checkbox9 ){
 			// Check if checkboxes are checked
 			$sdpvs_bar = new sdpvsBarChart();
-   			if( 'year' == $checkbox1 ) {
+   			if( 'year' === $checkbox1 ) {
 				// year bar chart
 				echo "<div class='sdpvs_col'>";
 				$sdpvs_bar->sdpvs_draw_bar_chart_svg('year','','','n','y',$label_color);
 				echo "</div>";
    			}
-   			if('month' == $checkbox2){
+   			if('month' === $checkbox2){
    				// month bar chart
    				echo "<div class='sdpvs_col'>";
    				$sdpvs_bar->sdpvs_draw_bar_chart_svg('month','','','n','y',$label_color);
 				echo "</div>";
    			}
-			if('dayofmonth' == $checkbox3){
+			if('dayofmonth' === $checkbox3){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
    				$sdpvs_bar->sdpvs_draw_bar_chart_svg('dayofmonth','','','n','y',$label_color);
 				echo "</div>";
    			}
-   			if('dayofweek' == $checkbox4){
+   			if('dayofweek' === $checkbox4){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
    				$sdpvs_bar->sdpvs_draw_bar_chart_svg('dayofweek','','','n','y',$label_color);
 				echo "</div>";
    			}
-			if('hour' == $checkbox5){
+			if('hour' === $checkbox5){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
    				$sdpvs_bar->sdpvs_draw_bar_chart_svg('hour','','','n','y',$label_color);
 				echo "</div>";
    			}
-   			if('words' == $checkbox8){
+   			if('words' === $checkbox8){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
    				$sdpvs_bar->sdpvs_draw_bar_chart_svg('words','','','n','y',$label_color);
 				echo "</div>";
    			}
-   			if('interval' == $checkbox9){
+   			if('interval' === $checkbox9){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
    				$sdpvs_bar->sdpvs_draw_bar_chart_svg('interval','','','n','y',$label_color);
@@ -99,13 +99,13 @@ class SDPVS_Widget extends WP_Widget {
 
 		if($checkbox6 or $checkbox7){
 			$sdpvs_pie = new sdpvsPieChart();
-			if('category' == $checkbox6){
+			if('category' === $checkbox6){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
    				echo $sdpvs_pie->sdpvs_draw_pie_svg('category','','', 'n', 'y','','','');
 				echo "</div>";
    			}
-			if('tag' == $checkbox7){
+			if('tag' === $checkbox7){
    				// dayofmonth bar chart
    				echo "<div class='sdpvs_col'>";
    				echo $sdpvs_pie->sdpvs_draw_pie_svg('tag','','', 'n', 'y','','','');

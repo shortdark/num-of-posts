@@ -31,7 +31,7 @@ class sdpvsPieChart extends sdpvsArrays {
      */
     private function sdpvs_add_to_taxonomy_array($type = "", $year = "", $author = "", $start_date = "", $end_date = "", $search_text="") {
         $this->tax_type_array = array();
-        parent::sdpvs_post_taxonomy_type_volumes($type, $year,$author, $start_date, $end_date, $search_text);
+        $this->sdpvs_post_taxonomy_type_volumes($type, $year, $author, $start_date, $end_date, $search_text);
         $this->sdpvs_count_post_taxonomies();
         $c = 0;
         while (array_key_exists($c, $this->tax_type_array)) {
@@ -57,14 +57,14 @@ class sdpvsPieChart extends sdpvsArrays {
         $genoptions = get_option('sdpvs_general_settings');
         $exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
 
-        if ("category" == $type) {
+        if ("category" === $type) {
             $this->sdpvs_add_to_taxonomy_array($type,$year,$author, $start_date, $end_date, $search_text);
             $pie_array = $this->tax_type_array;
             //$total_volume = $this->total_taxonomy_posts;
             //$number_of_containers = $this->number_of_taxonomies;
             $pie_svg = '<h2>' . esc_html__("Categories", 'post-volume-stats') . '</h2>';
             $link_part = "category_name";
-        } elseif ("tag" == $type) {
+        } elseif ("tag" === $type) {
             $wp_type_name = "post_tag";
             $this->sdpvs_add_to_taxonomy_array($wp_type_name,$year,$author, $start_date, $end_date, $search_text);
             //$total_volume = $this->total_taxonomy_posts;
@@ -78,10 +78,16 @@ class sdpvsPieChart extends sdpvsArrays {
             $pie_array = $this->tax_type_array;
             //$number_of_containers = $this->number_of_taxonomies;
             $tax_labels = get_taxonomy($type);
-            $pie_svg = '<h2>' . esc_html__($tax_labels->label, 'post-volume-stats') . '</h2>';
+            $pie_svg = '<h2>';
+            if (!empty($tax_labels)) {
+                $pie_svg .= esc_html__($tax_labels->label, 'post-volume-stats');
+            } else {
+                $pie_svg .= esc_html__('Custom Taxonomy', 'post-volume-stats');
+            }
+            $pie_svg .= '</h2>';
             $link_part = $type;
         }
-        if ("year" != $type && "y" == $public) {
+        if ("year" !== $type && "y" === $public) {
             if ( !empty($year) ) {
                 $pie_svg .= '<h3>' . sprintf(esc_html__('%d', 'post-volume-stats'), $year) . '</h3>';
             } else {
@@ -93,49 +99,47 @@ class sdpvsPieChart extends sdpvsArrays {
 
         $c = 0;
         while (array_key_exists($c, $pie_array)) {
-            if (0 < $pie_array[$c]['volume']) {
-                if (0 < $pie_array[$c]['angle']) {
-                    $prev_angle = $testangle_orig;
-                    $testangle_orig += $pie_array[$c]['angle'];
-                    $quadrant = $this->sdpvs_specify_starting_quadrant($testangle_orig);
-                    $testangle = $this->sdpvs_specify_testangle($testangle_orig);
-                    $large = $this->sdpvs_is_it_a_large_angle($testangle_orig, $prev_angle);
-                    $startingline = $this->sdpvs_draw_starting_line($prev_angle, $this->newx, $this->newy);
-                    $this->sdpvs_get_absolute_coordinates_from_angle($quadrant, $radius, $testangle);
+            if ((0 < $pie_array[$c]['volume']) && 0 < $pie_array[$c]['angle']) {
+                $prev_angle = $testangle_orig;
+                $testangle_orig += $pie_array[$c]['angle'];
+                $quadrant = $this->sdpvs_specify_starting_quadrant($testangle_orig);
+                $testangle = $this->sdpvs_specify_testangle($testangle_orig);
+                $large = $this->sdpvs_is_it_a_large_angle($testangle_orig, $prev_angle);
+                $startingline = $this->sdpvs_draw_starting_line($prev_angle, $this->newx, $this->newy);
+                $this->sdpvs_get_absolute_coordinates_from_angle($quadrant, $radius, $testangle);
 
-                    // Change the hue instead
-                    if(0==$c){
-                        $largest_angle = $pie_array[$c]['angle'];
+                // Change the hue instead
+                if(0==$c){
+                    $largest_angle = $pie_array[$c]['angle'];
+                }
+
+                $hue = 240 - absint($pie_array[$c]['angle']*240 / $largest_angle);
+                $color = "hsl($hue, 70%, 65%)";
+
+                //$display_angle_as = sprintf("%.1f", $pie_array[$c]['angle']);
+
+                if("y"==$public){
+                    $item_id = $pie_array[$c]['id'];
+                    if ("category" === $type) {
+                        $link = get_category_link($item_id);
+                    }elseif("tag" === $type){
+                        $link = get_tag_link($item_id);
                     }
-
-                    $hue = 240 - absint($pie_array[$c]['angle']*240 / $largest_angle);
-                    $color = "hsl($hue, 70%, 65%)";
-
-                    //$display_angle_as = sprintf("%.1f", $pie_array[$c]['angle']);
-
-                    if("y"==$public){
-                        $item_id = $pie_array[$c]['id'];
-                        if ("category" == $type) {
-                            $link = get_category_link($item_id);
-                        }elseif("tag" == $type){
-                            $link = get_tag_link($item_id);
-                        }
-                    }else{
-                        $link = admin_url("edit.php?$link_part=" . $pie_array[$c]['slug']);
-                    }
-                    if (360 == $pie_array[$c]['angle']) {
-                        // If only one category exists make sure there is a green solid circle
-                        $pie_svg .= "<a href='$link' xlink:title=\"{$pie_array[$c]['name']}, {$pie_array[$c]['volume']} posts\"><circle class=\"sdpvs_segment\" cx='100' cy='100' r='100' fill='red'/></a>\n";
-                    } else {
-                        $pie_svg .= "  <a href='$link' xlink:title=\"{$pie_array[$c]['name']}, {$pie_array[$c]['volume']} posts\"><path id=\"{$pie_array[$c]['name']}\" class=\"sdpvs_segment\" d=\"M$radius,$radius $startingline A$radius,$radius 0 $large,1 $this->newx,$this->newy z\" fill=\"$color\" stroke=\"black\" stroke-width=\"1\"  /></a>\n";
-                    }
+                }else{
+                    $link = admin_url("edit.php?$link_part=" . $pie_array[$c]['slug']);
+                }
+                if (360 === $pie_array[$c]['angle']) {
+                    // If only one category exists make sure there is a green solid circle
+                    $pie_svg .= "<a href='$link' xlink:title=\"{$pie_array[$c]['name']}, {$pie_array[$c]['volume']} posts\"><circle class=\"sdpvs_segment\" cx='100' cy='100' r='100' fill='red'/></a>\n";
+                } else {
+                    $pie_svg .= "  <a href='$link' xlink:title=\"{$pie_array[$c]['name']}, {$pie_array[$c]['volume']} posts\"><path id=\"{$pie_array[$c]['name']}\" class=\"sdpvs_segment\" d=\"M$radius,$radius $startingline A$radius,$radius 0 $large,1 $this->newx,$this->newy z\" fill=\"$color\" stroke=\"black\" stroke-width=\"1\"  /></a>\n";
                 }
             }
             $c++;
         }
         $pie_svg .= "</svg>\n";
 
-        if ("n" == $subpage && "y"!=$public) {
+        if ("n" === $subpage && "y"!==$public) {
             $pie_svg .= "<p>";
             $pie_svg .= "<form class='sdpvs_form' action='' method='POST'><input type='hidden' name='whichdata' value='$type'><input type='submit' class='button-primary sdpvs_load_content' value='Show Data'></form>";
             $pie_svg .= "</p>";

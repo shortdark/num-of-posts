@@ -25,10 +25,10 @@ class sdpvsSubPages {
 
         $selected = "";
 
-        if ("category" == $type) {
+        if ("category" === $type) {
             $typetitle = "Category";
             $typetitleplural = "Categories";
-        } elseif ("tag" == $type) {
+        } elseif ("tag" === $type) {
             $typetitle = "Tag";
             $typetitleplural = "Tags";
         }else{

@@ -61,7 +61,7 @@ abstract class sdpvsArrays {
      * GET DETAILS FOR ONE CATEGORY / TAG
      */
 
-    protected function sdpvs_get_one_item_info($term_id = "", $taxonomy_type = "", $searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $searchtext="") {
+    protected function sdpvs_get_one_item_info($term_id = 0, $taxonomy_type = "", $searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $searchtext="") {
         global $wpdb;
 
         $term_id = absint($term_id);
@@ -74,9 +74,8 @@ abstract class sdpvsArrays {
             $extra .= $this->sdpvs_add_search_sql($searchtext);
         }
 
-
-        if (0 < $term_id and "" != $taxonomy_type ) {
-            if ("" == $searchyear and "" == $searchauthor and "" == $start_date) {
+        if (0 < $term_id && "" != $taxonomy_type ) {
+            if (0 === $searchyear && 0 === $searchauthor && "" === $start_date) {
                 $count = $wpdb->get_var($wpdb->prepare("SELECT count FROM $wpdb->term_taxonomy WHERE taxonomy = %s AND term_id = %d ", $taxonomy_type, $term_id));
                 $iteminfo = $wpdb->get_row($wpdb->prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $term_id));
                 $one_item_array['name'] = $iteminfo->name;
@@ -102,12 +101,13 @@ abstract class sdpvsArrays {
 
             return $one_item_array;
         }
+        return [];
     }
 
     /**
      * NUMBER OF POSTS PER TAXONOMY TYPE (Tags, Categories, Custom)
      */
-    protected function sdpvs_post_taxonomy_type_volumes($tax_type = "", $searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $searchtext="") {
+    protected function sdpvs_post_taxonomy_type_volumes($tax_type = "", $searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $searchtext="") {
         global $wpdb;
 
         //$tax_results="";
@@ -121,7 +121,7 @@ abstract class sdpvsArrays {
             $extra .= $this->sdpvs_add_search_sql($searchtext);
         }
 
-        if ("" == $searchyear and "" == $searchauthor and "" == $start_date and "" == $end_date ) {
+        if (0 === $searchyear && 0 === $searchauthor && "" === $start_date && "" === $end_date ) {
             // No year, no author, no date range...
             $tax_results = $wpdb->get_results($wpdb->prepare("SELECT term_id,count FROM $wpdb->term_taxonomy WHERE taxonomy = %s ORDER BY count DESC ", $tax_type));
             $c = 0;
@@ -167,7 +167,7 @@ abstract class sdpvsArrays {
             for ($i = $highestval; $i > 0; $i--) {
                 $c = 0;
                 while (array_key_exists($c, $cat_array)) {
-                    if ($i == $cat_array[$c]['volume'] and 0 < $cat_array[$c]['id']) {
+                    if ($i == $cat_array[$c]['volume'] && 0 < $cat_array[$c]['id']) {
                         $temp = $cat_array[$c]['id'];
                         $taxinfo = $wpdb->get_row($wpdb->prepare("SELECT name,slug FROM $wpdb->terms WHERE term_id = %d ", $temp));
                         $this->tax_type_array[$d]['id'] = $temp;
@@ -190,10 +190,10 @@ abstract class sdpvsArrays {
      * NUMBER OF POSTS PER TAXONOMY TYPE (Tags, Categories, Custom)
      * ---> STRUCTURED FOR CSV EXPORT !!!
      */
-    protected function sdpvs_post_tax_type_vols_structured($tax_type = "", $searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $searchtext="") {
+    protected function sdpvs_post_tax_type_vols_structured($tax_type = "", $searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $searchtext="") {
         global $wpdb;
 
-        $tax_results="";
+        //$tax_results="";
         $this->list_array = array();
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
@@ -231,10 +231,9 @@ abstract class sdpvsArrays {
                 ");
                 if (0 < $volume) {
                     $c = 0;
-                    while($this->list_array[$c]['id']){
-                        if($tax_item->term_id == $this->list_array[$c]['id']){
+                    while (!empty($this->list_array[$c]['id'])) {
+                        if ($tax_item->term_id == $this->list_array[$c]['id']) {
                             $this->list_array[$c]['volume'] = absint( $volume );
-                            //continue;
                         }
                         $c++;
                     }
@@ -257,7 +256,7 @@ abstract class sdpvsArrays {
     /**
      * NUMBER OF POSTS IN ORDER, FOR "DAYS BETWEEN POSTS"
      */
-    protected function sdpvs_number_of_posts_in_order($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $searchtext="" ) {
+    protected function sdpvs_number_of_posts_in_order($searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $searchtext="" ) {
         global $wpdb;
 
         $previous_date="";
@@ -266,7 +265,7 @@ abstract class sdpvsArrays {
         if( 30 > $max_interval ){
             $max_interval = 30;
         }
-        $currentyear = date('Y');
+        //$currentyear = date('Y');
         $searchauthor = absint($searchauthor);
         $this->list_array = array();
         $test_array = array();
@@ -315,11 +314,8 @@ abstract class sdpvsArrays {
                         $this->list_array[$j]['name'] = "$j+ days";
                     }
                     for ($k=0; $k <= $max_interval; $k++){
-                        if( isset($test_array[$k]['name']) and $j == $test_array[$k]['name'] ){
-                            if( 0 < $test_array[$k]['volume'] ){
-                                $this->list_array[$j]['volume'] = $test_array[$k]['volume'];
-                            }
-                            //continue;
+                        if(isset($test_array[$k]['name']) && $j == $test_array[$k]['name'] && 0 < $test_array[$k]['volume']) {
+                            $this->list_array[$j]['volume'] = $test_array[$k]['volume'];
                         }
                     }
             }
@@ -332,7 +328,7 @@ abstract class sdpvsArrays {
     /**
      * NUMBER OF POSTS PER YEAR
      */
-    protected function sdpvs_number_of_posts_per_year($searchauthor = "", $searchtext="") {
+    protected function sdpvs_number_of_posts_per_year($searchauthor, $searchtext) {
         global $wpdb;
 
         $searchauthor = absint($searchauthor);
@@ -341,7 +337,7 @@ abstract class sdpvsArrays {
         $currentyear = date('Y');
 
         $extra = $this->sdpvs_add_author_sql($searchauthor);
-        if(!empty($searchtext)){
+        if('' != $searchtext){
             $extra .= $this->sdpvs_add_search_sql($searchtext);
         }
 
@@ -355,6 +351,8 @@ abstract class sdpvsArrays {
             $this->list_array[$i]['volume'] = absint ( $found_posts );
             $wpdb->flush();
         }
+        //var_dump("SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '{$searchyear}%' {$extra} ");
+        //exit();
     }
 
     /**
@@ -369,7 +367,7 @@ abstract class sdpvsArrays {
         $searchauthor = absint($searchauthor);
         $this->list_array = array();
 
-        if("sunday" == $startweek || !$startweek){
+        if("sunday" === $startweek || !$startweek){
             $days_of_week = array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
             for ($w = 0; $w <= 6; $w++) {
                 $this->list_array[$w]['name'] = $days_of_week[$w];
@@ -391,7 +389,7 @@ abstract class sdpvsArrays {
         if(!empty($searchtext)){
             $extra .= $this->sdpvs_add_search_sql($searchtext);
         }
-        $sql = "SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' $extra ";
+        $sql = "SELECT post_date FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' {$extra} ";
 
         //$myblogitems = $wpdb->get_var($wpdb->prepare("SELECT post_date FROM {$wpdb->posts} WHERE post_status = 'publish' AND post_type = 'post' ", ''));
         $myblogitems = $wpdb->get_results( $sql );
@@ -401,7 +399,7 @@ abstract class sdpvsArrays {
             $day = substr($dowpost->post_date, 8, 2);
             $tempdate = mktime(0, 0, 0, $month, $day, $year);
             $d = date($weekletter, $tempdate);
-            if("w" == $weekletter){
+            if("w" === $weekletter){
                 $this->list_array[$d]['volume']++;
             }else{
                 $g = $d-1;
@@ -415,14 +413,12 @@ abstract class sdpvsArrays {
     /**
      * NUMBER OF POSTS PER HOUR
      */
-    protected function sdpvs_number_of_posts_per_hour($searchyear, $searchauthor, $start_date, $end_date, $searchtext) {
+    protected function sdpvs_number_of_posts_per_hour($searchyear=0, $searchauthor=0, $start_date='', $end_date='', $searchtext='') {
         global $wpdb;
 
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $this->list_array = array();
-
-
 
         for ($i = 0; $i <= 23; $i++) {
             $searchhour = sprintf("%02s", $i);
@@ -430,7 +426,7 @@ abstract class sdpvsArrays {
 
             $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
             $extra .= $this->sdpvs_add_author_sql($searchauthor);
-            if(!empty($searchtext)){
+            if('' != $searchtext){
                 $extra .= $this->sdpvs_add_search_sql($searchtext);
             }
             $sql = "SELECT COUNT(*) FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '% $searchhour:%' $extra ";
@@ -449,7 +445,7 @@ abstract class sdpvsArrays {
     /**
      * NUMBER OF POSTS PER MONTH
      */
-    protected function sdpvs_number_of_posts_per_month($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $searchtext="") {
+    protected function sdpvs_number_of_posts_per_month($searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $searchtext="") {
         global $wpdb;
 
         $months_of_year = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
@@ -482,7 +478,7 @@ abstract class sdpvsArrays {
     /**
      * NUMBER OF POSTS PER DAY-OF-THE-MONTH
      */
-    protected function sdpvs_number_of_posts_per_dayofmonth($searchyear = "", $searchauthor = "", $start_date = "", $end_date = "", $searchtext="") {
+    protected function sdpvs_number_of_posts_per_dayofmonth($searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $searchtext="") {
         global $wpdb;
 
         $searchyear = absint($searchyear);
@@ -513,7 +509,7 @@ abstract class sdpvsArrays {
     /**
      * NUMBER OF POSTS PER AUTHOR
      */
-    protected function sdpvs_number_of_posts_per_author($searchyear = "", $start_date = "", $end_date = "", $searchtext="") {
+    protected function sdpvs_number_of_posts_per_author($searchyear = 0, $start_date = "", $end_date = "", $searchtext="") {
         global $wpdb;
         $this->list_array = array();
 
@@ -550,7 +546,7 @@ abstract class sdpvsArrays {
     /**
      * NUMBER OF WORDS PER POST
      */
-    protected function sdpvs_number_of_words_per_post($searchyear = 0, $searchauthor = "", $start_date = "", $end_date = "", $searchtext="") {
+    protected function sdpvs_number_of_words_per_post($searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $searchtext="") {
         global $wpdb;
 
         $extra = "";
@@ -561,9 +557,9 @@ abstract class sdpvsArrays {
         $chart_iterations = 20;
         $maxvalue = 0;
 
-        $extra = $this->sdpvs_add_author_sql($extra, $searchauthor);
+        $extra = $this->sdpvs_add_author_sql($searchauthor);
         if(!empty($searchtext)){
-            $extra = $this->sdpvs_add_search_sql($extra, $searchtext);
+            $extra = $this->sdpvs_add_search_sql($searchtext);
         }
 
         // Get the number of posts for all the years for "compare years"
@@ -601,10 +597,10 @@ abstract class sdpvsArrays {
             // Now, we can specify the range of words for each bar
             for($h=0;$h<$chart_iterations;$h++){
                 $lower = $h * $vol_per_bar;
-                if( $chart_iterations > $h ){
+                //if( $chart_iterations > $h ){
                     $upper = ($h * $vol_per_bar) + $vol_per_bar-1;
                     $this->list_array[$h]['name'] = "$lower - $upper words";
-                }
+                //}
                 $this->list_array[$h]['volume'] = 0;
             }
         }
@@ -678,7 +674,7 @@ abstract class sdpvsArrays {
     /**
     * NUMBER OF IMAGES PER POST
     */
-    protected function sdpvs_number_of_images_per_post($searchyear = 0, $searchauthor = "", $start_date = "", $end_date = "", $searchtext="") {
+    protected function sdpvs_number_of_images_per_post($searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $searchtext="") {
         global $wpdb;
 
         $extra = "";
@@ -688,9 +684,9 @@ abstract class sdpvsArrays {
         $this->list_array = array();
         $maxvalue = 0;
 
-        $extra = $this->sdpvs_add_author_sql($extra, $searchauthor);
+        $extra = $this->sdpvs_add_author_sql($searchauthor);
         if(!empty($searchtext)){
-            $extra = $this->sdpvs_add_search_sql($extra, $searchtext);
+            $extra = $this->sdpvs_add_search_sql($searchtext);
         }
 
         // If a date range is specified, the main purpose of the $total_posts SQL is to get the $maxvalue
@@ -699,7 +695,7 @@ abstract class sdpvsArrays {
         if ($total_posts) {
             foreach ($total_posts as $post_item) {
                 // find the number of images in the post
-                $image_count = self::count_images_from_sql($post_item->post_content);
+                $image_count = $this->count_images_from_sql($post_item->post_content);
                 $temp_array[] = $image_count;
                 if($maxvalue < $image_count){
                     $maxvalue = $image_count;
@@ -726,7 +722,7 @@ abstract class sdpvsArrays {
                 if($found_posts){
                     foreach($found_posts as $post_item){
                         // find the number of images in the post
-                        $image_count = self::count_images_from_sql($post_item->post_content);
+                        $image_count = $this->count_images_from_sql($post_item->post_content);
                         $this->list_array[$image_count]['volume'] ++;
                     }
                 }
@@ -734,7 +730,7 @@ abstract class sdpvsArrays {
                 // No date specified, use the all-time data we gathered at the start in $total_posts
                 foreach ($total_posts as $post_item) {
                     // find the number of images in the post
-                    $image_count = self::count_images_from_sql($post_item->post_content);
+                    $image_count = $this->count_images_from_sql($post_item->post_content);
                     $this->list_array[$image_count]['volume'] ++;
                 }
             }
@@ -746,7 +742,7 @@ abstract class sdpvsArrays {
     /**
      * NUMBER OF COMMENTS PER POST
      */
-    protected function sdpvs_number_of_comments_per_post($searchyear = 0, $searchauthor = "", $start_date = "", $end_date = "", $searchtext="") {
+    protected function sdpvs_number_of_comments_per_post($searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $searchtext="") {
         global $wpdb;
 
         $extra = "";
@@ -756,9 +752,9 @@ abstract class sdpvsArrays {
         $this->list_array = array();
         $maxvalue = 0;
 
-        $extra = $this->sdpvs_add_author_sql($extra, $searchauthor);
+        $extra = $this->sdpvs_add_author_sql($searchauthor);
         if(!empty($searchtext)){
-            $extra = $this->sdpvs_add_search_sql($extra, $searchtext);
+            $extra = $this->sdpvs_add_search_sql($searchtext);
         }
 
         // If a date range is specified, the main purpose of the $total_posts SQL is to get the $maxvalue
@@ -846,7 +842,7 @@ abstract class sdpvsArrays {
         $i = 0;
         while (array_key_exists($i, $testarray)) {
             $this->total_volume_of_posts += $testarray[$i]['volume'];
-            if (0 < $testarray[$i]['volume'] and $this->highest_val < $testarray[$i]['volume']) {
+            if (0 < $testarray[$i]['volume'] && $this->highest_val < $testarray[$i]['volume']) {
                 $this->highest_val = $testarray[$i]['volume'];
             }
             if (0 < $testarray[$i]['volume']) {

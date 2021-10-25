@@ -70,16 +70,14 @@ class sdpvsInfo extends sdpvsArrays {
 
 
     public function sdpvs_first_year($searchauthor="") {
-        parent::sdpvs_number_of_posts_per_year($searchauthor);
-        $year_array = $this->list_array;
-        return $year_array;
+        parent::sdpvs_number_of_posts_per_year($searchauthor,'');
+        return $this->list_array;
     }
 
 
     public function sdpvs_earliest_date() {
         parent::sdpvs_earliest_date_post();
-        $earliest_date = $this->earliest_date;
-        return $earliest_date;
+        return $this->earliest_date;
     }
 
     public function drawFooter($time_start=0,$time_end=0){

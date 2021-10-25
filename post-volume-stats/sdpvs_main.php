@@ -21,8 +21,9 @@ class sdpvsMainContent {
         if(isset($options['end_date'])){
             $end_date = filter_var ( $options['end_date'], FILTER_SANITIZE_STRING);
         }
-        if(isset($options['search_text'])){
-            $search_text = filter_var ( $options['search_text'], FILTER_SANITIZE_STRING);
+        $textoptions = get_option('sdpvs_text_option');
+        if(isset($textoptions['search_text'])){
+            $search_text = filter_var ( $textoptions['search_text'], FILTER_SANITIZE_STRING);
         } else {
             $search_text = '';
         }
@@ -117,14 +118,14 @@ class sdpvsMainContent {
         $sdpvs_bar->sdpvs_draw_bar_chart_svg('words', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
         echo "</div>";
 
-        if( "yes" == $showimage ) {
+        if( "yes" === $showimage ) {
             // images per post bar chart
             echo "<div class='sdpvs_col'>";
             $sdpvs_bar->sdpvs_draw_bar_chart_svg('images', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
             echo "</div>";
         }
 
-        if( "yes" == $showcomment ) {
+        if( "yes" === $showcomment ) {
             // comments per post bar chart
             echo "<div class='sdpvs_col'>";
             $sdpvs_bar->sdpvs_draw_bar_chart_svg('comments', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
@@ -148,7 +149,7 @@ class sdpvsMainContent {
         echo $sdpvs_pie->sdpvs_draw_pie_svg('tag', $selected, $author, 'n', 'n', $start_date, $end_date, $search_text);
         echo "</div>";
 
-        if( "yes" == $customoff and "_all_taxonomies" == $customvalue ){
+        if( "yes" === $customoff && "_all_taxonomies" === $customvalue ){
             // Custom Taxonomies
             $args = array(
                 'public'   => true,
@@ -158,7 +159,7 @@ class sdpvsMainContent {
             $count_taxes = count( $all_taxes );
             if( 1 < $count_taxes ){
                 foreach ( $all_taxes as $taxonomy ) {
-                    if("category" != $taxonomy and "post_tag" != $taxonomy){
+                    if("category" != $taxonomy && "post_tag" != $taxonomy){
                         $tax_labels = get_taxonomy($taxonomy);
                         // posts per $tax_labels->name pie chart
                         echo "<div class='sdpvs_col'>";
@@ -167,7 +168,7 @@ class sdpvsMainContent {
                     }
                 }
             }
-        }elseif( "yes" == $customoff and "" != $customvalue ){
+        }elseif( "yes" === $customoff && "" != $customvalue ){
             // posts per custom taxonomy pie chart
             echo "<div class='sdpvs_col'>";
             echo $sdpvs_pie->sdpvs_draw_pie_svg($customvalue, $selected, $author, 'n', 'n', $start_date, $end_date, $search_text);
