@@ -48,6 +48,10 @@ Here are the latest screenshots...
 
 == Changelog ==
 
+= 3.3.08 =
+
+* FIX: Backward compatability for new way of listing users in WP 5.9.
+
 = 3.3.07 =
 
 * UPDATED: Minimum date interval can be as low as 10 days, default still 30 days.

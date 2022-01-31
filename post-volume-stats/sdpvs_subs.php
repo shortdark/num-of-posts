@@ -5,10 +5,8 @@ defined('ABSPATH') or die('No script kiddies please!');
 class sdpvsSubPages {
 
     public function sdpvs_combined_page_content($type = "") {
-
         // create an instance of the required classes
         $sdpvs_bar = new sdpvsBarChart();
-        //$sdpvs_pie = new sdpvsPieChart();
         $sdpvs_lists = new sdpvsTextLists();
 
         $year = get_option('sdpvs_year_option');
@@ -25,9 +23,6 @@ class sdpvsSubPages {
         if (false !== $genoptions) {
             $authoroff = htmlspecialchars( $genoptions['authoroff'], ENT_QUOTES);
         }
-
-
-        $selected = "";
 
         if ("category" === $type) {
             $typetitle = "Category";
@@ -85,7 +80,7 @@ class sdpvsSubPages {
 
         $searchyear = 0;
         $searchauthor = 0;
-        $rainbow = 'on';
+
 
         $year = get_option('sdpvs_year_option');
         if (false !== $year) {
@@ -96,12 +91,6 @@ class sdpvsSubPages {
         if (false !== $authoroptions) {
             $searchauthor = absint($authoroptions['author_number']);
         }
-
-        $genoptions = get_option('sdpvs_general_settings');
-        if (false !== $genoptions) {
-            $rainbow = htmlspecialchars ( $genoptions['rainbow'], ENT_QUOTES);
-        }
-
 
         $color = $sdpvs_lists->sdpvs_color_list();
 

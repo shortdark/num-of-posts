@@ -9,6 +9,14 @@ class sdpvsPieChart extends sdpvsArrays {
     private $total_tag_posts = 0;
     private $newx;
     private $newy;
+    /**
+     * @var int
+     */
+    private $number_of_taxonomies;
+    /**
+     * @var int
+     */
+    private $total_taxonomy_posts;
 
     /**
      * COUNT NUMBER OF POSTS PER CATEGORY IN TOTAL, some posts might have multiple cats
@@ -48,8 +56,6 @@ class sdpvsPieChart extends sdpvsArrays {
     public function sdpvs_draw_pie_svg($type, $year, $author, $subpage, $public, $start_date, $end_date, $search_text) {
         $testangle_orig = 0;
         $radius = 100;
-        //$prev_angle = 0;
-        //$remaining = 0;
         $this->newx = 0;
         $this->newy = 0;
         $this->tax_type_array = array();
@@ -64,23 +70,17 @@ class sdpvsPieChart extends sdpvsArrays {
         if ("category" === $type) {
             $this->sdpvs_add_to_taxonomy_array($type,$year,$author, $start_date, $end_date, $search_text);
             $pie_array = $this->tax_type_array;
-            //$total_volume = $this->total_taxonomy_posts;
-            //$number_of_containers = $this->number_of_taxonomies;
             $pie_svg = '<h2>' . esc_html__("Categories", 'post-volume-stats') . '</h2>';
             $link_part = "category_name";
         } elseif ("tag" === $type) {
             $wp_type_name = "post_tag";
             $this->sdpvs_add_to_taxonomy_array($wp_type_name,$year,$author, $start_date, $end_date, $search_text);
-            //$total_volume = $this->total_taxonomy_posts;
             $pie_array = $this->tax_type_array;
-            //$number_of_containers = $this->number_of_taxonomies;
             $pie_svg = '<h2>' . esc_html__("Tags", 'post-volume-stats') . '</h2>';
             $link_part = $type;
         }else{
             $this->sdpvs_add_to_taxonomy_array($type,$year,$author, $start_date, $end_date, $search_text);
-            //$total_volume = $this->total_taxonomy_posts;
             $pie_array = $this->tax_type_array;
-            //$number_of_containers = $this->number_of_taxonomies;
             $tax_labels = get_taxonomy($type);
             $pie_svg = '<h2>';
             if (!empty($tax_labels)) {
@@ -119,9 +119,7 @@ class sdpvsPieChart extends sdpvsArrays {
 
                 $hue = 240 - absint($pie_array[$c]['angle']*240 / $largest_angle);
                 $color = "hsl($hue, 70%, 65%)";
-
-                //$display_angle_as = sprintf("%.1f", $pie_array[$c]['angle']);
-
+                
                 if("y"==$public){
                     $item_id = $pie_array[$c]['id'];
                     if ("category" === $type) {

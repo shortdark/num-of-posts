@@ -109,7 +109,6 @@ function sdpvs_year_field_callback() {
         $author = absint($authoroptions['author_number']);
     }
 
-
     // Create an instance of the required class
     $sdpvs_info = new sdpvsInfo();
     $years = $sdpvs_info->sdpvs_first_year($author);

@@ -12,7 +12,7 @@ class sdpvsTextLists extends sdpvsArrays {
         return '';
     }
 
-    /*
+    /**
      * NUMBER OF POSTS PER AUTHOR
      */
     public function sdpvs_posts_per_author_list($searchyear = 0, $start_date = "", $end_date = "", $search_text = "" ) {
@@ -46,7 +46,7 @@ class sdpvsTextLists extends sdpvsArrays {
         return $this->list_string;
     }
 
-    /*
+    /**
      * NUMBER OF POSTS PER YEAR TEXT
      */
     public function sdpvs_posts_per_year_list($searchauthor = 0, $search_text = "") {
@@ -66,7 +66,7 @@ class sdpvsTextLists extends sdpvsArrays {
         return $this->list_string;
     }
 
-    /*
+    /**
      * GET THE COLOR LIST FOR THE LINE GRAPHS
      */
     public function sdpvs_color_list() {
@@ -84,7 +84,7 @@ class sdpvsTextLists extends sdpvsArrays {
         return $this->color_list;
     }
 
-    /*
+    /**
      * NUMBER OF POSTS PER CATEGORY / TAG TEXT
      */
     public function sdpvs_posts_per_cat_tag_list($type, $searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $list_type = "admin", $select_array = [], $colorlist=[], $search_text="") {
@@ -144,12 +144,7 @@ class sdpvsTextLists extends sdpvsArrays {
         }
 
 
-        if ("subpage" === $list_type) {
-            // $posts_per_cat_tag = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
-        } elseif ("public" === $list_type) {
-            // $posts_per_cat_tag = '<h3>' . esc_html__('2. Preview', 'post-volume-stats') . '</h3><p>' . esc_html__('Copy and paste the list into HTML.') . '</p>';
-        } elseif ("buttons" === $list_type) {
-            // $posts_per_cat_tag = '<h3>' . esc_html__('3. Export', 'post-volume-stats') . '</h3><p>' . esc_html__('Export the list and line graph into a new post by exporting.') . '</p>';
+       if ("buttons" === $list_type) {
             $posts_per_cat_tag .= "<form action='" . esc_url(admin_url('admin-post.php')) . "' method='POST'>";
             $posts_per_cat_tag .= "<input type=\"hidden\" name=\"action\" value=\"export_lists\">";
             $posts_per_cat_tag .= "<input type=\"hidden\" name=\"whichlist\" value=\"$type\">";
@@ -173,7 +168,6 @@ class sdpvsTextLists extends sdpvsArrays {
             $posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' name='all' class='button-primary' value='" . esc_html__('Export All') . "'></div>";
             $posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' name='graph' class='button-primary' value='" . esc_html__('Export Graph') . "'></div>";
             $posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' name='list' class='button-primary' value='" . esc_html__('Export List') . "'></div>";
-//			$posts_per_cat_tag .= "<div style='display: block; padding: 5px;'><input type='submit' name='csv' class='button-primary' value='" . esc_html__('Export ALL Years to CSV') . "'></div>";
             $posts_per_cat_tag .= "</form>";
         }
 
@@ -289,7 +283,7 @@ class sdpvsTextLists extends sdpvsArrays {
     }
 
 
-    /*
+    /**
      * NUMBER OF DAYS BETWEEN POSTS
      */
     public function sdpvs_interval_between_posts_list($searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $search_text = "" ) {
@@ -331,7 +325,7 @@ class sdpvsTextLists extends sdpvsArrays {
     }
 
 
-    /*
+    /**
      * NUMBER OF POSTS PER DAY-OF-WEEK TEXT
      */
     public function sdpvs_posts_per_dayofweek_list($searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $search_text = "" ) {
@@ -369,7 +363,7 @@ class sdpvsTextLists extends sdpvsArrays {
         return $this->list_string;
     }
 
-    /*
+    /**
      * NUMBER OF POSTS PER HOUR TEXT
      */
     public function sdpvs_posts_per_hour_list($searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $search_text = "" ) {
@@ -404,7 +398,7 @@ class sdpvsTextLists extends sdpvsArrays {
         return $this->list_string;
     }
 
-    /*
+    /**
      * NUMBER OF POSTS PER MONTH TEXT
      */
     public function sdpvs_posts_per_month_list($searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $search_text = "" ) {
@@ -440,7 +434,7 @@ class sdpvsTextLists extends sdpvsArrays {
         return $this->list_string;
     }
 
-    /*
+    /**
      * NUMBER OF POSTS PER DAY OF MONTH TEXT
      */
     public function sdpvs_posts_per_day_of_month_list($searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $search_text = "" ) {
@@ -478,7 +472,7 @@ class sdpvsTextLists extends sdpvsArrays {
 
 
 
-    /*
+    /**
      * NUMBER OF WORDS PER POST
      */
     public function sdpvs_words_per_post_list($searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $search_text = "") {
@@ -518,7 +512,7 @@ class sdpvsTextLists extends sdpvsArrays {
     }
 
 
-    /*
+    /**
      * NUMBER OF IMAGES PER POST
      */
     public function sdpvs_images_per_post_list($searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $search_text = "") {
@@ -728,9 +722,6 @@ class sdpvsTextLists extends sdpvsArrays {
 
     public function sdpvs_create_csv_output($type = "", $searchauthor=0, $search_text = "") {
         $searchauthor = absint($searchauthor);
-        //$years_total = 0;
-        //$number_of_years = 0;
-        //$user = "";
         $userstring = "";
         $textstring = '';
         if( isset($searchauthor) && 0 < $searchauthor){

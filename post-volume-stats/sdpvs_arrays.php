@@ -110,7 +110,6 @@ abstract class sdpvsArrays {
     protected function sdpvs_post_taxonomy_type_volumes($tax_type = "", $searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $searchtext="") {
         global $wpdb;
 
-        //$tax_results="";
         $this->tax_type_array = array();
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
@@ -193,7 +192,6 @@ abstract class sdpvsArrays {
     protected function sdpvs_post_tax_type_vols_structured($tax_type = "", $searchyear = 0, $searchauthor = 0, $start_date = "", $end_date = "", $searchtext="") {
         global $wpdb;
 
-        //$tax_results="";
         $this->list_array = array();
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
@@ -351,8 +349,6 @@ abstract class sdpvsArrays {
             $this->list_array[$i]['volume'] = absint ( $found_posts );
             $wpdb->flush();
         }
-        //var_dump("SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status = 'publish' AND post_type = 'post' AND post_date LIKE '{$searchyear}%' {$extra} ");
-        //exit();
     }
 
     /**
@@ -517,7 +513,19 @@ abstract class sdpvsArrays {
         global $wpdb;
         $this->list_array = array();
 
-        $blogusers = get_users( array( 'capability'  => 'edit_posts' ) );
+        $args = array(
+            'orderby'    => 'post_count',
+            'order'      => 'DESC',
+            'capability' => array( 'edit_posts' ),
+        );
+
+        // Capability queries were only introduced in WP 5.9.
+        if ( version_compare( $GLOBALS['wp_version'], '5.9-alpha', '<' ) ) {
+            $args['who'] = 'authors';
+            unset( $args['capability'] );
+        }
+
+        $blogusers = get_users( $args );
 
         $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
         if(!empty($searchtext)){

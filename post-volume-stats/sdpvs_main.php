@@ -9,7 +9,6 @@ class sdpvsMainContent {
         $end_date = "";
 
         // create an instance of the required classes
-        //$sdpvs_info = new sdpvsInfo();
         $sdpvs_bar = new sdpvsBarChart();
         $sdpvs_pie = new sdpvsPieChart();
 
@@ -143,8 +142,6 @@ class sdpvsMainContent {
             $sdpvs_bar->sdpvs_draw_bar_chart_svg('comments', $selected, $author, 'n', '', '', $start_date, $end_date, $search_text);
             echo "</div>";
         }
-
-
 
         // days between post bar chart
         echo "<div class='sdpvs_col'>";
