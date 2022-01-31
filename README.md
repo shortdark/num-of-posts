@@ -9,6 +9,6 @@ The tags and categories subpages allow the ability to export the data as HTML li
 
 It's a work of constant evolution.
 
-https://www.postvolumestats.com/
+https://pvs.shortdark.co.uk/
 
 https://wordpress.org/plugins/post-volume-stats/
