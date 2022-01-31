@@ -24,16 +24,16 @@ abstract class sdpvsArrays {
         $extra = "";
 
         if( !empty ($start_date) ){
-            $start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+            $start_date = htmlspecialchars( $start_date, ENT_QUOTES );
         }
         if( !empty ($end_date) ){
-            $end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+            $end_date = htmlspecialchars( $end_date, ENT_QUOTES );
         }
         if (!empty($searchyear)) {
             $extra = " AND $wpdb->posts.post_date LIKE '$searchyear%' ";
         }elseif( !empty ($start_date) && !empty ($end_date) ){
             $extra = " AND DATE($wpdb->posts.post_date) >= '$start_date' ";
-            $extra .= " AND DATE($wpdb->posts.post_date) <= '$end_date' ";
+            $extra .= " AND DATE($wpdb->posts.post_date) <= '$end_date 23:59:59' ";
         }
         return $extra;
     }
@@ -41,7 +41,7 @@ abstract class sdpvsArrays {
     protected function sdpvs_add_author_sql($searchauthor){
         global $wpdb;
 
-        if(!empty($searchauthor)){
+        if(!empty($searchauthor) && 0 !== $searchauthor){
             return " AND $wpdb->posts.post_author = $searchauthor ";
         }
         return '';
@@ -260,12 +260,12 @@ abstract class sdpvsArrays {
         global $wpdb;
 
         $previous_date="";
+        $max_interval = 30;
         $genoptions = get_option('sdpvs_general_settings');
-        $max_interval = absint ( $genoptions['maxinterval'] );
-        if( 30 > $max_interval ){
-            $max_interval = 30;
+        if (false !== $genoptions) {
+            $max_interval = absint ( $genoptions['maxinterval'] );
         }
-        //$currentyear = date('Y');
+
         $searchauthor = absint($searchauthor);
         $this->list_array = array();
         $test_array = array();
@@ -361,13 +361,17 @@ abstract class sdpvsArrays {
     protected function sdpvs_number_of_posts_per_dayofweek($searchyear, $searchauthor, $start_date, $end_date, $searchtext) {
         global $wpdb;
 
+        $startweek = 'sunday';
         $genoptions = get_option('sdpvs_general_settings');
-        $startweek = filter_var ( $genoptions['startweekon'], FILTER_SANITIZE_STRING);
+        if (false !== $genoptions) {
+            $startweek = htmlspecialchars( $genoptions['startweekon'], ENT_QUOTES);
+        }
+
         $searchyear = absint($searchyear);
         $searchauthor = absint($searchauthor);
         $this->list_array = array();
 
-        if("sunday" === $startweek || !$startweek){
+        if('sunday' === $startweek){
             $days_of_week = array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
             for ($w = 0; $w <= 6; $w++) {
                 $this->list_array[$w]['name'] = $days_of_week[$w];
@@ -513,7 +517,7 @@ abstract class sdpvsArrays {
         global $wpdb;
         $this->list_array = array();
 
-        $blogusers = get_users( array( 'who'  => 'authors' ) );
+        $blogusers = get_users( array( 'capability'  => 'edit_posts' ) );
 
         $extra = $this->sdpvs_add_date_sql($searchyear, $start_date, $end_date);
         if(!empty($searchtext)){
@@ -566,7 +570,7 @@ abstract class sdpvsArrays {
         $total_posts = $wpdb->get_results("SELECT post_content FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' $extra ");
         if ($total_posts) {
             foreach ($total_posts as $post_item) {
-                $temp_content = filter_var ( $post_item->post_content , FILTER_SANITIZE_STRING);
+                $temp_content = htmlspecialchars ( $post_item->post_content, ENT_QUOTES );
                 $word_count = str_word_count( strip_tags( $temp_content ), 0, '123456789&;#' );
 
                 // If no date is specified use this data as the output
@@ -614,7 +618,7 @@ abstract class sdpvsArrays {
             $found_posts = $wpdb->get_results("SELECT post_content FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' $extra ");
             if ($found_posts) {
                 foreach ($found_posts as $post_item) {
-                    $temp_content = filter_var ( $post_item->post_content , FILTER_SANITIZE_STRING );
+                    $temp_content = htmlspecialchars( $post_item->post_content , ENT_QUOTES );
                     $word_count = str_word_count( strip_tags( $temp_content ), 0, '123456789&;#' );
                     $temp_array[] = $word_count;
                 }

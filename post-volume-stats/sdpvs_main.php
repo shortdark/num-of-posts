@@ -13,17 +13,21 @@ class sdpvsMainContent {
         $sdpvs_bar = new sdpvsBarChart();
         $sdpvs_pie = new sdpvsPieChart();
 
+        $selected = 0;
         $options = get_option('sdpvs_year_option');
-        $selected = absint($options['year_number']);
+        if (false !== $options) {
+            $selected = absint($options['year_number']);
+        }
+
         if(isset($options['start_date'])){
-            $start_date = filter_var ( $options['start_date'], FILTER_SANITIZE_STRING);
+            $start_date = htmlspecialchars( $options['start_date'], ENT_QUOTES );
         }
         if(isset($options['end_date'])){
-            $end_date = filter_var ( $options['end_date'], FILTER_SANITIZE_STRING);
+            $end_date = htmlspecialchars( $options['end_date'], ENT_QUOTES);
         }
         $textoptions = get_option('sdpvs_text_option');
         if(isset($textoptions['search_text'])){
-            $search_text = filter_var ( $textoptions['search_text'], FILTER_SANITIZE_STRING);
+            $search_text = htmlspecialchars( $textoptions['search_text'], ENT_QUOTES);
         } else {
             $search_text = '';
         }
@@ -33,13 +37,21 @@ class sdpvsMainContent {
             $author = absint($authoroptions['author_number']);
         }
 
+        $authoroff = 'multiple';
+        $customoff = 'no';
+        $customvalue = '';
+        $showimage = 'no';
+        $showcomment = 'no';
+        $showfilter = 'no';
         $genoptions = get_option('sdpvs_general_settings');
-        $authoroff = filter_var ( $genoptions['authoroff'], FILTER_SANITIZE_STRING);
-        $customoff = filter_var ( $genoptions['customoff'], FILTER_SANITIZE_STRING);
-        $customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
-        $showimage = filter_var ( $genoptions['showimage'], FILTER_SANITIZE_STRING);
-        $showcomment = filter_var ( $genoptions['showcomment'], FILTER_SANITIZE_STRING);
-        $showfilter = filter_var ( $genoptions['showrange'], FILTER_SANITIZE_STRING);
+        if (false !== $genoptions) {
+            $authoroff = htmlspecialchars ( $genoptions['authoroff'], ENT_QUOTES);
+            $customoff = htmlspecialchars ( $genoptions['customoff'], ENT_QUOTES);
+            $customvalue = htmlspecialchars ( $genoptions['customvalue'], ENT_QUOTES);
+            $showimage = htmlspecialchars ( $genoptions['showimage'], ENT_QUOTES);
+            $showcomment = htmlspecialchars ( $genoptions['showcomment'], ENT_QUOTES);
+            $showfilter = htmlspecialchars ( $genoptions['showrange'], ENT_QUOTES);
+        }
 
 
         $sdpvs_settings_link = admin_url('admin.php?page=' . SDPVS__PLUGIN_SETTINGS);

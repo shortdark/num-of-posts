@@ -10,7 +10,7 @@ class sdpvsPieChart extends sdpvsArrays {
     private $newx;
     private $newy;
 
-    /*
+    /**
      * COUNT NUMBER OF POSTS PER CATEGORY IN TOTAL, some posts might have multiple cats
      */
     private function sdpvs_count_post_taxonomies() {
@@ -26,7 +26,7 @@ class sdpvsPieChart extends sdpvsArrays {
         }
     }
 
-    /*
+    /**
      * ADD THE ANGLE TO THE EXISTING CATEGORY ARRAY
      */
     private function sdpvs_add_to_taxonomy_array($type = "", $year = "", $author = "", $start_date = "", $end_date = "", $search_text="") {
@@ -54,8 +54,12 @@ class sdpvsPieChart extends sdpvsArrays {
         $this->newy = 0;
         $this->tax_type_array = array();
 
+        $exportcsv = 'no';
         $genoptions = get_option('sdpvs_general_settings');
-        $exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
+        if (false !== $genoptions) {
+            $exportcsv = htmlspecialchars( $genoptions['exportcsv'], ENT_QUOTES);
+        }
+
 
         if ("category" === $type) {
             $this->sdpvs_add_to_taxonomy_array($type,$year,$author, $start_date, $end_date, $search_text);

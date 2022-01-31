@@ -20,8 +20,12 @@ class sdpvsSubPages {
             $searchauthor = null;
         }
 
+        $authoroff = 'multiple';
         $genoptions = get_option('sdpvs_general_settings');
-        $authoroff = filter_var ( $genoptions['authoroff'], FILTER_SANITIZE_STRING);
+        if (false !== $genoptions) {
+            $authoroff = htmlspecialchars( $genoptions['authoroff'], ENT_QUOTES);
+        }
+
 
         $selected = "";
 
@@ -50,7 +54,7 @@ class sdpvsSubPages {
 
         echo "<div style='display: inline-block; width: 250px; vertical-align: top;'>";
 
-            if("one" != $authoroff){
+            if('one' != $authoroff){
                 // posts per author bar chart
                 echo "<div class='sdpvs_col'>";
                 $sdpvs_bar->sdpvs_draw_bar_chart_svg('author', $searchyear, $searchauthor, 'y');
@@ -79,12 +83,25 @@ class sdpvsSubPages {
         $sdpvs_bar = new sdpvsBarChart();
         $sdpvs_lists = new sdpvsTextLists();
 
+        $searchyear = 0;
+        $searchauthor = 0;
+        $rainbow = 'on';
+
         $year = get_option('sdpvs_year_option');
-        $searchyear = absint($year['year_number']);
+        if (false !== $year) {
+            $searchyear = absint($year['year_number']);
+        }
+
         $authoroptions = get_option('sdpvs_author_option');
-        $searchauthor = absint($authoroptions['author_number']);
+        if (false !== $authoroptions) {
+            $searchauthor = absint($authoroptions['author_number']);
+        }
+
         $genoptions = get_option('sdpvs_general_settings');
-        $rainbow = filter_var ( $genoptions['rainbow'], FILTER_SANITIZE_STRING);
+        if (false !== $genoptions) {
+            $rainbow = htmlspecialchars ( $genoptions['rainbow'], ENT_QUOTES);
+        }
+
 
         $color = $sdpvs_lists->sdpvs_color_list();
 

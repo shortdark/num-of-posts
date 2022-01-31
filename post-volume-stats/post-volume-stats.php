@@ -1,7 +1,7 @@
 <?php
 /**
  * @package post-volume-stats
- * @version 3.3.06
+ * @version 3.3.07
  */
 /*
  * Plugin Name: Post Volume Stats
@@ -9,7 +9,7 @@
  * Description: Displays the post stats in the admin area with pie and bar charts, also exports tag and category stats to detailed lists and line graphs that can be exported to posts.
  * Author: Neil Ludlow
  * Text Domain: post-volume-stats
- * Version: 3.3.06
+ * Version: 3.3.07
  * Author URI: http://www.shortdark.net/
  */
 
@@ -38,7 +38,7 @@ define('SDPVS__PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('SDPVS__PLUGIN_FOLDER', 'post-volume-stats');
 define('SDPVS__PLUGIN_SETTINGS', 'post-volume-stats-settings');
 define('SDPVS__FILTER_RESULTS', 'post-volume-stats-daterange');
-define('SDPVS__VERSION_NUMBER', '3.3.06');
+define('SDPVS__VERSION_NUMBER', '3.3.07');
 
 /******************
  ** SETUP THE PAGE
@@ -165,11 +165,10 @@ function sdpvs_custom_page() {
         $sdpvs_info = new sdpvsInfo();
         $sdpvs_sub = new sdpvsSubPages();
 
-        $genoptions = get_option('sdpvs_general_settings');
-        $sdpvs_page_value = filter_var ( $_SERVER['QUERY_STRING'], FILTER_SANITIZE_STRING);
+        $sdpvs_page_value = htmlspecialchars ( $_SERVER['QUERY_STRING'], ENT_QUOTES);
         // When changing year the "&settings-updated=true" string is added to the URL!
         preg_match('/^page=post-volume-stats-([^&]*)(&settings-updated=true)?/',$sdpvs_page_value,$matches);
-        $customvalue = filter_var ( $matches[1], FILTER_SANITIZE_STRING);
+        $customvalue = htmlspecialchars ( $matches[1], ENT_QUOTES);
 
         // Call the method
         $sdpvs_sub->sdpvs_combined_page_content($customvalue);
@@ -302,9 +301,15 @@ function sdpvs_admin_plugin_pvs_link( $links ) {
 // Register a custom menu page in the admin.
 function sdpvs_register_custom_page_in_menu() {
     $genoptions = get_option('sdpvs_general_settings');
-    $customoff = filter_var ( $genoptions['customoff'], FILTER_SANITIZE_STRING);
-    $customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
-    $showrange = filter_var ( $genoptions['showrange'], FILTER_SANITIZE_STRING);
+    $customoff = 'no';
+    $customvalue = '';
+    $showrange = 'no';
+    if (false !== $genoptions) {
+        $customoff = htmlspecialchars ( $genoptions['customoff'], ENT_QUOTES);
+        $customvalue = htmlspecialchars ( $genoptions['customvalue'], ENT_QUOTES);
+        $showrange = htmlspecialchars ( $genoptions['showrange'], ENT_QUOTES);
+    }
+
     add_menu_page(esc_html__('Post Volume Stats', 'post-volume-stats'), esc_html__('Post Volume Stats', 'post-volume-stats'), 'manage_options', __DIR__, 'sdpvs_post_volume_stats_assembled', plugins_url('images/post-volume-stats-16x16.png', __FILE__), 1000);
     add_submenu_page(__DIR__, esc_html__('Post Volume Stats: Categories', 'post-volume-stats'), esc_html__('Categories', 'post-volume-stats'), 'read', 'post-volume-stats-categories', 'sdpvs_category_page');
     add_submenu_page(__DIR__, esc_html__('Post Volume Stats: Tags', 'post-volume-stats'), esc_html__('Tags', 'post-volume-stats'), 'read', 'post-volume-stats-tags', 'sdpvs_tag_page');
@@ -325,7 +330,7 @@ function sdpvs_register_custom_page_in_menu() {
             }
         }
     }elseif( "yes" === $customoff && "" !== $customvalue ){
-        $customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
+        $customvalue = htmlspecialchars ( $genoptions['customvalue'], ENT_QUOTES);
         $tax_labels = get_taxonomy($customvalue);
         if (!empty($tax_labels)) {
             add_submenu_page(__DIR__, esc_html__('Post Volume Stats: ' . $tax_labels->label, 'post-volume-stats'), $tax_labels->label, 'read', 'post-volume-stats-' . $customvalue, 'sdpvs_custom_page');
@@ -363,8 +368,12 @@ add_action('init', 'sdpvs_load_textdomain');
 function sdpvs_custom_toolbar() {
     global $wp_admin_bar;
 
+    $admintool = 'no';
     $genoptions = get_option('sdpvs_general_settings');
-    $admintool = filter_var ( $genoptions['admintool'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $admintool = htmlspecialchars ( $genoptions['admintool'], ENT_QUOTES);
+    }
+
 
     if("yes" === $admintool){
         $url = admin_url("admin.php?page=" . SDPVS__PLUGIN_FOLDER);
@@ -444,27 +453,36 @@ function sdpvs_process_ajax() {
     $sdpvs_lists = new sdpvsTextLists();
 
     // Extract the variable from serialized string
-    $gotit = filter_var($_POST['whichdata'], FILTER_SANITIZE_STRING);
+    $gotit = htmlspecialchars($_POST['whichdata'], ENT_QUOTES);
     $after_equals = strpos($gotit, "=") + 1;
     $answer = substr($gotit, $after_equals);
 
+    $searchyear = 0;
     $year = get_option('sdpvs_year_option');
-    $searchyear = absint($year['year_number']);
+    if (false !== $year) {
+        $searchyear = absint($year['year_number']);
+    }
+
     $start_date='';
     if(isset($year['start_date'])){
-        $start_date = filter_var ( $year['start_date'], FILTER_SANITIZE_STRING);
+        $start_date = htmlspecialchars ( $year['start_date'], ENT_QUOTES);
     }
     $end_date='';
     if(isset($year['end_date'])){
-        $end_date = filter_var ( $year['end_date'], FILTER_SANITIZE_STRING);
+        $end_date = htmlspecialchars ( $year['end_date'], ENT_QUOTES);
     }
     $textoption = get_option('sdpvs_text_option');
     $search_text='';
     if(isset($textoption['search_text'])){
-        $search_text = filter_var ( $textoption['search_text'], FILTER_SANITIZE_STRING);
+        $search_text = htmlspecialchars ( $textoption['search_text'], ENT_QUOTES);
     }
+
+    $searchauthor = 0;
     $authoroptions = get_option('sdpvs_author_option');
-    $searchauthor = absint($authoroptions['author_number']);
+    if (false !== $authoroptions) {
+        $searchauthor = absint($authoroptions['author_number']);
+    }
+
 
     if ("year" === $answer) {
         echo $sdpvs_lists->sdpvs_posts_per_year_list($searchauthor, $search_text);
@@ -504,17 +522,20 @@ function sdpvs_compare_data_over_years() {
     $sdpvs_lists = new sdpvsTextLists();
 
     // Extract the variable from serialized string
-    $gotit = filter_var($_POST['comparedata'], FILTER_SANITIZE_STRING);
+    $gotit = htmlspecialchars($_POST['comparedata'], ENT_QUOTES);
     $after_equals = strpos($gotit, "=") + 1;
     $answer = substr($gotit, $after_equals);
 
+    $searchauthor = 0;
     $authoroptions = get_option('sdpvs_author_option');
-    $searchauthor = absint($authoroptions['author_number']);
-    //$year = get_option('sdpvs_year_option');
+    if (false !== $authoroptions) {
+        $searchauthor = absint($authoroptions['author_number']);
+    }
+
     $textoption = get_option('sdpvs_text_option');
     $search_text='';
     if(isset($textoption['search_text'])){
-        $search_text = filter_var ( $textoption['search_text'], FILTER_SANITIZE_STRING);
+        $search_text = htmlspecialchars ( $textoption['search_text'], ENT_QUOTES);
     }
 
     echo $sdpvs_lists->sdpvs_compare_years_rows($answer, $searchauthor,$search_text);
@@ -532,7 +553,7 @@ function sdpvs_cats_lists() {
     $sdpvs_sub = new sdpvsSubPages();
 
     // Extract the variables from serialized string
-    $gotit = filter_var($_POST['whichcats'], FILTER_SANITIZE_STRING);
+    $gotit = htmlspecialchars($_POST['whichcats'], ENT_QUOTES);
     preg_match_all('/=([0-9]*)/', $gotit, $matches);
 
     echo $sdpvs_sub->update_ajax_lists('category', $matches);
@@ -550,7 +571,7 @@ function sdpvs_tags_lists() {
     $sdpvs_sub = new sdpvsSubPages();
 
     // Extract the variables from serialized string
-    $gotit = filter_var($_POST['whichtags'], FILTER_SANITIZE_STRING);
+    $gotit = htmlspecialchars($_POST['whichtags'], ENT_QUOTES);
     preg_match_all('/=([0-9]*)/', $gotit, $matches);
 
     echo $sdpvs_sub->update_ajax_lists('tag', $matches);
@@ -565,13 +586,16 @@ function sdpvs_custom_lists() {
     // Security check
     check_ajax_referer('num-of-posts', 'security');
 
+    $customvalue = '';
     $genoptions = get_option('sdpvs_general_settings');
-    $customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $customvalue = htmlspecialchars( $genoptions['customvalue'], ENT_QUOTES);
+    }
 
     $sdpvs_sub = new sdpvsSubPages();
 
     // Extract the variables from serialized string
-    $gotit = filter_var($_POST['whichcustom'], FILTER_SANITIZE_STRING);
+    $gotit = htmlspecialchars($_POST['whichcustom'], ENT_QUOTES);
     preg_match_all('/=([0-9]*)/', $gotit, $matches);
 
     if("_all_taxonomies" === $customvalue){
@@ -609,16 +633,22 @@ function sdpvs_admin_export_lists() {
     $sdpvs_bar = new sdpvsBarChart();
 
     // Extract the variables from encoded string
-    $matches_string = filter_var($_POST['matches'], FILTER_SANITIZE_STRING);
+    $matches_string = htmlspecialchars($_POST['matches'], ENT_QUOTES);
     preg_match_all('/\[([0-9]*)\]/', $matches_string, $matches);
 
+    $searchyear = 0;
     $year = get_option('sdpvs_year_option');
-    $searchyear = absint($year['year_number']);
-    $authoroptions = get_option('sdpvs_author_option');
-    $searchauthor = absint($authoroptions['author_number']);
+    if (false !== $year) {
+        $searchyear = absint($year['year_number']);
+    }
 
-    $whichlist = filter_var($_POST['whichlist'], FILTER_SANITIZE_STRING);
-    // $howmuch = filter_var($_POST['howmuch'], FILTER_SANITIZE_STRING);
+    $searchauthor = 0;
+    $authoroptions = get_option('sdpvs_author_option');
+    if (false !== $authoroptions) {
+        $searchauthor = absint($authoroptions['author_number']);
+    }
+
+    $whichlist = htmlspecialchars($_POST['whichlist'], ENT_QUOTES);
 
     if (isset($_POST['all'])) {
         $howmuch = "all";
@@ -680,19 +710,23 @@ add_action( 'init', 'add_endpoint' );
 
 function sdpvs_download_redirect() {
     $answer = "";
+    $exportcsv = 'no';
     $genoptions = get_option('sdpvs_general_settings');
-    $exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $exportcsv = htmlspecialchars( $genoptions['exportcsv'], ENT_QUOTES);
+    }
+
     $authoroptions = get_option('sdpvs_author_option');
     if (!empty($authoroptions['author_number'])) {
         $searchauthor = absint($authoroptions['author_number']);
     } else {
         $searchauthor = null;
     }
-    //$year = get_option('sdpvs_year_option');
+
     $textoption = get_option('sdpvs_text_option');
     $search_text='';
     if(isset($textoption['search_text'])){
-        $search_text = filter_var ( $textoption['search_text'], FILTER_SANITIZE_STRING);
+        $search_text = htmlspecialchars( $textoption['search_text'], ENT_QUOTES);
     }
 
     if("yes"===$exportcsv && is_user_logged_in() ){

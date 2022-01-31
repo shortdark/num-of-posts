@@ -22,8 +22,13 @@ class sdpvsInfo extends sdpvsArrays {
         $diff2 = abs($currenttime - $earliest);
         $betterdays = floor( $diff2 / (60 * 60 * 24));
 
-        $diff = abs(strtotime($this->latest_date) - strtotime($this->earliest_date));
-        $days = floor($diff / (60 * 60 * 24));
+        if (1 > $betterdays) {
+            $betterdays = 1;
+        }
+
+        $n_o_w = $betterdays / 7;
+        $n_o_m = $betterdays / 30;
+        $n_o_y = $betterdays / 365;
 
         $ppd = $this->published_volume / $betterdays;
         $posts_per_day = sprintf("%.3f", $ppd);
@@ -31,7 +36,6 @@ class sdpvsInfo extends sdpvsArrays {
         $dpp = $betterdays / $this->published_volume;
         $days_per_post = sprintf("%.3f", $dpp);
 
-        $n_o_w = $betterdays / 7;
         $numberofweeks = sprintf("%.1f", $n_o_w);
 
         $ppw = $numberofweeks / $this->published_volume;
@@ -40,13 +44,13 @@ class sdpvsInfo extends sdpvsArrays {
         $wpp = $this->published_volume / $numberofweeks;
         $posts_per_week = sprintf("%.1f", $wpp);
 
-        $n_o_m = $betterdays / 30;
-        $numberofmonths = sprintf("%.1f", $n_o_m);
+
+
+        $numberofmonths = sprintf("%.2f", $n_o_m);
 
         $ppm = $this->published_volume / $numberofmonths;
         $posts_per_month = sprintf("%.1f", $ppm);
 
-        $n_o_y = $betterdays / 365;
         $numberofyears = sprintf("%.3f", $n_o_y);
 
         $ppy = $this->published_volume / $numberofyears;
@@ -69,7 +73,7 @@ class sdpvsInfo extends sdpvsArrays {
     }
 
 
-    public function sdpvs_first_year($searchauthor="") {
+    public function sdpvs_first_year($searchauthor=0) {
         parent::sdpvs_number_of_posts_per_year($searchauthor,'');
         return $this->list_array;
     }

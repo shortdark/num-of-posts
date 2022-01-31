@@ -17,33 +17,23 @@ class sdpvsTextLists extends sdpvsArrays {
      */
     public function sdpvs_posts_per_author_list($searchyear = 0, $start_date = "", $end_date = "", $search_text = "" ) {
         $searchyear = absint($searchyear);
-        //$searchauthor = absint($searchauthor);
         $label = "";
         if( isset ($start_date) ){
-            $start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+            $start_date = htmlspecialchars( $start_date, ENT_QUOTES );
         }
         if( isset ($end_date) ){
-            $end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+            $end_date = htmlspecialchars( $end_date, ENT_QUOTES );
         }
         if(0 < $searchyear){
             $label = " $searchyear";
         }elseif(isset($start_date, $end_date) && "" != $start_date && "" != $end_date){
             $label = " ($start_date to $end_date)";
         }
-        /*if( 0 < $searchauthor){
-            $user = get_user_by( 'id', $searchauthor );
-            $extradesc = " for user $user->display_name";
-        }else{
-            $extradesc = "";
-        }*/
-        
+
         $this->sdpvs_number_of_posts_per_author($searchyear, $start_date, $end_date, $search_text);
         $this->list_string = '<h2>';
         $this->list_string .= sprintf(esc_html__('Post Volumes per Author%1$s', 'post-volume-stats'), $label);
         $this->list_string .= $this->add_containing_text_search($search_text);
-        /*if (!empty($search_text)) {
-            $this->output_compare_list .= sprintf(__(' containing "%s"', 'post-volume-stats'), $search_text);
-        }*/
         $this->list_string .= '</h2>';
         $i=0;
         while ( array_key_exists($i, $this->list_array) ) {
@@ -103,10 +93,10 @@ class sdpvsTextLists extends sdpvsArrays {
         $label = "";
         $selectable='';
         if( isset ($start_date) ){
-            $start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+            $start_date = htmlspecialchars( $start_date, ENT_QUOTES );
         }
         if( isset ($end_date) ){
-            $end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+            $end_date = htmlspecialchars( $end_date, ENT_QUOTES );
         }
         if(0 < $searchyear){
             $label = " in $searchyear";
@@ -147,8 +137,12 @@ class sdpvsTextLists extends sdpvsArrays {
             $logical_starter = 0;
         }
 
+        $listcolors = 'on';
         $genoptions = get_option('sdpvs_general_settings');
-        $listcolors = filter_var ( $genoptions['rainbow'], FILTER_SANITIZE_STRING);
+        if (false !== $genoptions) {
+            $listcolors = htmlspecialchars ( $genoptions['rainbow'], ENT_QUOTES);
+        }
+
 
         if ("subpage" === $list_type) {
             // $posts_per_cat_tag = '<h3>' . esc_html__('1. Select', 'post-volume-stats') . '</h3>';
@@ -303,10 +297,10 @@ class sdpvsTextLists extends sdpvsArrays {
         $searchauthor = absint($searchauthor);
         $label = "";
         if( isset ($start_date) ){
-            $start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+            $start_date = htmlspecialchars( $start_date, ENT_QUOTES );
         }
         if( isset ($end_date) ){
-            $end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+            $end_date = htmlspecialchars( $end_date, ENT_QUOTES );
         }
         if( 0 < $searchauthor){
             $user = get_user_by( 'id', $searchauthor );
@@ -323,13 +317,16 @@ class sdpvsTextLists extends sdpvsArrays {
         $this->sdpvs_number_of_posts_in_order($searchyear, $searchauthor, $start_date, $end_date, $search_text);
         $this->list_string = '<h2>' . sprintf( esc_html__('Intervals Between Posts %1$s %2$s', 'post-volume-stats'), $extradesc, $label ) . $extra . '</h2>';
         $i=0;
-        while ($this->list_array[$i]['name']) {
-            if (!$this->list_array[$i]['volume']) {
-                $this->list_array[$i]['volume'] = 0;
+        if (!empty($this->list_array[$i]['name'])) {
+            while (isset($this->list_array[$i]['name'])) {
+                if (!$this->list_array[$i]['volume']) {
+                    $this->list_array[$i]['volume'] = 0;
+                }
+                $this->list_string .= '<p>' . sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this->list_array[$i]['name'], $this->list_array[$i]['volume']) . '</p>';
+                $i++;
             }
-            $this->list_string .= '<p>' . sprintf(esc_html__('%s: %d posts', 'post-volume-stats'), $this->list_array[$i]['name'], $this->list_array[$i]['volume']) . '</p>';
-            $i++;
         }
+
         return $this->list_string;
     }
 
@@ -342,10 +339,10 @@ class sdpvsTextLists extends sdpvsArrays {
         $searchauthor = absint($searchauthor);
         $label = "";
         if( isset ($start_date) ){
-            $start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+            $start_date = htmlspecialchars( $start_date, ENT_QUOTES );
         }
         if( isset ($end_date) ){
-            $end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+            $end_date = htmlspecialchars( $end_date, ENT_QUOTES );
         }
         if( 0 < $searchauthor){
             $user = get_user_by( 'id', $searchauthor );
@@ -380,10 +377,10 @@ class sdpvsTextLists extends sdpvsArrays {
         $searchauthor = absint($searchauthor);
         $label = "";
         if( isset ($start_date) ){
-            $start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+            $start_date = htmlspecialchars( $start_date, ENT_QUOTES );
         }
         if( isset ($end_date) ){
-            $end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+            $end_date = htmlspecialchars( $end_date, ENT_QUOTES );
         }
         if( 0 < $searchauthor){
             $user = get_user_by( 'id', $searchauthor );
@@ -415,10 +412,10 @@ class sdpvsTextLists extends sdpvsArrays {
         $searchauthor = absint($searchauthor);
         $label = "";
         if( isset ($start_date) ){
-            $start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+            $start_date = htmlspecialchars( $start_date, ENT_QUOTES );
         }
         if( isset ($end_date) ){
-            $end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+            $end_date = htmlspecialchars( $end_date, ENT_QUOTES );
         }
         if( 0 < $searchauthor){
             $user = get_user_by( 'id', $searchauthor );
@@ -451,10 +448,10 @@ class sdpvsTextLists extends sdpvsArrays {
         $searchauthor = absint($searchauthor);
         $label = "";
         if( isset ($start_date) ){
-            $start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+            $start_date = htmlspecialchars( $start_date, ENT_QUOTES );
         }
         if( isset ($end_date) ){
-            $end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+            $end_date = htmlspecialchars( $end_date, ENT_QUOTES );
         }
         if( 0 < $searchauthor){
             $user = get_user_by( 'id', $searchauthor );
@@ -489,10 +486,10 @@ class sdpvsTextLists extends sdpvsArrays {
         $searchauthor = absint($searchauthor);
         $label = "";
         if( isset ($start_date) ){
-            $start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+            $start_date = htmlspecialchars( $start_date, ENT_QUOTES );
         }
         if( isset ($end_date) ){
-            $end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+            $end_date = htmlspecialchars( $end_date, ENT_QUOTES );
         }
         if( 0 < $searchauthor){
             $user = get_user_by( 'id', $searchauthor );
@@ -529,10 +526,10 @@ class sdpvsTextLists extends sdpvsArrays {
         $searchauthor = absint($searchauthor);
         $label = "";
         if( isset ($start_date) ){
-            $start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+            $start_date = htmlspecialchars( $start_date, ENT_QUOTES );
         }
         if( isset ($end_date) ){
-            $end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+            $end_date = htmlspecialchars( $end_date, ENT_QUOTES );
         }
         if( 0 < $searchauthor){
             $user = get_user_by( 'id', $searchauthor );
@@ -568,10 +565,10 @@ class sdpvsTextLists extends sdpvsArrays {
         $searchauthor = absint($searchauthor);
         $label = "";
         if( isset ($start_date) ){
-            $start_date = filter_var( $start_date, FILTER_SANITIZE_STRING );
+            $start_date = htmlspecialchars( $start_date, ENT_QUOTES );
         }
         if( isset ($end_date) ){
-            $end_date = filter_var( $end_date, FILTER_SANITIZE_STRING );
+            $end_date = htmlspecialchars( $end_date, ENT_QUOTES );
         }
         if( 0 < $searchauthor){
             $user = get_user_by( 'id', $searchauthor );
@@ -598,34 +595,6 @@ class sdpvsTextLists extends sdpvsArrays {
         }
         return $this->list_string;
     }
-
-
-    /**
-     * COMPILE YEARS MATRIX
-     */
-    /*public function sdpvs_test_years_matrix_4_tax($type = "", $firstval=0, $searchauthor=0, $search_text = "" ) {
-        $firstval = absint($firstval);
-        $this->sdpvs_number_of_posts_per_year($searchauthor, $search_text);
-        $chart_array = $this->list_array;
-
-        for ($i = $firstval; $i >= 0; $i--) {
-            $searchyear = absint($chart_array[$i]['name']);
-            $this->sdpvs_post_tax_type_vols_structured($type, $searchyear, $searchauthor, $search_text);
-
-            $a=0;
-            while ( array_key_exists($a, $this->list_array) ) {
-                if(0 == $i){
-                    $this->year_matrix[$a]['label'] = $this->list_array[$a]['name'];
-                }
-                $this->year_matrix[$a][$i] = $this->list_array[$a]['volume'];
-                $a++;
-            }
-        }
-    }*/
-
-
-
-
 
 
 

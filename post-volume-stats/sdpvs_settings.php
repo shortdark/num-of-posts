@@ -96,11 +96,19 @@ function sdpvs_enddate_field_callback() {
 
 
 function sdpvs_year_field_callback() {
+    $selected = 0;
+    $author = 0;
+
     $options = get_option('sdpvs_year_option');
-    $selected = absint($options['year_number'], FILTER_SANITIZE_STRING);
+    if (false !== $options) {
+        $selected = absint($options['year_number']);
+    }
 
     $authoroptions = get_option('sdpvs_author_option');
-    $author = absint($authoroptions['author_number']);
+    if (false !== $authoroptions) {
+        $author = absint($authoroptions['author_number']);
+    }
+
 
     // Create an instance of the required class
     $sdpvs_info = new sdpvsInfo();
@@ -148,14 +156,18 @@ function sdpvs_searchtext_field_callback() {
 
 
 function sdpvs_field_one_callback() {
+    $startweek = 'sunday';
     $genoptions = get_option('sdpvs_general_settings');
-    $startweek = filter_var ( $genoptions['startweekon'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $startweek = htmlspecialchars( $genoptions['startweekon'], ENT_QUOTES);
+    }
+
     
     // This gives the integer the user has for their blog, 0=sunday, 1=monday, etc
-    $blogstartweek = get_option( 'start_of_week' );
+    // $blogstartweek = get_option( 'start_of_week' );
     
     echo "<div style='display: block; padding: 5px;'>";
-    if("sunday" === $startweek || !$startweek){
+    if('sunday' === $startweek){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[startweekon]\" value=\"sunday\" checked=\"checked\">Sunday (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[startweekon]\" value=\"monday\">Monday</label>";
     }else{
@@ -166,10 +178,14 @@ function sdpvs_field_one_callback() {
 }
 
 function sdpvs_field_two_callback() {
+    $listcolors = 'on';
     $genoptions = get_option('sdpvs_general_settings');
-    $listcolors = filter_var ( $genoptions['rainbow'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $listcolors = htmlspecialchars( $genoptions['rainbow'], ENT_QUOTES);
+    }
+
     echo "<div style='display: block; padding: 5px;'>";
-    if("on" === $listcolors || !$listcolors){
+    if('on' === $listcolors){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[rainbow]\" value=\"on\" checked=\"checked\">On (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[rainbow]\" value=\"off\">Off</label>";
     }else{
@@ -181,10 +197,14 @@ function sdpvs_field_two_callback() {
 }
 
 function sdpvs_field_three_callback() {
+    $authoroff = 'multiple';
     $genoptions = get_option('sdpvs_general_settings');
-    $authoroff = filter_var ( $genoptions['authoroff'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $authoroff = htmlspecialchars( $genoptions['authoroff'], ENT_QUOTES);
+    }
+
     echo "<div style='display: block; padding: 5px;'>";
-    if("multiple" === $authoroff || !$authoroff){
+    if('multiple' === $authoroff){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[authoroff]\" value=\"multiple\" checked=\"checked\">More than one (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[authoroff]\" value=\"one\">One</label>";
     }else{
@@ -196,10 +216,14 @@ function sdpvs_field_three_callback() {
 }
 
 function sdpvs_field_four_callback() {
+    $customoff = 'no';
     $genoptions = get_option('sdpvs_general_settings');
-    $customoff = filter_var ( $genoptions['customoff'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $customoff = htmlspecialchars( $genoptions['customoff'], ENT_QUOTES);
+    }
+
     echo "<div style='display: block; padding: 5px;'>";
-    if("no" === $customoff || !$customoff){
+    if('no' === $customoff){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[customoff]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[customoff]\" value=\"yes\">Yes</label>";
     }else{
@@ -211,9 +235,13 @@ function sdpvs_field_four_callback() {
 }
 
 function sdpvs_field_five_callback() {
+    $customvalue = '';
     $genoptions = get_option('sdpvs_general_settings');
-    $customoff = filter_var ( $genoptions['customoff'], FILTER_SANITIZE_STRING);
-    $customvalue = filter_var ( $genoptions['customvalue'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $customoff = htmlspecialchars( $genoptions['customoff'], ENT_QUOTES);
+        $customvalue = htmlspecialchars( $genoptions['customvalue'], ENT_QUOTES);
+    }
+
     echo "<div style='display: block; padding: 5px;'>";
     
     // Custom Taxonomies
@@ -251,10 +279,14 @@ function sdpvs_field_five_callback() {
 
 
 function sdpvs_field_six_callback() {
+    $admintool = 'no';
     $genoptions = get_option('sdpvs_general_settings');
-    $admintool = filter_var ( $genoptions['admintool'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $admintool = htmlspecialchars( $genoptions['admintool'], ENT_QUOTES);
+    }
+
     echo "<div style='display: block; padding: 5px;'>";
-    if("no" === $admintool || !$admintool){
+    if('no' === $admintool){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[admintool]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[admintool]\" value=\"yes\">Yes</label>";
     }else{
@@ -265,10 +297,14 @@ function sdpvs_field_six_callback() {
 }
 
 function sdpvs_field_seven_callback() {
+    $exportcsv = 'no';
     $genoptions = get_option('sdpvs_general_settings');
-    $exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $exportcsv = htmlspecialchars( $genoptions['exportcsv'], ENT_QUOTES);
+    }
+
     echo "<div style='display: block; padding: 5px;'>";
-    if("no" === $exportcsv || !$exportcsv){
+    if('no' === $exportcsv){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[exportcsv]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[exportcsv]\" value=\"yes\">Yes</label>";
     }else{
@@ -280,10 +316,14 @@ function sdpvs_field_seven_callback() {
 }
 
 function sdpvs_field_callback_date_range() {
+    $showrange = 'no';
     $genoptions = get_option('sdpvs_general_settings');
-    $showrange = filter_var ( $genoptions['showrange'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $showrange = htmlspecialchars( $genoptions['showrange'], ENT_QUOTES);
+    }
+
     echo "<div style='display: block; padding: 5px;'>";
-    if("no" === $showrange || !$showrange){
+    if('no' === $showrange){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showrange]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showrange]\" value=\"yes\">Yes</label>";
     }else{
@@ -294,12 +334,16 @@ function sdpvs_field_callback_date_range() {
 }
 
 function sdpvs_field_callback_max_interval() {
+    $maxinterval = 30;
     $genoptions = get_option('sdpvs_general_settings');
-    $maxinterval = filter_var ( $genoptions['maxinterval'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $maxinterval = absint( $genoptions['maxinterval']);
+    }
+
     echo "<div style='display: block; padding: 5px;'>";
     echo  "<select name=\"sdpvs_general_settings[maxinterval]\">";
-    for ( $i=0; $i <= 10; $i++ ) {
-        $interval = 30 + ($i * 5);
+    for ( $i=0; $i <= 14; $i++ ) {
+        $interval = 10 + ($i * 5);
         if($interval == $maxinterval){
             echo  "<option name=\"sdpvs_general_settings[maxinterval]\" value=\"$interval\" selected=\"selected\">$interval days</option>";
         }else{
@@ -312,10 +356,14 @@ function sdpvs_field_callback_max_interval() {
 }
 
 function sdpvs_field_callback_image() {
+    $showimage = 'no';
     $genoptions = get_option('sdpvs_general_settings');
-    $showimage = filter_var ( $genoptions['showimage'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $showimage = htmlspecialchars( $genoptions['showimage'], ENT_QUOTES);
+    }
+
     echo "<div style='display: block; padding: 5px;'>";
-    if("no" === $showimage || !$showimage){
+    if('no' === $showimage){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showimage]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showimage]\" value=\"yes\">Yes</label>";
     }else{
@@ -329,10 +377,14 @@ function sdpvs_field_callback_image() {
 }
 
 function sdpvs_field_callback_comment() {
+    $showcomment = 'no';
     $genoptions = get_option('sdpvs_general_settings');
-    $showimage = filter_var ( $genoptions['showcomment'], FILTER_SANITIZE_STRING);
+    if (false !== $genoptions) {
+        $showcomment = htmlspecialchars( $genoptions['showcomment'], ENT_QUOTES);
+    }
+
     echo "<div style='display: block; padding: 5px;'>";
-    if("no" === $showimage || !$showimage){
+    if('no' === $showcomment){
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showcomment]\" value=\"no\" checked=\"checked\">No (default)</label><br>";
         echo "<label><input type=\"radio\" name=\"sdpvs_general_settings[showcomment]\" value=\"yes\">Yes</label>";
     }else{
@@ -369,10 +421,10 @@ function sdpvs_sanitize($input) {
 function sdpvs_sanitize_general($input) {
     $new_input = array();
     if (isset($input['startweekon'])) {
-        $new_input['startweekon'] = filter_var ( $input['startweekon'], FILTER_SANITIZE_STRING);
+        $new_input['startweekon'] = htmlspecialchars( $input['startweekon'], ENT_QUOTES);
     }
     if (isset($input['rainbow'])) {
-        $new_input['rainbow'] = filter_var ( $input['rainbow'], FILTER_SANITIZE_STRING);
+        $new_input['rainbow'] = htmlspecialchars( $input['rainbow'], ENT_QUOTES);
     }
     return $new_input;
 }

@@ -26,8 +26,11 @@ class sdpvsBarChart extends sdpvsArrays {
         $highlight_color = "red";
         $weekend_color = "#ff9900";
 
+        $exportcsv = 'no';
         $genoptions = get_option('sdpvs_general_settings');
-        $exportcsv = filter_var ( $genoptions['exportcsv'], FILTER_SANITIZE_STRING);
+        if (false !== $genoptions) {
+            $exportcsv = htmlspecialchars( $genoptions['exportcsv'], ENT_QUOTES);
+        }
 
         if ("year" === $which) {
             $this->sdpvs_number_of_posts_per_year($searchauthor, $search_text);
@@ -360,8 +363,9 @@ class sdpvsBarChart extends sdpvsArrays {
         $searchauthor = absint($searchauthor);
         $graphwidth = 600;
         $graphheight = 400;
-        $graphtop = 10;
-        $graphbottom = 30;
+        $graphtop = 20;
+        $graphbottom = 40;
+        $line_graph = '';
 
         if ("tag" === $type) {
             $taxonomy_type = 'post_tag';
